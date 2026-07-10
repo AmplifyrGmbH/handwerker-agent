@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ firmenname }}</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--dark:#1A2744;--light:#B0C4DE;--white:#FFFFFF;--off:#F4F6FA;--accent:{{ farbe_primary }}}
+body{background:var(--white);color:var(--dark);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+
+/* HEADER */
+.hd{padding:20px 48px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #E4EAF2;background:var(--white)}
+.hd-logo{height:40px;width:auto;object-fit:contain}
+.hd-name{font-size:1rem;font-weight:700;color:var(--dark)}
+.hd-pill{margin-left:auto;background:var(--accent);color:#fff;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:2px;font-weight:600}
+
+/* INTRO */
+.intro{background:var(--off);padding:64px 48px;border-bottom:1px solid #E4EAF2}
+.intro-inner{max-width:680px}
+.intro-tag{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px}
+.intro-h1{font-size:clamp(1.8rem,3.5vw,3rem);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:20px;color:var(--dark)}
+.intro-p{font-size:1rem;line-height:1.75;color:#4A5568;max-width:560px}
+
+/* PROZESS */
+.prozess{max-width:860px;margin:0 auto;padding:72px 48px}
+.prozess-title{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--light);font-weight:600;margin-bottom:56px}
+
+.step{display:grid;grid-template-columns:56px 1fr;gap:0;margin-bottom:0;position:relative}
+.step:not(:last-child) .step-line{display:block}
+.step-line{display:none;position:absolute;left:27px;top:56px;bottom:-1px;width:2px;background:linear-gradient(to bottom,var(--light),rgba(176,196,222,.2))}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--dark);color:var(--white);font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1}
+.step-body{padding:0 0 56px 28px}
+.step-label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--light);font-weight:600;margin-bottom:8px;margin-top:16px}
+.step-title{font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:20px;line-height:1.3}
+
+.vergleich{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.v-box{padding:16px 20px;font-size:.88rem;line-height:1.6}
+.v-box.frueher{background:#FEF2F2;border-left:3px solid #FCA5A5;color:#7F1D1D}
+.v-box.heute{background:#F0FDF4;border-left:3px solid var(--accent);color:#14532D}
+.v-tag{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:6px;opacity:.7}
+
+/* CTA */
+.cta{background:var(--dark);padding:72px 48px;color:var(--white)}
+.cta-inner{max-width:680px;margin:0 auto}
+.cta-tag{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--light);font-weight:600;margin-bottom:24px}
+.cta-h2{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:800;line-height:1.2;letter-spacing:-.02em;margin-bottom:16px}
+.cta-sub{font-size:.95rem;color:rgba(255,255,255,.6);margin-bottom:48px;line-height:1.7}
+
+/* CHAT im CTA */
+.chat-cta{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.chat-msgs-c{min-height:180px;max-height:260px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px}
+.msg-c{padding:10px 14px;font-size:.88rem;line-height:1.5;max-width:80%;border-radius:4px}
+.msg-c.bot{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);align-self:flex-start}
+.msg-c.user{background:var(--accent);color:#fff;align-self:flex-end}
+.chat-f-c{display:flex;border-top:1px solid rgba(255,255,255,.1)}
+.chat-f-c input{flex:1;padding:14px 18px;background:transparent;border:none;color:#fff;font-family:inherit;font-size:.88rem;outline:none}
+.chat-f-c input::placeholder{color:rgba(255,255,255,.35)}
+.chat-f-c button{background:var(--accent);color:#fff;border:none;padding:14px 24px;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.chat-f-c button:hover{opacity:.85}
+
+/* FOOTER */
+.footer{background:#111B2E;padding:24px 48px;display:flex;justify-content:space-between;align-items:center}
+.footer span{font-size:.72rem;color:rgba(255,255,255,.3)}
+.footer a{font-size:.72rem;color:rgba(255,255,255,.4);text-decoration:none}
+.footer a:hover{color:var(--light)}
+
+@media(max-width:640px){
+  .hd,.intro,.prozess,.cta,.footer{padding-left:20px;padding-right:20px}
+  .vergleich{grid-template-columns:1fr}
+  .step{grid-template-columns:44px 1fr}
+  .step-num{width:44px;height:44px;font-size:.9rem}
+  .step-line{left:21px}
+}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  {% if logo_url %}<img class="hd-logo" src="{{ logo_url }}" alt="{{ firmenname }}">{% endif %}
+  <div class="hd-name">{{ firmenname }}</div>
+  <div class="hd-pill">Ihr Angebot</div>
+</header>
+
+<section class="intro">
+  <div class="intro-inner">
+    <div class="intro-tag">Erstellt für {{ firmenname }}</div>
+    <h1 class="intro-h1">So läuft Ihr Arbeitsablauf —<br>mit einem KI-Assistenten.</h1>
+    <p class="intro-p">{{ einleitung }}</p>
+  </div>
+</section>
+
+<section class="prozess">
+  <div class="prozess-title">Der Ablauf — Schritt für Schritt</div>
+
+  <div class="step">
+    <div class="step-line"></div>
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-label">Eingehende Anfrage</div>
+      <div class="step-title">Ein Kunde meldet sich — per Anruf, WhatsApp oder Website.</div>
+      <div class="vergleich">
+        <div class="v-box frueher"><div class="v-tag">Früher</div>Das Telefon klingelt auf der Baustelle. Kein Abnehmen möglich. Der Kunde hört den Anrufbeantworter — und ruft beim Nächsten an.</div>
+        <div class="v-box heute"><div class="v-tag">Heute</div>Der KI-Assistent nimmt sofort an, stellt sich vor und fragt: Was brauchen Sie, wann, wo?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-line"></div>
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-label">Qualifizierung</div>
+      <div class="step-title">Was will der Kunde genau? Der Assistent klärt alle Details.</div>
+      <div class="vergleich">
+        <div class="v-box frueher"><div class="v-tag">Früher</div>Abends telefonieren Sie eine Stunde lang um Eckdaten zu erfragen — Adresse, Umfang, Wunschtermin. Alles manuell.</div>
+        <div class="v-box heute"><div class="v-tag">Heute</div>Der Assistent erfasst alle relevanten Informationen automatisch und bereitet eine Zusammenfassung für Sie vor.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-line"></div>
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-label">Terminvereinbarung</div>
+      <div class="step-title">Besichtigung oder Erstgespräch wird direkt gebucht.</div>
+      <div class="vergleich">
+        <div class="v-box frueher"><div class="v-tag">Früher</div>Hin- und Her per SMS oder WhatsApp. "Montag?" — "Montag geht leider nicht." Drei Tage bis ein Termin steht.</div>
+        <div class="v-box heute"><div class="v-tag">Heute</div>Der Assistent schlägt freie Termine vor und bucht direkt. Kein Hin-und-Her — in unter zwei Minuten erledigt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-line"></div>
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-label">Offerte & Auftrag</div>
+      <div class="step-title">Sie kennen den Kunden bereits — die Offerte schreiben Sie in Ruhe.</div>
+      <div class="vergleich">
+        <div class="v-box frueher"><div class="v-tag">Früher</div>Sie wissen kaum was den Kunden erwartet. Erster Besichtigungstermin geht für Infos drauf, die eigentlich schon vorher hätten da sein sollen.</div>
+        <div class="v-box heute"><div class="v-tag">Heute</div>Sie haben alle Infos vor dem Besuch. Die Besichtigung ist effizient — und die Offerte sitzt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-label">Abschluss & Rechnung</div>
+      <div class="step-title">Mehr Aufträge, weniger Aufwand pro Auftrag.</div>
+      <div class="vergleich">
+        <div class="v-box frueher"><div class="v-tag">Früher</div>Viele Anfragen gehen verloren. Die die bleiben, kosten unverhältnismässig viel Zeit für Koordination.</div>
+        <div class="v-box heute"><div class="v-tag">Heute</div>Alle Anfragen werden erfasst. Mehr Aufträge, weniger Koordinationsaufwand. Die Rechnung können Sie häufiger stellen.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="cta" id="chat">
+  <div class="cta-inner">
+    <div class="cta-tag">Gespräch vereinbaren</div>
+    <h2 class="cta-h2">Bereit für den nächsten Schritt?</h2>
+    <p class="cta-sub">In 15 Minuten zeigen wir Ihnen, wie der Assistent für {{ firmenname }} konkret aussehen würde. Fragen Sie uns direkt.</p>
+    <div class="chat-cta">
+      <div class="chat-msgs-c" id="chat-messages">
+        <div class="msg-c bot">Guten Tag. Ich beantworte Ihre Fragen zum Amplifyr KI-Assistenten. Was möchten Sie wissen?</div>
+      </div>
+      <form class="chat-f-c" id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ihre Frage…" autocomplete="off" maxlength="2000">
+        <button type="submit">Senden</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>{{ firmenname }}</span>
+  <a href="https://amplifyr.ch" target="_blank">Powered by Amplifyr</a>
+</footer>
+
+<script>
+const CHAT_API="{{ chat_api_url }}";
+const history=[];
+const messages=document.getElementById("chat-messages");
+const form=document.getElementById("chat-form");
+const input=document.getElementById("chat-input");
+function addMsg(text,role){const d=document.createElement("div");d.className="msg-c "+role;d.innerHTML=text;messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d;}
+form.addEventListener("submit",async function(e){
+  e.preventDefault();const msg=input.value.trim();if(!msg)return;
+  addMsg(msg,"user");history.push({role:"user",content:msg});input.value="";
+  const loading=addMsg("…","bot");
+  try{const r=await fetch(CHAT_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:msg,history:history.slice(0,-1)})});
+  const d=await r.json();loading.innerHTML=d.reply||"Fehler.";history.push({role:"assistant",content:d.reply});}
+  catch{loading.textContent="Verbindungsfehler.";}
+});
+</script>
+</body>
+</html>
