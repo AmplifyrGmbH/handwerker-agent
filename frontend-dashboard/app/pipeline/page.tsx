@@ -194,14 +194,6 @@ export default function PipelinePage() {
           >
             Outreach
           </button>
-          <div className="w-px bg-gray-200 self-stretch mx-1" />
-          <button
-            disabled={loading}
-            onClick={() => startJob("/api/v1/pipeline/discovery-extraktion/start", discoveryBody)}
-            className="bg-indigo-600 text-white text-sm px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-50"
-          >
-            Discovery + Extraktion
-          </button>
           <button
             disabled={loading}
             onClick={() => startJob("/api/v1/pipeline/full/start", discoveryBody)}

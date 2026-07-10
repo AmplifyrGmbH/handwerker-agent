@@ -39,12 +39,13 @@ def add_contact(
         "variables": {
             "firmenname": firmenname,
             "landing_url": landing_url,
+            "cold_subject": subject,
+            "cold_body": email_text,
+            "followup1_subject": followup1_subject,
+            "followup1_body": followup1_text,
+            "followup2_subject": followup2_subject,
+            "followup2_body": followup2_text,
         },
-        "sequences": [
-            {"subject": subject, "body": email_text},
-            {"subject": followup1_subject, "body": followup1_text},
-            {"subject": followup2_subject, "body": followup2_text},
-        ],
     }
     try:
         resp = httpx.post(f"{BASE_URL}/leads", json=payload, headers=_headers(), timeout=15)
