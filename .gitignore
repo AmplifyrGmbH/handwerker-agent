@@ -7,3 +7,5 @@ backend/.venv/
 frontend-dashboard/node_modules/
 frontend-dashboard/.next/
 frontend-dashboard/out/
+
+cloudflare-worker/.wrangler/
