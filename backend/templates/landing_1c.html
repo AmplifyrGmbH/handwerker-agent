@@ -3,198 +3,285 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ firmenname }}</title>
+<title>{{ firmenname }} — Ihr digitaler Assistent</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--dark:#1A2744;--light:#B0C4DE;--white:#FFFFFF;--off:#F4F6FA;--accent:{{ farbe_primary }}}
-body{background:var(--white);color:var(--dark);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+:root{
+  --p:{{ farbe_primary }};
+  --dark:#0F1923;
+  --ink:#1A1A1A;
+  --sub:#6B7280;
+  --bg:#FFFFFF;
+  --off:#F7F8FA;
+  --border:#E5E7EB;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;overflow-x:hidden}
 
-/* HEADER */
-.hd{padding:20px 48px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #E4EAF2;background:var(--white)}
-.hd-logo{height:40px;width:auto;object-fit:contain}
-.hd-name{font-size:1rem;font-weight:700;color:var(--dark)}
-.hd-pill{margin-left:auto;background:var(--accent);color:#fff;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:2px;font-weight:600}
+/* ── HEADER ── */
+.hd{border-top:4px solid var(--p);padding:20px 32px;display:flex;align-items:center;gap:14px;background:var(--bg);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 var(--border)}
+.hd-logo{height:36px;width:auto;object-fit:contain;flex-shrink:0}
+.hd-name{font-size:.95rem;font-weight:700;color:var(--ink)}
+.hd-badge{margin-left:auto;background:var(--p);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:2px;white-space:nowrap}
 
-/* INTRO */
-.intro{background:var(--off);padding:64px 48px;border-bottom:1px solid #E4EAF2}
-.intro-inner{max-width:680px}
-.intro-tag{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px}
-.intro-h1{font-size:clamp(1.8rem,3.5vw,3rem);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:20px;color:var(--dark)}
-.intro-p{font-size:1rem;line-height:1.75;color:#4A5568;max-width:560px}
+/* ── HERO ── */
+.hero{padding:72px 32px 64px;max-width:720px;margin:0 auto}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--p);margin-bottom:24px}
+.hero-kicker::before{content:"";display:block;width:20px;height:2px;background:var(--p)}
+.hero-h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;line-height:1.08;letter-spacing:-.03em;margin-bottom:24px;color:var(--ink)}
+.hero-h1 span{color:var(--p)}
+.hero-intro{font-size:1.05rem;line-height:1.8;color:var(--sub);max-width:560px}
 
-/* PROZESS */
-.prozess{max-width:860px;margin:0 auto;padding:72px 48px}
-.prozess-title{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--light);font-weight:600;margin-bottom:56px}
+/* ── SZENE ── */
+.szene{background:var(--off);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:72px 32px}
+.szene-inner{max-width:720px;margin:0 auto}
+.szene-label{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:32px}
+.szene-time{font-size:clamp(2.8rem,6vw,5rem);font-weight:900;letter-spacing:-.04em;color:var(--ink);line-height:1;margin-bottom:8px}
+.szene-caption{font-size:1rem;color:var(--sub);margin-bottom:48px}
 
-.step{display:grid;grid-template-columns:56px 1fr;gap:0;margin-bottom:0;position:relative}
-.step:not(:last-child) .step-line{display:block}
-.step-line{display:none;position:absolute;left:27px;top:56px;bottom:-1px;width:2px;background:linear-gradient(to bottom,var(--light),rgba(176,196,222,.2))}
-.step-num{width:56px;height:56px;border-radius:50%;background:var(--dark);color:var(--white);font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1}
-.step-body{padding:0 0 56px 28px}
-.step-label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--light);font-weight:600;margin-bottom:8px;margin-top:16px}
-.step-title{font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:20px;line-height:1.3}
+.phone{background:#E8F5E9;border-radius:20px;padding:20px;max-width:340px;margin:0 auto 48px;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+.phone-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,.06)}
+.phone-avatar{width:36px;height:36px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;flex-shrink:0}
+.phone-contact{font-size:.85rem;font-weight:600;color:#1A1A1A}
+.phone-contact span{display:block;font-size:.72rem;font-weight:400;color:#4CAF50}
+.bubble{padding:10px 14px;border-radius:12px;font-size:.88rem;line-height:1.5;max-width:88%;margin-bottom:8px}
+.bubble.customer{background:#fff;align-self:flex-start;border-radius:2px 12px 12px 12px;color:#1A1A1A}
+.bubble.assistant{background:var(--p);color:#fff;align-self:flex-end;margin-left:auto;border-radius:12px 2px 12px 12px}
+.bubble.assistant.typing{opacity:.7;font-style:italic}
+.bubble-row{display:flex;flex-direction:column}
+.bubble-time{font-size:.65rem;color:#9E9E9E;margin-bottom:4px;margin-top:-4px}
+.bubble-time.right{text-align:right}
 
-.vergleich{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.v-box{padding:16px 20px;font-size:.88rem;line-height:1.6}
-.v-box.frueher{background:#FEF2F2;border-left:3px solid #FCA5A5;color:#7F1D1D}
-.v-box.heute{background:#F0FDF4;border-left:3px solid var(--accent);color:#14532D}
-.v-tag{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:6px;opacity:.7}
+.vergleich{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.v{padding:20px;border-radius:4px}
+.v.frueher{background:#FEF2F2;border:1px solid #FECACA}
+.v.heute{background:#F0FDF4;border:1px solid #BBF7D0}
+.v-tag{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
+.v.frueher .v-tag{color:#DC2626}
+.v.heute .v-tag{color:#16A34A}
+.v p{font-size:.88rem;line-height:1.6;color:var(--ink)}
 
-/* CTA */
-.cta{background:var(--dark);padding:72px 48px;color:var(--white)}
-.cta-inner{max-width:680px;margin:0 auto}
-.cta-tag{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--light);font-weight:600;margin-bottom:24px}
-.cta-h2{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:800;line-height:1.2;letter-spacing:-.02em;margin-bottom:16px}
-.cta-sub{font-size:.95rem;color:rgba(255,255,255,.6);margin-bottom:48px;line-height:1.7}
+/* ── DEMO ── */
+.demo{padding:72px 32px;max-width:720px;margin:0 auto}
+.demo-label{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:12px}
+.demo-h2{font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:800;line-height:1.2;letter-spacing:-.02em;margin-bottom:8px;color:var(--ink)}
+.demo-h2 span{color:var(--p)}
+.demo-sub{font-size:.95rem;color:var(--sub);margin-bottom:36px;line-height:1.7}
 
-/* CHAT im CTA */
-.chat-cta{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
-.chat-msgs-c{min-height:180px;max-height:260px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px}
-.msg-c{padding:10px 14px;font-size:.88rem;line-height:1.5;max-width:80%;border-radius:4px}
-.msg-c.bot{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);align-self:flex-start}
-.msg-c.user{background:var(--accent);color:#fff;align-self:flex-end}
-.chat-f-c{display:flex;border-top:1px solid rgba(255,255,255,.1)}
-.chat-f-c input{flex:1;padding:14px 18px;background:transparent;border:none;color:#fff;font-family:inherit;font-size:.88rem;outline:none}
-.chat-f-c input::placeholder{color:rgba(255,255,255,.35)}
-.chat-f-c button{background:var(--accent);color:#fff;border:none;padding:14px 24px;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s}
-.chat-f-c button:hover{opacity:.85}
+.chat-widget{border:2px solid var(--p);border-radius:8px;overflow:hidden;background:var(--bg)}
+.chat-header{background:var(--p);padding:14px 20px;display:flex;align-items:center;gap:12px}
+.chat-header-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0}
+.chat-header-text{color:#fff}
+.chat-header-name{font-size:.9rem;font-weight:700}
+.chat-header-status{font-size:.72rem;opacity:.8;display:flex;align-items:center;gap:5px}
+.chat-header-status::before{content:"";display:block;width:6px;height:6px;border-radius:50%;background:#4ADE80}
+.chat-messages{height:280px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}
+.msg{max-width:78%;padding:10px 14px;font-size:.9rem;line-height:1.55}
+.msg.bot{background:#fff;border:1px solid var(--border);border-radius:2px 10px 10px 10px;align-self:flex-start;color:var(--ink)}
+.msg.user{background:var(--p);color:#fff;border-radius:10px 2px 10px 10px;align-self:flex-end}
+.chat-form{display:flex;border-top:1px solid var(--border);background:var(--bg)}
+.chat-input{flex:1;padding:14px 18px;border:none;outline:none;font-family:inherit;font-size:.9rem;background:transparent;color:var(--ink)}
+.chat-input::placeholder{color:#9CA3AF}
+.chat-send{background:var(--p);color:#fff;border:none;padding:14px 22px;font-weight:700;font-size:.8rem;cursor:pointer;font-family:inherit;letter-spacing:.04em;transition:opacity .15s}
+.chat-send:hover{opacity:.88}
+.chat-send:disabled{opacity:.4;cursor:default}
 
-/* FOOTER */
-.footer{background:#111B2E;padding:24px 48px;display:flex;justify-content:space-between;align-items:center}
-.footer span{font-size:.72rem;color:rgba(255,255,255,.3)}
-.footer a{font-size:.72rem;color:rgba(255,255,255,.4);text-decoration:none}
-.footer a:hover{color:var(--light)}
+/* ── ZAHLEN ── */
+.zahlen{background:var(--dark);padding:56px 32px;display:grid;grid-template-columns:repeat(3,1fr)}
+.z{padding:0 32px;border-right:1px solid rgba(255,255,255,.08);text-align:center}
+.z:first-child{padding-left:0;text-align:left}
+.z:last-child{border-right:none;padding-right:0;text-align:right}
+.z-num{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:var(--p);letter-spacing:-.03em;line-height:1}
+.z-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:8px}
 
-@media(max-width:640px){
-  .hd,.intro,.prozess,.cta,.footer{padding-left:20px;padding-right:20px}
+/* ── CTA ── */
+.cta{background:var(--dark);padding:80px 32px 72px;border-top:1px solid rgba(255,255,255,.06)}
+.cta-inner{max-width:560px;margin:0 auto;text-align:center}
+.cta-label{font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--p);margin-bottom:20px}
+.cta-h2{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-.03em;color:#fff;margin-bottom:16px}
+.cta-sub{font-size:.95rem;color:rgba(255,255,255,.5);margin-bottom:40px;line-height:1.7}
+.cta-btn{display:inline-block;background:var(--p);color:#fff;font-size:1rem;font-weight:700;padding:16px 40px;border-radius:4px;text-decoration:none;letter-spacing:.02em;transition:opacity .15s}
+.cta-btn:hover{opacity:.88}
+.cta-or{font-size:.8rem;color:rgba(255,255,255,.25);margin:20px 0}
+.cta-chat-link{font-size:.88rem;color:rgba(255,255,255,.4);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:inherit}
+.cta-chat-link:hover{color:rgba(255,255,255,.7)}
+
+/* ── FOOTER ── */
+footer{background:#080E14;padding:24px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+footer span{font-size:.75rem;color:rgba(255,255,255,.25)}
+footer a{font-size:.75rem;color:rgba(255,255,255,.3);text-decoration:none}
+footer a:hover{color:var(--p)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hd{padding:16px 20px}
+  .hero{padding:48px 20px 48px}
+  .szene{padding:56px 20px}
+  .phone{max-width:100%}
   .vergleich{grid-template-columns:1fr}
-  .step{grid-template-columns:44px 1fr}
-  .step-num{width:44px;height:44px;font-size:.9rem}
-  .step-line{left:21px}
+  .demo{padding:56px 20px}
+  .zahlen{grid-template-columns:1fr;padding:40px 20px}
+  .z{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);padding:20px 0;text-align:left}
+  .z:last-child{border-bottom:none}
+  .z:first-child,.z:last-child{text-align:left}
+  .cta{padding:64px 20px}
+  footer{padding:20px}
 }
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header class="hd">
   {% if logo_url %}<img class="hd-logo" src="{{ logo_url }}" alt="{{ firmenname }}">{% endif %}
   <div class="hd-name">{{ firmenname }}</div>
-  <div class="hd-pill">Ihr Angebot</div>
+  <div class="hd-badge">Persönliches Angebot</div>
 </header>
 
-<section class="intro">
-  <div class="intro-inner">
-    <div class="intro-tag">Erstellt für {{ firmenname }}</div>
-    <h1 class="intro-h1">So läuft Ihr Arbeitsablauf —<br>mit einem KI-Assistenten.</h1>
-    <p class="intro-p">{{ einleitung }}</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">Erstellt für {{ firmenname }}</div>
+  <h1 class="hero-h1">Wir haben für<br><span>{{ firmenname }}</span><br>etwas gebaut.</h1>
+  <p class="hero-intro">{{ einleitung }}</p>
+</section>
+
+<!-- SZENE -->
+<section class="szene">
+  <div class="szene-inner">
+    <div class="szene-label">Die Situation die täglich passiert</div>
+    <div class="szene-time">21:47 Uhr.</div>
+    <p class="szene-caption">Sie sind fertig auf der Baustelle. Ein Kunde schreibt.</p>
+
+    <div class="phone">
+      <div class="phone-header">
+        <div class="phone-avatar">KD</div>
+        <div class="phone-contact">Kundenanfrage
+          <span>● Online</span>
+        </div>
+      </div>
+      <div class="bubble-row">
+        <div class="bubble-time">21:47</div>
+        <div class="bubble customer">Guten Abend, ich bräuchte dringend ein Angebot für unsere Fassade. Wann hätten Sie Zeit für eine Besichtigung?</div>
+        <div class="bubble-time right" style="margin-top:6px">21:47 — Ihr Assistent</div>
+        <div class="bubble assistant">Guten Abend! Vielen Dank für Ihre Anfrage. Ich bin der digitale Assistent von {{ firmenname }}. Gerne helfe ich Ihnen weiter — darf ich kurz fragen: Um was für ein Objekt handelt es sich, und in welcher Region befinden Sie sich?</div>
+        <div class="bubble-time right" style="margin-top:6px">21:48 — Termin gebucht</div>
+        <div class="bubble assistant">Perfekt. Ich habe Donnerstag, 14. August um 10:00 Uhr für Sie reserviert. Sie erhalten gleich eine Bestätigung. Bis dann!</div>
+      </div>
+    </div>
+
+    <div class="vergleich">
+      <div class="v frueher">
+        <div class="v-tag">Früher</div>
+        <p>Sie sehen die Nachricht erst morgens um 7. Der Kunde hat bis dahin zwei weitere Offerten angefragt — und sich für den schnellsten entschieden.</p>
+      </div>
+      <div class="v heute">
+        <div class="v-tag">Mit Ihrem Assistenten</div>
+        <p>Der Assistent antwortet in 8 Sekunden, klärt alle Details und bucht den Termin. Sie sehen es morgens früh — der Auftrag gehört Ihnen.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="prozess">
-  <div class="prozess-title">Der Ablauf — Schritt für Schritt</div>
+<!-- DEMO -->
+<section class="demo" id="demo">
+  <div class="demo-label">Live-Demo</div>
+  <h2 class="demo-h2">So erlebt Ihr Kunde<br><span>Ihren Assistenten.</span></h2>
+  <p class="demo-sub">Testen Sie ihn jetzt — er ist bereits auf {{ firmenname }} eingestellt.</p>
 
-  <div class="step">
-    <div class="step-line"></div>
-    <div class="step-num">1</div>
-    <div class="step-body">
-      <div class="step-label">Eingehende Anfrage</div>
-      <div class="step-title">Ein Kunde meldet sich — per Anruf, WhatsApp oder Website.</div>
-      <div class="vergleich">
-        <div class="v-box frueher"><div class="v-tag">Früher</div>Das Telefon klingelt auf der Baustelle. Kein Abnehmen möglich. Der Kunde hört den Anrufbeantworter — und ruft beim Nächsten an.</div>
-        <div class="v-box heute"><div class="v-tag">Heute</div>Der KI-Assistent nimmt sofort an, stellt sich vor und fragt: Was brauchen Sie, wann, wo?</div>
+  <div class="chat-widget">
+    <div class="chat-header">
+      <div class="chat-header-avatar">{{ firmenname[0] }}</div>
+      <div class="chat-header-text">
+        <div class="chat-header-name">{{ firmenname }}</div>
+        <div class="chat-header-status">Online — Antwortet sofort</div>
       </div>
     </div>
-  </div>
-
-  <div class="step">
-    <div class="step-line"></div>
-    <div class="step-num">2</div>
-    <div class="step-body">
-      <div class="step-label">Qualifizierung</div>
-      <div class="step-title">Was will der Kunde genau? Der Assistent klärt alle Details.</div>
-      <div class="vergleich">
-        <div class="v-box frueher"><div class="v-tag">Früher</div>Abends telefonieren Sie eine Stunde lang um Eckdaten zu erfragen — Adresse, Umfang, Wunschtermin. Alles manuell.</div>
-        <div class="v-box heute"><div class="v-tag">Heute</div>Der Assistent erfasst alle relevanten Informationen automatisch und bereitet eine Zusammenfassung für Sie vor.</div>
-      </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg bot">Guten Tag! Ich bin der digitale Assistent von {{ firmenname }}. Wie kann ich Ihnen helfen?</div>
     </div>
+    <form class="chat-form" id="chat-form">
+      <input class="chat-input" type="text" id="chat-input" placeholder="Schreiben Sie uns…" autocomplete="off" maxlength="2000">
+      <button class="chat-send" type="submit" id="chat-send">Senden</button>
+    </form>
   </div>
-
-  <div class="step">
-    <div class="step-line"></div>
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <div class="step-label">Terminvereinbarung</div>
-      <div class="step-title">Besichtigung oder Erstgespräch wird direkt gebucht.</div>
-      <div class="vergleich">
-        <div class="v-box frueher"><div class="v-tag">Früher</div>Hin- und Her per SMS oder WhatsApp. "Montag?" — "Montag geht leider nicht." Drei Tage bis ein Termin steht.</div>
-        <div class="v-box heute"><div class="v-tag">Heute</div>Der Assistent schlägt freie Termine vor und bucht direkt. Kein Hin-und-Her — in unter zwei Minuten erledigt.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="step">
-    <div class="step-line"></div>
-    <div class="step-num">4</div>
-    <div class="step-body">
-      <div class="step-label">Offerte & Auftrag</div>
-      <div class="step-title">Sie kennen den Kunden bereits — die Offerte schreiben Sie in Ruhe.</div>
-      <div class="vergleich">
-        <div class="v-box frueher"><div class="v-tag">Früher</div>Sie wissen kaum was den Kunden erwartet. Erster Besichtigungstermin geht für Infos drauf, die eigentlich schon vorher hätten da sein sollen.</div>
-        <div class="v-box heute"><div class="v-tag">Heute</div>Sie haben alle Infos vor dem Besuch. Die Besichtigung ist effizient — und die Offerte sitzt.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="step">
-    <div class="step-num">5</div>
-    <div class="step-body">
-      <div class="step-label">Abschluss & Rechnung</div>
-      <div class="step-title">Mehr Aufträge, weniger Aufwand pro Auftrag.</div>
-      <div class="vergleich">
-        <div class="v-box frueher"><div class="v-tag">Früher</div>Viele Anfragen gehen verloren. Die die bleiben, kosten unverhältnismässig viel Zeit für Koordination.</div>
-        <div class="v-box heute"><div class="v-tag">Heute</div>Alle Anfragen werden erfasst. Mehr Aufträge, weniger Koordinationsaufwand. Die Rechnung können Sie häufiger stellen.</div>
-      </div>
-    </div>
-  </div>
-
 </section>
 
-<section class="cta" id="chat">
+<!-- ZAHLEN -->
+<div class="zahlen">
+  <div class="z">
+    <div class="z-num">24/7</div>
+    <div class="z-label">Erreichbar</div>
+  </div>
+  <div class="z">
+    <div class="z-num">&lt; 30s</div>
+    <div class="z-label">Antwortzeit</div>
+  </div>
+  <div class="z">
+    <div class="z-num">0×</div>
+    <div class="z-label">Verpasste Anfragen</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta">
   <div class="cta-inner">
-    <div class="cta-tag">Gespräch vereinbaren</div>
-    <h2 class="cta-h2">Bereit für den nächsten Schritt?</h2>
-    <p class="cta-sub">In 15 Minuten zeigen wir Ihnen, wie der Assistent für {{ firmenname }} konkret aussehen würde. Fragen Sie uns direkt.</p>
-    <div class="chat-cta">
-      <div class="chat-msgs-c" id="chat-messages">
-        <div class="msg-c bot">Guten Tag. Ich beantworte Ihre Fragen zum Amplifyr KI-Assistenten. Was möchten Sie wissen?</div>
-      </div>
-      <form class="chat-f-c" id="chat-form">
-        <input type="text" id="chat-input" placeholder="Ihre Frage…" autocomplete="off" maxlength="2000">
-        <button type="submit">Senden</button>
-      </form>
-    </div>
+    <div class="cta-label">Nächster Schritt</div>
+    <h2 class="cta-h2">Bereit für das Gespräch?</h2>
+    <p class="cta-sub">In 15 Minuten zeigen wir Ihnen, wie der Assistent für {{ firmenname }} live geschaltet wird — ohne technische Kenntnisse, ohne neue Website.</p>
+    <a class="cta-btn" href="#demo">Termin vereinbaren</a>
+    <div class="cta-or">oder</div>
+    <button class="cta-chat-link" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Fragen Sie den Assistenten direkt</button>
   </div>
 </section>
 
-<footer class="footer">
+<!-- FOOTER -->
+<footer>
   <span>{{ firmenname }}</span>
-  <a href="https://amplifyr.ch" target="_blank">Powered by Amplifyr</a>
+  <a href="https://amplifyr.ch" target="_blank" rel="noopener">Powered by Amplifyr</a>
 </footer>
 
 <script>
-const CHAT_API="{{ chat_api_url }}";
-const history=[];
-const messages=document.getElementById("chat-messages");
-const form=document.getElementById("chat-form");
-const input=document.getElementById("chat-input");
-function addMsg(text,role){const d=document.createElement("div");d.className="msg-c "+role;d.innerHTML=text;messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d;}
-form.addEventListener("submit",async function(e){
-  e.preventDefault();const msg=input.value.trim();if(!msg)return;
-  addMsg(msg,"user");history.push({role:"user",content:msg});input.value="";
-  const loading=addMsg("…","bot");
-  try{const r=await fetch(CHAT_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:msg,history:history.slice(0,-1)})});
-  const d=await r.json();loading.innerHTML=d.reply||"Fehler.";history.push({role:"assistant",content:d.reply});}
-  catch{loading.textContent="Verbindungsfehler.";}
+const CHAT_API = "{{ chat_api_url }}";
+const history = [];
+const messages = document.getElementById("chat-messages");
+const form = document.getElementById("chat-form");
+const input = document.getElementById("chat-input");
+const sendBtn = document.getElementById("chat-send");
+
+function addMsg(text, role) {
+  const d = document.createElement("div");
+  d.className = "msg " + role;
+  d.innerHTML = text;
+  messages.appendChild(d);
+  messages.scrollTop = messages.scrollHeight;
+  return d;
+}
+
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const msg = input.value.trim();
+  if (!msg) return;
+  addMsg(msg, "user");
+  history.push({ role: "user", content: msg });
+  input.value = "";
+  sendBtn.disabled = true;
+  const loading = addMsg("…", "bot");
+  try {
+    const r = await fetch(CHAT_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: msg, history: history.slice(0, -1) })
+    });
+    const d = await r.json();
+    const reply = d.reply || "Entschuldigung, bitte versuchen Sie es erneut.";
+    loading.innerHTML = reply;
+    history.push({ role: "assistant", content: reply });
+  } catch {
+    loading.textContent = "Verbindungsfehler. Bitte versuchen Sie es erneut.";
+  } finally {
+    sendBtn.disabled = false;
+    input.focus();
+  }
 });
 </script>
 </body>
