@@ -28,6 +28,7 @@ def _check_rate_limit(ip: str) -> bool:
 class ChatRequest(BaseModel):
     message: str
     history: list[dict[str, Any]] = []
+    context: dict[str, str] = {}
 
 
 @router.post("/message")
@@ -40,5 +41,5 @@ async def chat_message(req: ChatRequest, request: Request):
     if len(req.message) > MAX_MSG_LEN:
         raise HTTPException(status_code=400, detail="Nachricht zu lang.")
 
-    reply = gemini_client.chat_response(req.message, req.history)
+    reply = gemini_client.chat_response(req.message, req.history, req.context)
     return {"reply": reply}

@@ -117,21 +117,20 @@ img{max-width:100%;height:auto;display:block}
 .cta-box-sub{font-size:.95rem;color:rgba(255,255,255,.6);margin-bottom:0;max-width:460px;margin-left:auto;margin-right:auto}
 
 /* ── FLOATING CHAT WIDGET ── */
-.fw-btn{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:var(--p);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:1000;transition:transform .2s,box-shadow .2s}
-.fw-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,0,0,.25)}
+.fw-btn{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:var(--p);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.22);z-index:1000;transition:transform .2s,box-shadow .2s}
+.fw-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(0,0,0,.28)}
 .fw-btn:active{transform:scale(.96)}
 .fw-btn svg{width:28px;height:28px;fill:#fff}
-.fw-popup{position:fixed;bottom:96px;right:24px;width:360px;max-width:calc(100vw - 32px);background:var(--bg);border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);border:1px solid var(--border);z-index:999;display:flex;flex-direction:column;overflow:hidden;transform:translateY(16px) scale(.97);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s}
+.fw-popup{position:fixed;bottom:96px;right:24px;width:368px;max-width:calc(100vw - 32px);background:var(--bg);border-radius:16px;box-shadow:0 8px 48px rgba(0,0,0,.2);border:1px solid var(--border);z-index:999;display:flex;flex-direction:column;overflow:hidden;transform:translateY(16px) scale(.97);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s}
 .fw-popup.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
-.fw-hd{background:var(--p);padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
-.fw-hd-av{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.fw-hd-av svg{width:18px;height:18px;fill:#fff}
-.fw-hd-info{flex:1}
+.fw-hd{background:var(--p);padding:13px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.fw-hd-av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem;font-weight:800;color:#fff;letter-spacing:-.01em}
+.fw-hd-info{flex:1;min-width:0}
 .fw-hd-name{font-size:.85rem;font-weight:700;color:#fff;line-height:1.2}
-.fw-hd-status{font-size:.68rem;color:rgba(255,255,255,.75)}
-.fw-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.8);font-size:1.3rem;line-height:1;padding:4px;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center;border-radius:4px}
+.fw-hd-status{font-size:.67rem;color:rgba(255,255,255,.75);margin-top:1px}
+.fw-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.75);font-size:1.2rem;line-height:1;padding:6px;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;flex-shrink:0}
 .fw-close:hover{color:#fff;background:rgba(255,255,255,.15)}
-.fw-msgs{padding:14px;height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}
+.fw-msgs{padding:14px 14px 10px;height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}
 .msg{padding:10px 14px;border-radius:12px;font-size:.875rem;line-height:1.55;max-width:86%}
 .msg.bot{background:#fff;border:1px solid var(--border);align-self:flex-start;border-radius:4px 12px 12px 12px;color:var(--ink)}
 .msg.user{background:var(--p);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px}
@@ -139,11 +138,21 @@ img{max-width:100%;height:auto;display:block}
 .msg.typing span:nth-child(2){animation-delay:.2s}
 .msg.typing span:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.msg-btn{display:inline-block;margin-top:10px;padding:9px 16px;background:var(--p);color:#fff;border-radius:7px;font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .18s}
+.msg-btn:hover{opacity:.88}
+.chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 14px 12px;background:#FAFAFA}
+.chip{padding:7px 13px;border:1.5px solid var(--p);border-radius:20px;font-size:.78rem;color:var(--p);background:#fff;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;min-height:36px;line-height:1.3}
+.chip:hover{background:var(--p);color:#fff}
 .fw-form{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:#fff;flex-shrink:0}
 .fw-form input{flex:1;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:.875rem;color:var(--ink);outline:none;min-height:44px;background:#fff}
 .fw-form input:focus{border-color:var(--p)}
 .fw-form button{background:var(--p);color:#fff;border:none;border-radius:8px;padding:0 14px;font-size:.875rem;font-weight:700;cursor:pointer;min-width:44px;min-height:44px;transition:opacity .18s}
 .fw-form button:hover{opacity:.88}
+@media(max-width:599px){
+  .fw-popup{left:0;right:0;bottom:0;top:auto;width:100%;max-width:100%;border-radius:16px 16px 0 0;transform:translateY(100%);transition:transform .3s ease,opacity .2s}
+  .fw-popup.open{transform:translateY(0)}
+  .fw-msgs{height:calc(60vh - 60px)}
+}
 
 /* ── FOOTER ── */
 .footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center}
@@ -164,46 +173,46 @@ img{max-width:100%;height:auto;display:block}
 <header class="hd" role="banner">
   {% if logo_url %}<img src="{{ logo_url }}" alt="{{ firmenname }} Logo" class="hd-logo" width="120" height="32" loading="eager">{% endif %}
   <span class="hd-name">{{ firmenname }}</span>
-  <span class="hd-badge">KI-Assistent</span>
+  <span class="hd-badge">Amplifyr</span>
 </header>
 
 <!-- ── HERO ── -->
 <section class="hero" aria-labelledby="hero-h1">
   <div class="wrap">
-    <p class="hero-eyebrow">Exklusiv für {{ gewerk }}-Betriebe in {{ region }}</p>
-    <h1 class="h1" id="hero-h1"><strong>{{ firmenname }}</strong> —<br>der Assistent,<br>der nie schläft.</h1>
+    <p class="hero-eyebrow">Für {{ gewerk }}-Betriebe in {{ region }}</p>
+    <h1 class="h1" id="hero-h1"><strong>{{ firmenname }}</strong> —<br>weniger Papierkram,<br>mehr Feierabend.</h1>
     <p class="hero-lead">{{ einleitung }}</p>
     <div class="hero-ctas">
-      <a href="#demo" class="btn btn-p">Live-Demo ansehen ↓</a>
+      <a href="#demo" class="btn btn-p">Gespräch starten ↓</a>
       {% if termin_link %}<a href="{{ termin_link }}" class="btn btn-o" target="_blank" rel="noopener">Termin buchen</a>{% endif %}
     </div>
-    <p class="hero-note">Keine Kosten, kein Risiko — nur 2 Minuten Ihrer Zeit.</p>
+    <p class="hero-note">Kostenlos, unverbindlich — 20 Minuten, die sich lohnen.</p>
   </div>
 </section>
 
 <!-- ── PROBLEM ── -->
 <section class="section section--off" aria-labelledby="problem-h2">
   <div class="wrap">
-    <p class="kicker">Das Problem</p>
-    <h2 class="sh" id="problem-h2">21:47 Uhr. Ein Kunde schreibt. Sie schlafen bereits.</h2>
+    <p class="kicker">Der Alltag</p>
+    <h2 class="sh" id="problem-h2">Abends auf der Couch — und immer noch Gedanken an die Arbeit.</h2>
     <p class="problem-intro">
-      Schweizer Handwerksbetriebe verlieren täglich Aufträge — nicht wegen schlechter Arbeit, sondern weil ausserhalb der Bürozeiten niemand antwortet. Wer als Erster reagiert, bekommt den Auftrag.
+      Die meisten Handwerker arbeiten gut. Das Problem ist nicht die Qualität — es ist der ganze Kleinkram drumherum. Anfragen, die untergehen. Angebote, die zu spät kommen. Rechnungen, die liegen bleiben.
     </p>
     <div class="p-grid" role="list">
       <div class="p-card" role="listitem">
-        <div class="p-card-icon" aria-hidden="true">📞</div>
-        <h3 class="p-card-title">Verpasste Anrufe</h3>
-        <p class="p-card-text">Wählt niemand ab, wählen Interessenten den nächsten Betrieb in der Liste — besonders abends und am Wochenende.</p>
+        <div class="p-card-icon" aria-hidden="true">📋</div>
+        <h3 class="p-card-title">Papierkram frisst Zeit</h3>
+        <p class="p-card-text">Angebote schreiben, Rechnungen nachfassen, Termine koordinieren — das kostet täglich Stunden, die auf der Baustelle fehlen.</p>
       </div>
       <div class="p-card" role="listitem">
-        <div class="p-card-icon" aria-hidden="true">🗓️</div>
-        <h3 class="p-card-title">Stunden mit Terminen</h3>
-        <p class="p-card-text">Telefonieren, koordinieren, Rückfragen beantworten — täglich geht wertvolle Zeit verloren, die auf der Baustelle fehlt.</p>
+        <div class="p-card-icon" aria-hidden="true">⏱️</div>
+        <h3 class="p-card-title">Anfragen gehen verloren</h3>
+        <p class="p-card-text">Wer abends oder am Wochenende fragt und keine Antwort bekommt, ruft morgen bei der Konkurrenz an. So einfach ist das.</p>
       </div>
       <div class="p-card" role="listitem">
-        <div class="p-card-icon" aria-hidden="true">💸</div>
-        <h3 class="p-card-title">Kein Angebot, kein Auftrag</h3>
-        <p class="p-card-text">Jede unbeantwortete Anfrage ist Umsatz, der zur Konkurrenz geht. Bei CHF 1'500 Durchschnitt pro Job summiert sich das schnell.</p>
+        <div class="p-card-icon" aria-hidden="true">🔄</div>
+        <h3 class="p-card-title">Immer dasselbe</h3>
+        <p class="p-card-text">Dieselben Rückfragen, dieselben Abläufe, dieselbe Zettelwirtschaft — Jahr für Jahr. Irgendwann muss das nicht mehr so sein.</p>
       </div>
     </div>
   </div>
@@ -212,58 +221,58 @@ img{max-width:100%;height:auto;display:block}
 <!-- ── TIMELINE ── -->
 <section class="section" aria-labelledby="tl-h2">
   <div class="wrap">
-    <p class="kicker">Arbeitstag 2026</p>
-    <h2 class="sh" id="tl-h2">So läuft ein Tag bei {{ firmenname }} — mit KI-Unterstützung</h2>
-    <p class="sl">Der Assistent arbeitet im Hintergrund, während Sie das tun, was Sie wirklich können: {{ gewerk }}.</p>
+    <p class="kicker">Eine Möglichkeit</p>
+    <h2 class="sh" id="tl-h2">Wie ein Tag bei {{ firmenname }} aussehen könnte</h2>
+    <p class="sl">Stellen Sie sich vor: Sie konzentrieren sich auf {{ gewerk }} — und der Rest läuft.</p>
     <div class="tl" role="list">
       <div class="tl-item" role="listitem">
         <div class="tl-dot" aria-hidden="true">1</div>
         <p class="tl-time">07:15 Uhr</p>
-        <h3 class="tl-title">Morgen-Briefing ohne Chaos</h3>
-        <p class="tl-text">Sie starten in den Tag. Ihr Assistent hat über Nacht 3 Anfragen beantwortet, 1 Termin eingetragen und 2 Kunden mit Informationen versorgt.</p>
-        <span class="tl-badge">Automatisch erledigt</span>
+        <h3 class="tl-title">Ruhiger Morgenstart</h3>
+        <p class="tl-text">Drei neue Anfragen vom Vorabend — beantwortet, ein Termin bereits eingetragen. Sie starten den Tag mit einer klaren Liste statt mit einem vollen Postfach.</p>
+        <span class="tl-badge">Geordnet statt gestresst</span>
       </div>
       <div class="tl-item" role="listitem">
         <div class="tl-dot" aria-hidden="true">2</div>
         <p class="tl-time">09:30 Uhr</p>
-        <h3 class="tl-title">Neukunde stellt Fragen</h3>
-        <p class="tl-text">Ein Interessent fragt auf der Website nach einem {{ typischer_auftrag }}. Der Assistent antwortet in Sekunden: Ablauf, Preisrahmen, nächste Schritte.</p>
-        <span class="tl-badge">24/7 erreichbar</span>
+        <h3 class="tl-title">Neukunde fragt — und bekommt eine Antwort</h3>
+        <p class="tl-text">Noch während Sie unterwegs sind, bekommt der Interessent alle Infos zum {{ typischer_auftrag }}: was es braucht, wie es abläuft, wie er einen Termin bucht.</p>
+        <span class="tl-badge">Keine verlorene Anfrage</span>
       </div>
       <div class="tl-item" role="listitem">
         <div class="tl-dot" aria-hidden="true">3</div>
         <p class="tl-time">11:00 Uhr</p>
-        <h3 class="tl-title">Sie sind auf der Baustelle</h3>
-        <p class="tl-text">Ihr Telefon klingelt nicht mit Rückfragen. Kunden bekommen Antworten im Chat, ohne dass Sie unterbrochen werden.</p>
+        <h3 class="tl-title">Volle Konzentration auf der Baustelle</h3>
+        <p class="tl-text">Kein Telefon, das Sie aus dem Takt bringt. Kunden werden weitergeleitet, Rückfragen geklärt — ohne dass Sie dabei sein müssen.</p>
         <span class="tl-badge">Fokussiert arbeiten</span>
       </div>
       <div class="tl-item" role="listitem">
         <div class="tl-dot" aria-hidden="true">4</div>
         <p class="tl-time">13:45 Uhr</p>
-        <h3 class="tl-title">Termin direkt gebucht</h3>
-        <p class="tl-text">Ein Stammkunde braucht einen Folgetermin. Der Assistent koordiniert und bestätigt — ohne Rückfrage an Sie.</p>
-        <span class="tl-badge">Nahtlos integriert</span>
+        <h3 class="tl-title">Termin gebucht — ohne Telefonieren</h3>
+        <p class="tl-text">Ein Stammkunde braucht einen Folgetermin. Er wählt selbst einen Slot — kein Hin und Her per Telefon, kein vergessener Rückruf.</p>
+        <span class="tl-badge">Weniger Koordinationsaufwand</span>
       </div>
       <div class="tl-item" role="listitem">
         <div class="tl-dot" aria-hidden="true">5</div>
         <p class="tl-time">17:30 Uhr</p>
-        <h3 class="tl-title">Feierabend — Assistent läuft weiter</h3>
-        <p class="tl-text">Sie schliessen den Betrieb. Der Assistent übernimmt: Anfragen beantworten, Infos senden, Dringliches für morgen markieren.</p>
-        <span class="tl-badge">Kein Auftrag geht verloren</span>
+        <h3 class="tl-title">Feierabend — ohne Nacharbeiten</h3>
+        <p class="tl-text">Sie schliessen ab. Keine Mails mehr, keine Rückrufe einplanen. Was heute reingekommen ist, liegt geordnet für morgen bereit.</p>
+        <span class="tl-badge">Echter Feierabend</span>
       </div>
       <div class="tl-item" role="listitem">
         <div class="tl-dot" aria-hidden="true">6</div>
         <p class="tl-time">21:47 Uhr</p>
-        <h3 class="tl-title">Die Anfrage, die früher verloren ging</h3>
-        <p class="tl-text">Ein Hausbesitzer entdeckt ein Problem. Er schreibt und bekommt sofort eine Antwort. Termin für morgen früh ist gebucht — während Sie schlafen.</p>
-        <span class="tl-badge">Wettbewerbsvorteil</span>
+        <h3 class="tl-title">Die Anfrage, die früher einfach weg war</h3>
+        <p class="tl-text">Ein Hausbesitzer entdeckt ein Problem und schreibt. Er bekommt sofort eine Antwort und bucht für morgen früh — während Sie schlafen.</p>
+        <span class="tl-badge">Kein Auftrag geht verloren</span>
       </div>
       <div class="tl-item" role="listitem">
         <div class="tl-dot" aria-hidden="true">7</div>
         <p class="tl-time">Nächster Morgen</p>
-        <h3 class="tl-title">Vollständige Übersicht</h3>
-        <p class="tl-text">Sie sehen alle Gespräche, gebuchten Termine und offenen Anfragen — übersichtlich, kein Gespräch verpasst, kein Auftrag verloren.</p>
-        <span class="tl-badge">Volle Kontrolle</span>
+        <h3 class="tl-title">Frischer Start, klarer Überblick</h3>
+        <p class="tl-text">Alles auf einen Blick: was kam rein, was ist gebucht, was ist offen. Sie starten strukturiert — nicht mit dem Gefühl, schon wieder hinterherzulaufen.</p>
+        <span class="tl-badge">Volle Übersicht</span>
       </div>
     </div>
   </div>
@@ -272,29 +281,29 @@ img{max-width:100%;height:auto;display:block}
 <!-- ── NUTZEN ── -->
 <section class="section section--off" aria-labelledby="nutzen-h2">
   <div class="wrap">
-    <p class="kicker">Was das bringt</p>
-    <h2 class="sh" id="nutzen-h2">Konkrete Zahlen für {{ firmenname }}</h2>
-    <p class="sl">Was Betriebe wie {{ firmenname }} nach 3 Monaten berichten:</p>
+    <p class="kicker">Was sich verändert</p>
+    <h2 class="sh" id="nutzen-h2">Wie sich der Alltag anfühlen könnte</h2>
+    <p class="sl">Was Betriebe berichten, wenn die Verwaltung aufhört zu bremsen:</p>
     <div class="n-grid" role="list">
       <div class="n-card" role="listitem">
         <div class="n-num">+30%</div>
-        <div class="n-label">Mehr beantwortete Anfragen</div>
-        <p class="n-desc">Weil der Assistent auch nachts, am Wochenende und in der Mittagspause verfügbar ist.</p>
+        <div class="n-label">Mehr Aufträge, die ankommen</div>
+        <p class="n-desc">Weil keine Anfrage mehr unbeantwortet bleibt — nicht abends, nicht am Wochenende, nicht in der Mittagspause.</p>
       </div>
       <div class="n-card" role="listitem">
         <div class="n-num">−2 h</div>
-        <div class="n-label">Weniger Telefonaufwand täglich</div>
-        <p class="n-desc">Standardfragen werden automatisch beantwortet — Sie sprechen nur noch mit wirklich Interessierten.</p>
+        <div class="n-label">Weniger Verwaltung täglich</div>
+        <p class="n-desc">Statt Telefon-Ping-Pong bleibt Zeit für echte Arbeit — und für einen echten Feierabend.</p>
       </div>
       <div class="n-card" role="listitem">
-        <div class="n-num">24/7</div>
-        <div class="n-label">Erreichbarkeit</div>
-        <p class="n-desc">Kein Feiertag, kein Urlaub, keine Krankheit. Der Assistent schläft nicht.</p>
+        <div class="n-num">20 min</div>
+        <div class="n-label">Reichen für ein Gespräch</div>
+        <p class="n-desc">In 20 Minuten zeigen wir Ihnen konkret, was für {{ firmenname }} möglich wäre — kostenlos, unverbindlich.</p>
       </div>
       <div class="n-card" role="listitem">
-        <div class="n-num">48 h</div>
-        <div class="n-label">Bis zur Inbetriebnahme</div>
-        <p class="n-desc">Kein IT-Projekt, keine monatelange Implementierung. In 48 Stunden live.</p>
+        <div class="n-num">0</div>
+        <div class="n-label">Technikkenntnisse nötig</div>
+        <p class="n-desc">Sie müssen nichts verstehen, nichts installieren, nichts einrichten. Das ist unser Job.</p>
       </div>
     </div>
   </div>
@@ -309,47 +318,47 @@ img{max-width:100%;height:auto;display:block}
     <div class="faq" role="list">
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
-          <span>„Wir kommen doch gut zurecht. Brauchen wir das wirklich?"</span>
+          <span>„Wir kommen doch gut zurecht. Warum sollten wir reden?"</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </button>
         <div class="faq-body">
-          <p class="faq-body-inner">Viele erfolgreiche Betriebe denken so — bis der erste Mitbewerber in {{ region }} damit startet. Dann ist der Vorsprung weg. Die Frage ist nicht ob, sondern wer in der Region als Erster verfügbar ist.</p>
+          <p class="faq-body-inner">Das Gespräch ist kostenlos und verpflichtet zu nichts. Viele Betriebe wollten einfach mal hören, was für sie möglich wäre — und haben dabei gemerkt, dass einiges einfacher gehen könnte als gedacht. Wenn am Schluss nichts passt: kein Problem.</p>
         </div>
       </div>
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
-          <span>„Ist das nicht extrem aufwändig einzurichten?"</span>
+          <span>„Ich bin nicht der Computer-Typ."</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </button>
         <div class="faq-body">
-          <p class="faq-body-inner">Nein. Wir übernehmen alles: Einrichtung, Texte, Anpassung. Einzige Voraussetzung: 30 Minuten Ihrer Zeit für ein Gespräch, in dem wir den Assistenten auf {{ firmenname }} abstimmen.</p>
+          <p class="faq-body-inner">Genau deshalb reden wir zuerst. Wir erklären nichts Technisches und verkaufen keine Software. Im Gespräch schauen wir gemeinsam, was in Ihrem Alltag konkret helfen würde — und ob das überhaupt zu {{ firmenname }} passt.</p>
         </div>
       </div>
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
-          <span>„Was kostet das?"</span>
+          <span>„Was kostet das Gespräch?"</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </button>
         <div class="faq-body">
-          <p class="faq-body-inner">Das besprechen wir in einem kurzen Gespräch — je nach Betriebsgrösse und Anforderungen. Was wir sagen können: Die meisten Betriebe amortisieren die Kosten mit einem einzigen zusätzlichen Auftrag pro Monat.</p>
+          <p class="faq-body-inner">Nichts. Das Erstgespräch ist kostenlos und unverbindlich. Was danach sinnvoll ist — und was es allenfalls kostet — das klären wir gemeinsam, wenn Sie es wissen wollen.</p>
         </div>
       </div>
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
-          <span>„Klingt nach einem unpersönlichen Roboter."</span>
+          <span>„Was genau passiert nach dem Gespräch?"</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </button>
         <div class="faq-body">
-          <p class="faq-body-inner">Testen Sie es selbst — die Demo ist weiter unten auf dieser Seite. Der Assistent antwortet wie ein kompetenter Mitarbeiter: freundlich, informiert, auf Ihren Betrieb zugeschnitten. Kein „Ihre Anfrage wurde registriert."</p>
+          <p class="faq-body-inner">Gar nichts, ausser Sie möchten mehr. Wir machen kein Angebot ohne Ihr ausdrückliches Interesse. Das Gespräch dient dazu, zu verstehen, wo der Schuh drückt — und ob wir helfen können.</p>
         </div>
       </div>
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
-          <span>„Was, wenn Kunden merken, dass es KI ist?"</span>
+          <span>„Habt ihr Erfahrung mit {{ gewerk }}-Betrieben?"</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </button>
         <div class="faq-body">
-          <p class="faq-body-inner">Kunden akzeptieren Chat-Assistenten heute selbstverständlich — solange sie nützlich sind und schnell antworten. Was zählt: Bekomme ich eine Antwort? Werde ich weitergeholfen? Beides liefert der Assistent zuverlässig.</p>
+          <p class="faq-body-inner">Ja. Wir kennen den Alltag im Handwerk und reden nicht an Ihnen vorbei. Keine Theorie, keine generischen Lösungen — wir schauen, was für {{ firmenname }} in {{ region }} konkret Sinn macht.</p>
         </div>
       </div>
     </div>
@@ -359,18 +368,18 @@ img{max-width:100%;height:auto;display:block}
 <!-- ── WER DAHINTER STEHT ── -->
 <section class="section section--off" aria-labelledby="wer-h2">
   <div class="wrap">
-    <p class="kicker">Wer dahinter steht</p>
-    <h2 class="sh" id="wer-h2">Nicht irgendein Tech-Startup.</h2>
+    <p class="kicker">Wer wir sind</p>
+    <h2 class="sh" id="wer-h2">Menschen, keine Verkäufer.</h2>
     <div class="wer">
       <div class="wer-text">
         <p>
-          Ich bin <strong>{{ dein_name }}</strong>{% if deine_firma %} von <strong>{{ deine_firma }}</strong>{% endif %}. Wir bauen KI-Lösungen für Schweizer KMU — keine generischen Tools, sondern massgeschneiderte Assistenten, die zur Sprache und zum Betrieb passen.
+          Ich bin <strong>{{ dein_name }}</strong>{% if deine_firma %} von <strong>{{ deine_firma }}</strong>{% endif %}. Wir begleiten Handwerksbetriebe in der Schweiz dabei, ihren Alltag einfacher zu machen — Schritt für Schritt, ohne Fachchinesisch und ohne Druck.
         </p>
         <p>
-          Diese Seite wurde exklusiv für <strong>{{ firmenname }}</strong> erstellt. Ich habe mir Ihren Betrieb konkret angeschaut und bin überzeugt, dass ein Assistent hier echten Nutzen schafft.
+          Diese Seite habe ich persönlich für <strong>{{ firmenname }}</strong> erstellt — nicht als Massenversand, sondern weil ich glaube, dass sich im Alltag von {{ firmenname }} einiges vereinfachen liesse.
         </p>
         <p>
-          Wenn Sie nach der Demo kein Interesse haben — kein Problem, kein Druck. Wenn Sie neugierig sind, freue ich mich auf das Gespräch.
+          Ob das wirklich so ist, finden wir am besten gemeinsam heraus. Kein Angebot, kein Druck — einfach ein offenes Gespräch.
         </p>
       </div>
       <div class="wer-card" role="complementary" aria-label="Kontakt">
@@ -393,36 +402,40 @@ img{max-width:100%;height:auto;display:block}
 <section class="section" id="demo" aria-labelledby="demo-h2">
   <div class="wrap">
     <div class="cta-box">
-      <h2 class="cta-box-title" id="demo-h2">Testen Sie es jetzt.</h2>
-      <p class="cta-box-sub">Der Assistent wartet unten rechts — genau so antwortet er für Ihre Kunden.</p>
+      <h2 class="cta-box-title" id="demo-h2">Lassen Sie uns reden.</h2>
+      <p class="cta-box-sub">20 Minuten. Kostenlos. Unverbindlich. Wir zeigen Ihnen, was für {{ firmenname }} konkret möglich wäre.</p>
     </div>
     {% if termin_link %}
     <div style="text-align:center;margin-top:8px">
-      <a href="{{ termin_link }}" class="btn btn-p" style="font-size:1rem;padding:16px 36px" target="_blank" rel="noopener">Kostenloses Erstgespräch buchen →</a>
-      <p style="margin-top:10px;font-size:.8rem;color:var(--sub)">30 Minuten · kostenlos · unverbindlich</p>
+      <a href="{{ termin_link }}" class="btn btn-p" style="font-size:1rem;padding:16px 36px" target="_blank" rel="noopener">Gespräch buchen →</a>
+      <p style="margin-top:10px;font-size:.8rem;color:var(--sub)">Kostenlos · unverbindlich · 20 Minuten</p>
     </div>
     {% endif %}
   </div>
 </section>
 
 <!-- ── FLOATING CHAT WIDGET ── -->
-<div class="fw-popup" id="fwPopup" role="dialog" aria-label="Chat mit {{ firmenname }}" aria-modal="true">
+<div class="fw-popup" id="fwPopup" role="dialog" aria-label="Amplifyr-Berater" aria-modal="true">
   <div class="fw-hd">
-    <div class="fw-hd-av" aria-hidden="true">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm-1 5h2v1h2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v2h-4v-2H8a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h2V7zm-3 3v5h8v-5H8zm2 1h1v3h-1v-3zm3 0h1v3h-1v-3z"/></svg>
-    </div>
+    <div class="fw-hd-av" aria-hidden="true">A</div>
     <div class="fw-hd-info">
-      <div class="fw-hd-name">{{ firmenname }} — Assistent</div>
-      <div class="fw-hd-status">● Online · antwortet sofort</div>
+      <div class="fw-hd-name">Amplifyr-Berater</div>
+      <div class="fw-hd-status">● antwortet in wenigen Sekunden</div>
     </div>
     <button class="fw-close" onclick="toggleChat()" aria-label="Chat schliessen">✕</button>
   </div>
   <div class="fw-msgs" id="chatMsgs" aria-live="polite">
-    <div class="msg bot">Hallo! Ich bin der digitale Assistent von {{ firmenname }}. Wie kann ich Ihnen helfen?</div>
+    <div class="msg bot">{% if inhaber_name %}Grüezi {{ inhaber_name }}{% else %}Grüezi{% endif %} — schön, dass Sie sich die Zeit nehmen. Womit hält Sie der administrative Alltag bei {{ firmenname }} am meisten auf?</div>
+  </div>
+  <div class="chips" id="chatChips">
+    <button class="chip" onclick="sendChip(this)">Angebote dauern zu lang</button>
+    <button class="chip" onclick="sendChip(this)">Rechnungen bleiben liegen</button>
+    <button class="chip" onclick="sendChip(this)">Bin nicht der Computer-Typ</button>
+    <button class="chip" onclick="sendChip(this)">Was kostet ein Gespräch?</button>
   </div>
   <form class="fw-form" onsubmit="sendMsg(event)" aria-label="Nachricht senden">
     <label for="chatIn" class="sr-only">Nachricht eingeben</label>
-    <input id="chatIn" type="text" placeholder="Ihre Frage eingeben…" autocomplete="off">
+    <input id="chatIn" type="text" placeholder="Schreiben Sie…" autocomplete="off">
     <button type="submit" aria-label="Senden">→</button>
   </form>
 </div>
@@ -439,44 +452,58 @@ img{max-width:100%;height:auto;display:block}
 </footer>
 
 <script>
-// FAQ
+// ── Chat constants ──
+const API_URL = "{{ chat_api_url }}";
+const TERMIN_LINK = "{{ termin_link }}";
+const CONTEXT = {
+  firmenname: "{{ firmenname }}",
+  gewerk: "{{ gewerk }}",
+  region: "{{ region }}",
+  termin_link: "{{ termin_link }}"
+};
+let chatHistory = [];
+const msgs = document.getElementById('chatMsgs');
+
+// ── Auto-open (once per session, after 15–20s or on scroll to CTA) ──
+(function () {
+  if (sessionStorage.getItem('fwOpened')) return;
+  const delay = 15000 + Math.random() * 5000;
+  const timer = setTimeout(openChat, delay);
+  const trigger = document.getElementById('demo');
+  if (trigger && window.IntersectionObserver) {
+    new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { clearTimeout(timer); openChat(); }
+    }, { threshold: 0.4 }).observe(trigger);
+  }
+})();
+
+function openChat() {
+  if (sessionStorage.getItem('fwOpened')) return;
+  sessionStorage.setItem('fwOpened', '1');
+  document.getElementById('fwPopup').classList.add('open');
+  document.getElementById('fwBtn').setAttribute('aria-label', 'Chat schliessen');
+}
+
+function toggleChat() {
+  const popup = document.getElementById('fwPopup');
+  const isOpen = popup.classList.contains('open');
+  popup.classList.toggle('open');
+  document.getElementById('fwBtn').setAttribute('aria-label', isOpen ? 'Chat öffnen' : 'Chat schliessen');
+  if (!isOpen) { sessionStorage.setItem('fwOpened', '1'); document.getElementById('chatIn').focus(); }
+}
+
+// ── FAQ ──
 function toggleFaq(btn) {
   const item = btn.closest('.faq-item');
   const isOpen = item.classList.contains('open');
   document.querySelectorAll('.faq-item.open').forEach(i => {
     i.classList.remove('open');
-    i.querySelector('.faq-q').setAttribute('aria-expanded','false');
+    i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
   });
-  if (!isOpen) {
-    item.classList.add('open');
-    btn.setAttribute('aria-expanded','true');
-  }
+  if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
 }
 
-// Floating chat toggle
-function toggleChat() {
-  const popup = document.getElementById('fwPopup');
-  const btn = document.getElementById('fwBtn');
-  const isOpen = popup.classList.contains('open');
-  popup.classList.toggle('open');
-  btn.setAttribute('aria-label', isOpen ? 'Chat öffnen' : 'Chat schliessen');
-  if (!isOpen) document.getElementById('chatIn').focus();
-}
-
-// Chat
-const API_URL = "{{ chat_api_url }}";
-const SLUG = "{{ slug }}";
-const msgs = document.getElementById('chatMsgs');
-
-function addMsg(text, role) {
-  const d = document.createElement('div');
-  d.className = 'msg ' + role;
-  d.textContent = text;
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
-  return d;
-}
-
+// ── Helpers ──
 function addTyping() {
   const d = document.createElement('div');
   d.className = 'msg bot typing';
@@ -486,26 +513,68 @@ function addTyping() {
   return d;
 }
 
+function addUserMsg(text) {
+  const d = document.createElement('div');
+  d.className = 'msg user';
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addBotMsg(text) {
+  const d = document.createElement('div');
+  d.className = 'msg bot';
+  if (TERMIN_LINK && text.includes('{{TERMIN}}')) {
+    const parts = text.split('{{TERMIN}}');
+    d.innerHTML = (parts[0] || '') +
+      `<br><a href="${TERMIN_LINK}" target="_blank" rel="noopener" class="msg-btn">Termin buchen →</a>` +
+      (parts[1] || '');
+  } else {
+    d.textContent = text;
+  }
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideChips() {
+  const c = document.getElementById('chatChips');
+  if (c) c.style.display = 'none';
+}
+
+// ── Send ──
+function sendChip(btn) {
+  hideChips();
+  submitMsg(btn.textContent);
+}
+
 async function sendMsg(e) {
   e.preventDefault();
   const input = document.getElementById('chatIn');
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  addMsg(text, 'user');
+  hideChips();
+  await submitMsg(text);
+}
+
+async function submitMsg(text) {
+  addUserMsg(text);
+  chatHistory.push({ role: 'user', content: text });
   const typing = addTyping();
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({message: text, betrieb_slug: SLUG})
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, history: chatHistory.slice(-10), context: CONTEXT })
     });
     const data = await res.json();
     typing.remove();
-    addMsg(data.response || data.message || 'Danke für Ihre Nachricht!', 'bot');
+    const reply = data.reply || 'Gerade nicht erreichbar — bitte versuchen Sie es nochmals.';
+    chatHistory.push({ role: 'assistant', content: reply });
+    addBotMsg(reply);
   } catch {
     typing.remove();
-    addMsg('Gerade nicht erreichbar — bitte versuchen Sie es nochmals.', 'bot');
+    addBotMsg('Gerade nicht erreichbar — bitte versuchen Sie es nochmals.');
   }
 }
 </script>
