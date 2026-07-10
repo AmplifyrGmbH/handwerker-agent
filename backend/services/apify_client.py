@@ -35,7 +35,8 @@ def _run_scraper_sync(queries: list[str], max_per_search: int) -> list[dict]:
             "countryCode": "ch",
         }
     )
-    dataset_id = run["defaultDatasetId"]
+    # run is a dict in older SDK versions, a Run object in newer ones
+    dataset_id = run.get("defaultDatasetId") if isinstance(run, dict) else run.default_dataset_id
     items = list(client.dataset(dataset_id).iterate_items())
     return items
 
