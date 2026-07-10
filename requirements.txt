@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+pydantic-settings
+apify-client
+google-generativeai
+boto3
+botocore
+httpx
+beautifulsoup4
+tldextract
+jinja2
+playwright

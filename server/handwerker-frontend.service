@@ -1,0 +1,16 @@
+[Unit]
+Description=Handwerker Agent Frontend
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/handwerker-agent/frontend-dashboard
+ExecStart=/usr/bin/node .next/standalone/server.js
+Restart=always
+RestartSec=5
+Environment=PORT=3001
+Environment=HOSTNAME=0.0.0.0
+
+[Install]
+WantedBy=multi-user.target
