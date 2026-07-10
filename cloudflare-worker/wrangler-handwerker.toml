@@ -1,11 +1,8 @@
 name = "handwerker-landing"
 main = "worker-handwerker.js"
 compatibility_date = "2024-01-01"
+account_id = "708831fe33eeb1be41b82bb44fca99d2"
 
 [[r2_buckets]]
 binding = "R2"
-bucket_name = "website-agent-bilder"
-
-[[routes]]
-pattern = "ihr-ki-agent.ch/*"
-zone_name = "ihr-ki-agent.ch"
+bucket_name = "website-agent"

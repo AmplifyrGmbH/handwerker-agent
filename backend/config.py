@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     R2_ACCOUNT_ID: str = ""
     R2_ACCESS_KEY_ID: str = ""
     R2_SECRET_ACCESS_KEY: str = ""
-    R2_BUCKET_NAME: str = "website-agent-bilder"
+    R2_BUCKET_NAME: str = "website-agent"
     R2_PUBLIC_URL: str = ""
 
     INSTANTLY_KEY: str = ""
