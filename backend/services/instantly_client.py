@@ -19,6 +19,7 @@ def add_contact(
     campaign_id: str,
     firmenname: str,
     landing_url: str,
+    inhaber_name: str,
     subject: str,
     email_text: str,
     followup1_subject: str,
@@ -33,22 +34,33 @@ def add_contact(
         )
         return True
 
+    name_parts = inhaber_name.split(" ", 1) if inhaber_name else []
+    first_name = name_parts[0] if name_parts else ""
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
+
     payload = {
-        "email": email,
         "campaign_id": campaign_id,
-        "variables": {
-            "firmenname": firmenname,
-            "landing_url": landing_url,
-            "cold_subject": subject,
-            "cold_body": email_text,
-            "followup1_subject": followup1_subject,
-            "followup1_body": followup1_text,
-            "followup2_subject": followup2_subject,
-            "followup2_body": followup2_text,
-        },
+        "leads": [
+            {
+                "email": email,
+                "first_name": first_name,
+                "last_name": last_name,
+                "company_name": firmenname,
+                "website": landing_url,
+                "personalization": email_text,
+                "custom_variables": {
+                    "subject": subject,
+                    "followup1_subject": followup1_subject,
+                    "followup1_text": followup1_text,
+                    "followup2_subject": followup2_subject,
+                    "followup2_text": followup2_text,
+                },
+            }
+        ],
+        "skip_if_in_workspace": True,
     }
     try:
-        resp = httpx.post(f"{BASE_URL}/leads", json=payload, headers=_headers(), timeout=15)
+        resp = httpx.post(f"{BASE_URL}/leads/add", json=payload, headers=_headers(), timeout=15)
         resp.raise_for_status()
         return True
     except Exception as e:

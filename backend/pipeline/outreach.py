@@ -69,6 +69,7 @@ async def run(job_id: int):
                     campaign_id=campaign_id,
                     firmenname=firmenname,
                     landing_url=b.landing_url,
+                    inhaber_name=b.inhaber_name or "",
                     subject=emails["cold_subject"],
                     email_text=emails["cold_body"],
                     followup1_subject=emails["followup1_subject"],
