@@ -87,6 +87,15 @@ systemctl restart handwerker-frontend
 - Design: Branding-first, 21:47-Szene, Live-Demo-Chatbot in Unternehmensfarben
 - URL-Format: `https://ihr-ki-agent.ch/{slug}`
 
+## Reset (DB + R2 leeren)
+```bash
+cd /opt/handwerker-agent
+source backend/.venv/bin/activate
+python3 reset.py
+```
+Löscht: alle `betriebe`, `kontaktversuche`, Landing Pages unter `handwerker/` in R2.
+Bleibt: `jobs`-Tabelle, `chatbot/`-Prefix in R2, Schema, Config, Code.
+
 ## Pipeline-Ablauf
 1. **Discovery** → Apify Google Maps → DB (status: `entdeckt`)
 2. **Extraktion** → Website scrapen, Logo/Farbe/E-Mail/Firmenprofil → DB (status: `extrahiert`)
