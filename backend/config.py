@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     LANDING_DOMAIN: str = "ihr-ki-agent.ch"
     CHAT_API_URL: str = "https://handwerker-api.amplifyr-digital.ch/api/v1/chat/message"
 
+    TERMIN_LINK: str = ""
+    AMPLIFYR_NAME: str = "David Staub"
+    AMPLIFYR_FIRMA: str = "Amplifyr"
+    AMPLIFYR_KONTAKT: str = "info@amplifyr.ch"
+
     INSTANTLY_DRY_RUN: bool = False
 
     class Config:

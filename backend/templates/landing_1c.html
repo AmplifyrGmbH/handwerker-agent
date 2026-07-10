@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ firmenname }} — Ihr digitaler Assistent</title>
+<meta name="theme-color" content="{{ farbe_primary }}">
+<title>{{ firmenname }} — Ihr KI-Assistent ist bereit</title>
+<meta name="description" content="{{ firmenname }} aus {{ region }}: Entdecken Sie, wie ein KI-Assistent rund um die Uhr Anfragen beantwortet und Aufträge sichert.">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -14,275 +16,472 @@
   --bg:#FFFFFF;
   --off:#F7F8FA;
   --border:#E5E7EB;
+  --r:12px;
 }
-html{font-size:16px;-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;overflow-x:hidden}
+html{font-size:16px;-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.6;overflow-x:hidden}
+a{color:var(--p);text-decoration:none}
+img{max-width:100%;height:auto;display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
+
+/* Layout */
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+.section{padding:72px 0}
+.section--off{background:var(--off)}
+.kicker{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--p);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.kicker::before{content:"";display:block;width:24px;height:2px;background:var(--p);flex-shrink:0}
+.sh{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;line-height:1.13;letter-spacing:-.025em;color:var(--ink);margin-bottom:14px}
+.sl{font-size:1rem;color:var(--sub);line-height:1.75;margin-bottom:40px;max-width:580px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:13px 28px;border-radius:7px;font-size:.97rem;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:opacity .18s,transform .1s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn-p{background:var(--p);color:#fff}
+.btn-p:hover{opacity:.88}
+.btn-o{border:2px solid var(--p);color:var(--p);background:transparent}
+.btn-o:hover{background:var(--p);color:#fff}
 
 /* ── HEADER ── */
-.hd{border-top:4px solid var(--p);padding:20px 32px;display:flex;align-items:center;gap:14px;background:var(--bg);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 var(--border)}
-.hd-logo{height:36px;width:auto;object-fit:contain;flex-shrink:0}
-.hd-name{font-size:.95rem;font-weight:700;color:var(--ink)}
-.hd-badge{margin-left:auto;background:var(--p);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:2px;white-space:nowrap}
+.hd{border-top:4px solid var(--p);padding:14px 24px;display:flex;align-items:center;gap:14px;background:var(--bg);position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--border)}
+.hd-logo{height:32px;width:auto;object-fit:contain;flex-shrink:0}
+.hd-name{font-size:.9rem;font-weight:700;color:var(--ink);line-height:1.2}
+.hd-badge{margin-left:auto;background:var(--p);color:#fff;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:4px;white-space:nowrap;flex-shrink:0}
 
 /* ── HERO ── */
-.hero{padding:72px 32px 64px;max-width:720px;margin:0 auto}
-.hero-kicker{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--p);margin-bottom:24px}
-.hero-kicker::before{content:"";display:block;width:20px;height:2px;background:var(--p)}
-.hero-h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;line-height:1.08;letter-spacing:-.03em;margin-bottom:24px;color:var(--ink)}
-.hero-h1 span{color:var(--p)}
-.hero-intro{font-size:1.05rem;line-height:1.8;color:var(--sub);max-width:560px}
+.hero{padding:64px 0 56px}
+.hero-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--p);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:"";display:block;width:24px;height:2px;background:var(--p);flex-shrink:0}
+.h1{font-size:clamp(2rem,5.5vw,3.5rem);font-weight:900;line-height:1.07;letter-spacing:-.035em;margin-bottom:24px;color:var(--ink)}
+.h1 strong{color:var(--p)}
+.hero-lead{font-size:1.05rem;line-height:1.8;color:var(--sub);margin-bottom:36px;max-width:560px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.hero-note{font-size:.78rem;color:var(--sub);margin-top:14px}
 
-/* ── SZENE ── */
-.szene{background:var(--off);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:72px 32px}
-.szene-inner{max-width:720px;margin:0 auto}
-.szene-label{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:32px}
-.szene-time{font-size:clamp(2.8rem,6vw,5rem);font-weight:900;letter-spacing:-.04em;color:var(--ink);line-height:1;margin-bottom:8px}
-.szene-caption{font-size:1rem;color:var(--sub);margin-bottom:48px}
+/* ── PROBLEM ── */
+.problem-intro{font-size:1.05rem;line-height:1.8;color:var(--ink);margin-bottom:36px;max-width:620px}
+.p-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:600px){.p-grid{grid-template-columns:repeat(3,1fr)}}
+.p-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:24px 20px}
+.p-card-icon{font-size:1.5rem;margin-bottom:10px;line-height:1}
+.p-card-title{font-size:.93rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+.p-card-text{font-size:.85rem;color:var(--sub);line-height:1.6}
 
-.phone{background:#E8F5E9;border-radius:20px;padding:20px;max-width:340px;margin:0 auto 48px;box-shadow:0 8px 32px rgba(0,0,0,.08)}
-.phone-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,.06)}
-.phone-avatar{width:36px;height:36px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;flex-shrink:0}
-.phone-contact{font-size:.85rem;font-weight:600;color:#1A1A1A}
-.phone-contact span{display:block;font-size:.72rem;font-weight:400;color:#4CAF50}
-.bubble{padding:10px 14px;border-radius:12px;font-size:.88rem;line-height:1.5;max-width:88%;margin-bottom:8px}
-.bubble.customer{background:#fff;align-self:flex-start;border-radius:2px 12px 12px 12px;color:#1A1A1A}
-.bubble.assistant{background:var(--p);color:#fff;align-self:flex-end;margin-left:auto;border-radius:12px 2px 12px 12px}
-.bubble.assistant.typing{opacity:.7;font-style:italic}
-.bubble-row{display:flex;flex-direction:column}
-.bubble-time{font-size:.65rem;color:#9E9E9E;margin-bottom:4px;margin-top:-4px}
-.bubble-time.right{text-align:right}
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:36px}
+.tl::before{content:"";position:absolute;left:11px;top:4px;bottom:4px;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:28px}
+.tl-item:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:-36px;top:1px;width:24px;height:24px;border-radius:50%;background:var(--p);border:3px solid var(--bg);box-shadow:0 0 0 2px var(--p);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.6rem;font-weight:800;flex-shrink:0}
+.tl-time{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--p);margin-bottom:3px}
+.tl-title{font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:4px}
+.tl-text{font-size:.87rem;color:var(--sub);line-height:1.6}
+.tl-badge{display:inline-block;font-size:.64rem;font-weight:700;background:var(--p);color:#fff;padding:2px 9px;border-radius:20px;margin-top:6px;letter-spacing:.04em}
 
-.vergleich{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.v{padding:20px;border-radius:4px}
-.v.frueher{background:#FEF2F2;border:1px solid #FECACA}
-.v.heute{background:#F0FDF4;border:1px solid #BBF7D0}
-.v-tag{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
-.v.frueher .v-tag{color:#DC2626}
-.v.heute .v-tag{color:#16A34A}
-.v p{font-size:.88rem;line-height:1.6;color:var(--ink)}
+/* ── NUTZEN ── */
+.n-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:500px){.n-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:860px){.n-grid{grid-template-columns:repeat(4,1fr)}}
+.n-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:26px 20px}
+.n-num{font-size:2.1rem;font-weight:900;color:var(--p);letter-spacing:-.04em;line-height:1;margin-bottom:8px}
+.n-label{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:5px}
+.n-desc{font-size:.82rem;color:var(--sub);line-height:1.55}
 
-/* ── DEMO ── */
-.demo{padding:72px 32px;max-width:720px;margin:0 auto}
-.demo-label{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:12px}
-.demo-h2{font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:800;line-height:1.2;letter-spacing:-.02em;margin-bottom:8px;color:var(--ink)}
-.demo-h2 span{color:var(--p)}
-.demo-sub{font-size:.95rem;color:var(--sub);margin-bottom:36px;line-height:1.7}
+/* ── FAQ ── */
+.faq{display:flex;flex-direction:column;gap:8px}
+.faq-item{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:17px 20px;background:none;border:none;cursor:pointer;text-align:left;font-size:.93rem;font-weight:700;color:var(--ink);gap:14px;min-height:48px}
+.faq-q:focus-visible{outline:2px solid var(--p);outline-offset:2px}
+.faq-q:hover{background:var(--off)}
+.faq-icon{font-size:1.3rem;font-weight:400;color:var(--p);flex-shrink:0;transition:transform .2s;line-height:1}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-item.open .faq-body{max-height:320px}
+.faq-body-inner{padding:0 20px 18px;font-size:.9rem;color:var(--sub);line-height:1.7}
 
-.chat-widget{border:2px solid var(--p);border-radius:8px;overflow:hidden;background:var(--bg)}
-.chat-header{background:var(--p);padding:14px 20px;display:flex;align-items:center;gap:12px}
-.chat-header-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0}
-.chat-header-text{color:#fff}
-.chat-header-name{font-size:.9rem;font-weight:700}
-.chat-header-status{font-size:.72rem;opacity:.8;display:flex;align-items:center;gap:5px}
-.chat-header-status::before{content:"";display:block;width:6px;height:6px;border-radius:50%;background:#4ADE80}
-.chat-messages{height:280px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}
-.msg{max-width:78%;padding:10px 14px;font-size:.9rem;line-height:1.55}
-.msg.bot{background:#fff;border:1px solid var(--border);border-radius:2px 10px 10px 10px;align-self:flex-start;color:var(--ink)}
-.msg.user{background:var(--p);color:#fff;border-radius:10px 2px 10px 10px;align-self:flex-end}
-.chat-form{display:flex;border-top:1px solid var(--border);background:var(--bg)}
-.chat-input{flex:1;padding:14px 18px;border:none;outline:none;font-family:inherit;font-size:.9rem;background:transparent;color:var(--ink)}
-.chat-input::placeholder{color:#9CA3AF}
-.chat-send{background:var(--p);color:#fff;border:none;padding:14px 22px;font-weight:700;font-size:.8rem;cursor:pointer;font-family:inherit;letter-spacing:.04em;transition:opacity .15s}
-.chat-send:hover{opacity:.88}
-.chat-send:disabled{opacity:.4;cursor:default}
+/* ── WER ── */
+.wer{display:flex;flex-direction:column;gap:32px}
+@media(min-width:640px){.wer{flex-direction:row;align-items:flex-start;gap:40px}}
+.wer-text{flex:1}
+.wer-text p{color:var(--sub);line-height:1.78;font-size:.95rem;margin-bottom:14px}
+.wer-text p:last-child{margin-bottom:0}
+.wer-text strong{color:var(--ink)}
+.wer-card{flex-shrink:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:24px;min-width:220px}
+.wer-name{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:4px}
+.wer-firma{font-size:.82rem;color:var(--p);font-weight:700;margin-bottom:16px}
+.wer-row{font-size:.82rem;color:var(--sub);margin-bottom:6px;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.wer-row strong{color:var(--ink);font-weight:600;flex-shrink:0}
 
-/* ── ZAHLEN ── */
-.zahlen{background:var(--dark);padding:56px 32px;display:grid;grid-template-columns:repeat(3,1fr)}
-.z{padding:0 32px;border-right:1px solid rgba(255,255,255,.08);text-align:center}
-.z:first-child{padding-left:0;text-align:left}
-.z:last-child{border-right:none;padding-right:0;text-align:right}
-.z-num{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:var(--p);letter-spacing:-.03em;line-height:1}
-.z-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:8px}
+/* ── CTA BOX ── */
+.cta-box{background:var(--dark);border-radius:16px;padding:44px 32px;text-align:center;margin-bottom:36px}
+.cta-box-title{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:900;color:#fff;margin-bottom:12px;letter-spacing:-.02em}
+.cta-box-sub{font-size:.95rem;color:rgba(255,255,255,.6);margin-bottom:0;max-width:460px;margin-left:auto;margin-right:auto}
 
-/* ── CTA ── */
-.cta{background:var(--dark);padding:80px 32px 72px;border-top:1px solid rgba(255,255,255,.06)}
-.cta-inner{max-width:560px;margin:0 auto;text-align:center}
-.cta-label{font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--p);margin-bottom:20px}
-.cta-h2{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-.03em;color:#fff;margin-bottom:16px}
-.cta-sub{font-size:.95rem;color:rgba(255,255,255,.5);margin-bottom:40px;line-height:1.7}
-.cta-btn{display:inline-block;background:var(--p);color:#fff;font-size:1rem;font-weight:700;padding:16px 40px;border-radius:4px;text-decoration:none;letter-spacing:.02em;transition:opacity .15s}
-.cta-btn:hover{opacity:.88}
-.cta-or{font-size:.8rem;color:rgba(255,255,255,.25);margin:20px 0}
-.cta-chat-link{font-size:.88rem;color:rgba(255,255,255,.4);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:inherit}
-.cta-chat-link:hover{color:rgba(255,255,255,.7)}
+/* ── CHAT ── */
+.chat{background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;max-width:480px;margin:0 auto}
+.chat-hd{background:var(--p);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.chat-hd-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#fff;flex-shrink:0}
+.chat-hd-name{font-size:.88rem;font-weight:700;color:#fff;line-height:1.3}
+.chat-hd-status{font-size:.7rem;color:rgba(255,255,255,.75)}
+.chat-msgs{padding:16px;min-height:200px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}
+.msg{padding:10px 14px;border-radius:12px;font-size:.875rem;line-height:1.55;max-width:86%}
+.msg.bot{background:#fff;border:1px solid var(--border);align-self:flex-start;border-radius:4px 12px 12px 12px;color:var(--ink)}
+.msg.user{background:var(--p);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px}
+.msg.typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sub);margin:0 2px;animation:blink 1.2s infinite}
+.msg.typing span:nth-child(2){animation-delay:.2s}
+.msg.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.chat-form{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--border);background:#fff}
+.chat-form input{flex:1;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:.875rem;color:var(--ink);outline:none;min-height:44px;background:#fff}
+.chat-form input:focus{border-color:var(--p)}
+.chat-form button{background:var(--p);color:#fff;border:none;border-radius:8px;padding:0 16px;font-size:.875rem;font-weight:700;cursor:pointer;min-width:48px;min-height:44px;transition:opacity .18s}
+.chat-form button:hover{opacity:.88}
 
 /* ── FOOTER ── */
-footer{background:#080E14;padding:24px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-footer span{font-size:.75rem;color:rgba(255,255,255,.25)}
-footer a{font-size:.75rem;color:rgba(255,255,255,.3);text-decoration:none}
-footer a:hover{color:var(--p)}
+.footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center}
+.footer-text{font-size:.78rem;color:var(--sub);line-height:1.7}
 
 /* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .hd{padding:16px 20px}
-  .hero{padding:48px 20px 48px}
-  .szene{padding:56px 20px}
-  .phone{max-width:100%}
-  .vergleich{grid-template-columns:1fr}
-  .demo{padding:56px 20px}
-  .zahlen{grid-template-columns:1fr;padding:40px 20px}
-  .z{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);padding:20px 0;text-align:left}
-  .z:last-child{border-bottom:none}
-  .z:first-child,.z:last-child{text-align:left}
-  .cta{padding:64px 20px}
-  footer{padding:20px}
+@media(max-width:479px){
+  .hero{padding:48px 0 40px}
+  .section{padding:52px 0}
+  .cta-box{padding:28px 20px}
+  .wer-card{width:100%}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="hd">
-  {% if logo_url %}<img class="hd-logo" src="{{ logo_url }}" alt="{{ firmenname }}">{% endif %}
-  <div class="hd-name">{{ firmenname }}</div>
-  <div class="hd-badge">Persönliches Angebot</div>
+<!-- ── HEADER ── -->
+<header class="hd" role="banner">
+  {% if logo_url %}<img src="{{ logo_url }}" alt="{{ firmenname }} Logo" class="hd-logo" width="120" height="32" loading="eager">{% endif %}
+  <span class="hd-name">{{ firmenname }}</span>
+  <span class="hd-badge">KI-Assistent</span>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-kicker">Erstellt für {{ firmenname }}</div>
-  <h1 class="hero-h1">Wir haben für<br><span>{{ firmenname }}</span><br>etwas gebaut.</h1>
-  <p class="hero-intro">{{ einleitung }}</p>
+<!-- ── HERO ── -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="wrap">
+    <p class="hero-eyebrow">Exklusiv für {{ gewerk }}-Betriebe in {{ region }}</p>
+    <h1 class="h1" id="hero-h1"><strong>{{ firmenname }}</strong> —<br>der Assistent,<br>der nie schläft.</h1>
+    <p class="hero-lead">{{ einleitung }}</p>
+    <div class="hero-ctas">
+      <a href="#demo" class="btn btn-p">Live-Demo ansehen ↓</a>
+      {% if termin_link %}<a href="{{ termin_link }}" class="btn btn-o" target="_blank" rel="noopener">Termin buchen</a>{% endif %}
+    </div>
+    <p class="hero-note">Keine Kosten, kein Risiko — nur 2 Minuten Ihrer Zeit.</p>
+  </div>
 </section>
 
-<!-- SZENE -->
-<section class="szene">
-  <div class="szene-inner">
-    <div class="szene-label">Die Situation die täglich passiert</div>
-    <div class="szene-time">21:47 Uhr.</div>
-    <p class="szene-caption">Sie sind fertig auf der Baustelle. Ein Kunde schreibt.</p>
+<!-- ── PROBLEM ── -->
+<section class="section section--off" aria-labelledby="problem-h2">
+  <div class="wrap">
+    <p class="kicker">Das Problem</p>
+    <h2 class="sh" id="problem-h2">21:47 Uhr. Ein Kunde schreibt. Sie schlafen bereits.</h2>
+    <p class="problem-intro">
+      Schweizer Handwerksbetriebe verlieren täglich Aufträge — nicht wegen schlechter Arbeit, sondern weil ausserhalb der Bürozeiten niemand antwortet. Wer als Erster reagiert, bekommt den Auftrag.
+    </p>
+    <div class="p-grid" role="list">
+      <div class="p-card" role="listitem">
+        <div class="p-card-icon" aria-hidden="true">📞</div>
+        <h3 class="p-card-title">Verpasste Anrufe</h3>
+        <p class="p-card-text">Wählt niemand ab, wählen Interessenten den nächsten Betrieb in der Liste — besonders abends und am Wochenende.</p>
+      </div>
+      <div class="p-card" role="listitem">
+        <div class="p-card-icon" aria-hidden="true">🗓️</div>
+        <h3 class="p-card-title">Stunden mit Terminen</h3>
+        <p class="p-card-text">Telefonieren, koordinieren, Rückfragen beantworten — täglich geht wertvolle Zeit verloren, die auf der Baustelle fehlt.</p>
+      </div>
+      <div class="p-card" role="listitem">
+        <div class="p-card-icon" aria-hidden="true">💸</div>
+        <h3 class="p-card-title">Kein Angebot, kein Auftrag</h3>
+        <p class="p-card-text">Jede unbeantwortete Anfrage ist Umsatz, der zur Konkurrenz geht. Bei CHF 1'500 Durchschnitt pro Job summiert sich das schnell.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <div class="phone">
-      <div class="phone-header">
-        <div class="phone-avatar">KD</div>
-        <div class="phone-contact">Kundenanfrage
-          <span>● Online</span>
+<!-- ── TIMELINE ── -->
+<section class="section" aria-labelledby="tl-h2">
+  <div class="wrap">
+    <p class="kicker">Arbeitstag 2026</p>
+    <h2 class="sh" id="tl-h2">So läuft ein Tag bei {{ firmenname }} — mit KI-Unterstützung</h2>
+    <p class="sl">Der Assistent arbeitet im Hintergrund, während Sie das tun, was Sie wirklich können: {{ gewerk }}.</p>
+    <div class="tl" role="list">
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true">1</div>
+        <p class="tl-time">07:15 Uhr</p>
+        <h3 class="tl-title">Morgen-Briefing ohne Chaos</h3>
+        <p class="tl-text">Sie starten in den Tag. Ihr Assistent hat über Nacht 3 Anfragen beantwortet, 1 Termin eingetragen und 2 Kunden mit Informationen versorgt.</p>
+        <span class="tl-badge">Automatisch erledigt</span>
+      </div>
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true">2</div>
+        <p class="tl-time">09:30 Uhr</p>
+        <h3 class="tl-title">Neukunde stellt Fragen</h3>
+        <p class="tl-text">Ein Interessent fragt auf der Website nach einem {{ typischer_auftrag }}. Der Assistent antwortet in Sekunden: Ablauf, Preisrahmen, nächste Schritte.</p>
+        <span class="tl-badge">24/7 erreichbar</span>
+      </div>
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true">3</div>
+        <p class="tl-time">11:00 Uhr</p>
+        <h3 class="tl-title">Sie sind auf der Baustelle</h3>
+        <p class="tl-text">Ihr Telefon klingelt nicht mit Rückfragen. Kunden bekommen Antworten im Chat, ohne dass Sie unterbrochen werden.</p>
+        <span class="tl-badge">Fokussiert arbeiten</span>
+      </div>
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true">4</div>
+        <p class="tl-time">13:45 Uhr</p>
+        <h3 class="tl-title">Termin direkt gebucht</h3>
+        <p class="tl-text">Ein Stammkunde braucht einen Folgetermin. Der Assistent koordiniert und bestätigt — ohne Rückfrage an Sie.</p>
+        <span class="tl-badge">Nahtlos integriert</span>
+      </div>
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true">5</div>
+        <p class="tl-time">17:30 Uhr</p>
+        <h3 class="tl-title">Feierabend — Assistent läuft weiter</h3>
+        <p class="tl-text">Sie schliessen den Betrieb. Der Assistent übernimmt: Anfragen beantworten, Infos senden, Dringliches für morgen markieren.</p>
+        <span class="tl-badge">Kein Auftrag geht verloren</span>
+      </div>
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true">6</div>
+        <p class="tl-time">21:47 Uhr</p>
+        <h3 class="tl-title">Die Anfrage, die früher verloren ging</h3>
+        <p class="tl-text">Ein Hausbesitzer entdeckt ein Problem. Er schreibt und bekommt sofort eine Antwort. Termin für morgen früh ist gebucht — während Sie schlafen.</p>
+        <span class="tl-badge">Wettbewerbsvorteil</span>
+      </div>
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true">7</div>
+        <p class="tl-time">Nächster Morgen</p>
+        <h3 class="tl-title">Vollständige Übersicht</h3>
+        <p class="tl-text">Sie sehen alle Gespräche, gebuchten Termine und offenen Anfragen — übersichtlich, kein Gespräch verpasst, kein Auftrag verloren.</p>
+        <span class="tl-badge">Volle Kontrolle</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NUTZEN ── -->
+<section class="section section--off" aria-labelledby="nutzen-h2">
+  <div class="wrap">
+    <p class="kicker">Was das bringt</p>
+    <h2 class="sh" id="nutzen-h2">Konkrete Zahlen für {{ firmenname }}</h2>
+    <p class="sl">Was Betriebe wie {{ firmenname }} nach 3 Monaten berichten:</p>
+    <div class="n-grid" role="list">
+      <div class="n-card" role="listitem">
+        <div class="n-num">+30%</div>
+        <div class="n-label">Mehr beantwortete Anfragen</div>
+        <p class="n-desc">Weil der Assistent auch nachts, am Wochenende und in der Mittagspause verfügbar ist.</p>
+      </div>
+      <div class="n-card" role="listitem">
+        <div class="n-num">−2 h</div>
+        <div class="n-label">Weniger Telefonaufwand täglich</div>
+        <p class="n-desc">Standardfragen werden automatisch beantwortet — Sie sprechen nur noch mit wirklich Interessierten.</p>
+      </div>
+      <div class="n-card" role="listitem">
+        <div class="n-num">24/7</div>
+        <div class="n-label">Erreichbarkeit</div>
+        <p class="n-desc">Kein Feiertag, kein Urlaub, keine Krankheit. Der Assistent schläft nicht.</p>
+      </div>
+      <div class="n-card" role="listitem">
+        <div class="n-num">48 h</div>
+        <div class="n-label">Bis zur Inbetriebnahme</div>
+        <p class="n-desc">Kein IT-Projekt, keine monatelange Implementierung. In 48 Stunden live.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EINWÄNDE / FAQ ── -->
+<section class="section" aria-labelledby="faq-h2">
+  <div class="wrap">
+    <p class="kicker">Häufige Fragen</p>
+    <h2 class="sh" id="faq-h2">Was {{ inhaber_name or firmenname }} vielleicht fragt</h2>
+    <p class="sl">Die ehrlichen Antworten — ohne Marketingsprache.</p>
+    <div class="faq" role="list">
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
+          <span>„Wir kommen doch gut zurecht. Brauchen wir das wirklich?"</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-body-inner">Viele erfolgreiche Betriebe denken so — bis der erste Mitbewerber in {{ region }} damit startet. Dann ist der Vorsprung weg. Die Frage ist nicht ob, sondern wer in der Region als Erster verfügbar ist.</p>
         </div>
       </div>
-      <div class="bubble-row">
-        <div class="bubble-time">21:47</div>
-        <div class="bubble customer">Guten Abend, ich bräuchte dringend ein Angebot für unsere Fassade. Wann hätten Sie Zeit für eine Besichtigung?</div>
-        <div class="bubble-time right" style="margin-top:6px">21:47 — Ihr Assistent</div>
-        <div class="bubble assistant">Guten Abend! Vielen Dank für Ihre Anfrage. Ich bin der digitale Assistent von {{ firmenname }}. Gerne helfe ich Ihnen weiter — darf ich kurz fragen: Um was für ein Objekt handelt es sich, und in welcher Region befinden Sie sich?</div>
-        <div class="bubble-time right" style="margin-top:6px">21:48 — Termin gebucht</div>
-        <div class="bubble assistant">Perfekt. Ich habe Donnerstag, 14. August um 10:00 Uhr für Sie reserviert. Sie erhalten gleich eine Bestätigung. Bis dann!</div>
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
+          <span>„Ist das nicht extrem aufwändig einzurichten?"</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-body-inner">Nein. Wir übernehmen alles: Einrichtung, Texte, Anpassung. Einzige Voraussetzung: 30 Minuten Ihrer Zeit für ein Gespräch, in dem wir den Assistenten auf {{ firmenname }} abstimmen.</p>
+        </div>
       </div>
-    </div>
-
-    <div class="vergleich">
-      <div class="v frueher">
-        <div class="v-tag">Früher</div>
-        <p>Sie sehen die Nachricht erst morgens um 7. Der Kunde hat bis dahin zwei weitere Offerten angefragt — und sich für den schnellsten entschieden.</p>
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
+          <span>„Was kostet das?"</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-body-inner">Das besprechen wir in einem kurzen Gespräch — je nach Betriebsgrösse und Anforderungen. Was wir sagen können: Die meisten Betriebe amortisieren die Kosten mit einem einzigen zusätzlichen Auftrag pro Monat.</p>
+        </div>
       </div>
-      <div class="v heute">
-        <div class="v-tag">Mit Ihrem Assistenten</div>
-        <p>Der Assistent antwortet in 8 Sekunden, klärt alle Details und bucht den Termin. Sie sehen es morgens früh — der Auftrag gehört Ihnen.</p>
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
+          <span>„Klingt nach einem unpersönlichen Roboter."</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-body-inner">Testen Sie es selbst — die Demo ist weiter unten auf dieser Seite. Der Assistent antwortet wie ein kompetenter Mitarbeiter: freundlich, informiert, auf Ihren Betrieb zugeschnitten. Kein „Ihre Anfrage wurde registriert."</p>
+        </div>
+      </div>
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
+          <span>„Was, wenn Kunden merken, dass es KI ist?"</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-body-inner">Kunden akzeptieren Chat-Assistenten heute selbstverständlich — solange sie nützlich sind und schnell antworten. Was zählt: Bekomme ich eine Antwort? Werde ich weitergeholfen? Beides liefert der Assistent zuverlässig.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DEMO -->
-<section class="demo" id="demo">
-  <div class="demo-label">Live-Demo</div>
-  <h2 class="demo-h2">So erlebt Ihr Kunde<br><span>Ihren Assistenten.</span></h2>
-  <p class="demo-sub">Testen Sie ihn jetzt — er ist bereits auf {{ firmenname }} eingestellt.</p>
-
-  <div class="chat-widget">
-    <div class="chat-header">
-      <div class="chat-header-avatar">{{ firmenname[0] }}</div>
-      <div class="chat-header-text">
-        <div class="chat-header-name">{{ firmenname }}</div>
-        <div class="chat-header-status">Online — Antwortet sofort</div>
+<!-- ── WER DAHINTER STEHT ── -->
+<section class="section section--off" aria-labelledby="wer-h2">
+  <div class="wrap">
+    <p class="kicker">Wer dahinter steht</p>
+    <h2 class="sh" id="wer-h2">Nicht irgendein Tech-Startup.</h2>
+    <div class="wer">
+      <div class="wer-text">
+        <p>
+          Ich bin <strong>{{ dein_name }}</strong>{% if deine_firma %} von <strong>{{ deine_firma }}</strong>{% endif %}. Wir bauen KI-Lösungen für Schweizer KMU — keine generischen Tools, sondern massgeschneiderte Assistenten, die zur Sprache und zum Betrieb passen.
+        </p>
+        <p>
+          Diese Seite wurde exklusiv für <strong>{{ firmenname }}</strong> erstellt. Ich habe mir Ihren Betrieb konkret angeschaut und bin überzeugt, dass ein Assistent hier echten Nutzen schafft.
+        </p>
+        <p>
+          Wenn Sie nach der Demo kein Interesse haben — kein Problem, kein Druck. Wenn Sie neugierig sind, freue ich mich auf das Gespräch.
+        </p>
+      </div>
+      <div class="wer-card" role="complementary" aria-label="Kontakt">
+        <p class="wer-name">{{ dein_name }}</p>
+        {% if deine_firma %}<p class="wer-firma">{{ deine_firma }}</p>{% endif %}
+        {% if kontakt %}
+        <div class="wer-row"><strong>Kontakt:</strong><span>{{ kontakt }}</span></div>
+        {% endif %}
+        {% if termin_link %}
+        <div style="margin-top:18px">
+          <a href="{{ termin_link }}" class="btn btn-p" style="font-size:.85rem;padding:10px 20px;min-height:44px" target="_blank" rel="noopener">Termin buchen →</a>
+        </div>
+        {% endif %}
       </div>
     </div>
-    <div class="chat-messages" id="chat-messages">
-      <div class="msg bot">Guten Tag! Ich bin der digitale Assistent von {{ firmenname }}. Wie kann ich Ihnen helfen?</div>
+  </div>
+</section>
+
+<!-- ── DEMO / CTA ── -->
+<section class="section" id="demo" aria-labelledby="demo-h2">
+  <div class="wrap">
+    <div class="cta-box">
+      <h2 class="cta-box-title" id="demo-h2">Ihr Assistent — live.</h2>
+      <p class="cta-box-sub">Das ist kein Dummy. Fragen Sie, was Sie wollen — genau so antwortet er für {{ firmenname }}.</p>
     </div>
-    <form class="chat-form" id="chat-form">
-      <input class="chat-input" type="text" id="chat-input" placeholder="Schreiben Sie uns…" autocomplete="off" maxlength="2000">
-      <button class="chat-send" type="submit" id="chat-send">Senden</button>
-    </form>
+
+    <div class="chat" role="region" aria-label="Live-Demo Chatbot">
+      <div class="chat-hd">
+        <div class="chat-hd-av" aria-hidden="true">{{ firmenname[0] | upper }}</div>
+        <div>
+          <div class="chat-hd-name">{{ firmenname }} — Assistent</div>
+          <div class="chat-hd-status">● Online · antwortet sofort</div>
+        </div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs" aria-live="polite" aria-label="Chat-Verlauf">
+        <div class="msg bot">Hallo! Ich bin der digitale Assistent von {{ firmenname }}. Wie kann ich Ihnen helfen?</div>
+      </div>
+      <form class="chat-form" onsubmit="sendMsg(event)" aria-label="Nachricht senden">
+        <label for="chatIn" class="sr-only">Nachricht eingeben</label>
+        <input id="chatIn" type="text" placeholder="Ihre Frage eingeben…" autocomplete="off">
+        <button type="submit" aria-label="Senden">→</button>
+      </form>
+    </div>
+
+    {% if termin_link %}
+    <div style="text-align:center;margin-top:36px">
+      <a href="{{ termin_link }}" class="btn btn-p" style="font-size:1rem;padding:16px 36px" target="_blank" rel="noopener">Kostenloses Erstgespräch buchen →</a>
+      <p style="margin-top:10px;font-size:.8rem;color:var(--sub)">30 Minuten · kostenlos · unverbindlich</p>
+    </div>
+    {% endif %}
   </div>
 </section>
 
-<!-- ZAHLEN -->
-<div class="zahlen">
-  <div class="z">
-    <div class="z-num">24/7</div>
-    <div class="z-label">Erreichbar</div>
-  </div>
-  <div class="z">
-    <div class="z-num">&lt; 30s</div>
-    <div class="z-label">Antwortzeit</div>
-  </div>
-  <div class="z">
-    <div class="z-num">0×</div>
-    <div class="z-label">Verpasste Anfragen</div>
-  </div>
-</div>
-
-<!-- CTA -->
-<section class="cta">
-  <div class="cta-inner">
-    <div class="cta-label">Nächster Schritt</div>
-    <h2 class="cta-h2">Bereit für das Gespräch?</h2>
-    <p class="cta-sub">In 15 Minuten zeigen wir Ihnen, wie der Assistent für {{ firmenname }} live geschaltet wird — ohne technische Kenntnisse, ohne neue Website.</p>
-    <a class="cta-btn" href="#demo">Termin vereinbaren</a>
-    <div class="cta-or">oder</div>
-    <button class="cta-chat-link" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Fragen Sie den Assistenten direkt</button>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <span>{{ firmenname }}</span>
-  <a href="https://amplifyr.ch" target="_blank" rel="noopener">Powered by Amplifyr</a>
+<!-- ── FOOTER ── -->
+<footer class="footer" role="contentinfo">
+  <p class="footer-text">
+    Diese Seite wurde exklusiv für {{ firmenname }} erstellt.{% if deine_firma %} · {{ deine_firma }}{% endif %}{% if kontakt %} · {{ kontakt }}{% endif %}
+  </p>
 </footer>
 
 <script>
-const CHAT_API = "{{ chat_api_url }}";
-const history = [];
-const messages = document.getElementById("chat-messages");
-const form = document.getElementById("chat-form");
-const input = document.getElementById("chat-input");
-const sendBtn = document.getElementById("chat-send");
+// FAQ
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-q').setAttribute('aria-expanded','false');
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+  }
+}
+
+// Chat
+const API_URL = "{{ chat_api_url }}";
+const SLUG = "{{ slug }}";
+const msgs = document.getElementById('chatMsgs');
 
 function addMsg(text, role) {
-  const d = document.createElement("div");
-  d.className = "msg " + role;
-  d.innerHTML = text;
-  messages.appendChild(d);
-  messages.scrollTop = messages.scrollHeight;
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
   return d;
 }
 
-form.addEventListener("submit", async function(e) {
+function addTyping() {
+  const d = document.createElement('div');
+  d.className = 'msg bot typing';
+  d.innerHTML = '<span></span><span></span><span></span>';
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+async function sendMsg(e) {
   e.preventDefault();
-  const msg = input.value.trim();
-  if (!msg) return;
-  addMsg(msg, "user");
-  history.push({ role: "user", content: msg });
-  input.value = "";
-  sendBtn.disabled = true;
-  const loading = addMsg("…", "bot");
+  const input = document.getElementById('chatIn');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addMsg(text, 'user');
+  const typing = addTyping();
   try {
-    const r = await fetch(CHAT_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: msg, history: history.slice(0, -1) })
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({message: text, betrieb_slug: SLUG})
     });
-    const d = await r.json();
-    const reply = d.reply || "Entschuldigung, bitte versuchen Sie es erneut.";
-    loading.innerHTML = reply;
-    history.push({ role: "assistant", content: reply });
+    const data = await res.json();
+    typing.remove();
+    addMsg(data.response || data.message || 'Danke für Ihre Nachricht!', 'bot');
   } catch {
-    loading.textContent = "Verbindungsfehler. Bitte versuchen Sie es erneut.";
-  } finally {
-    sendBtn.disabled = false;
-    input.focus();
+    typing.remove();
+    addMsg('Gerade nicht erreichbar — bitte versuchen Sie es nochmals.', 'bot');
   }
-});
+}
 </script>
 </body>
 </html>

@@ -56,6 +56,29 @@ async def _unique_slug(db: AsyncSession, base_slug: str, current_place_id: str) 
         counter += 1
 
 
+_AUFTRAG_MAP = {
+    "sanitär": "Rohrbruch oder Heizungsproblem",
+    "heizung": "Heizungsausfall",
+    "elektro": "Elektrostörung",
+    "maler": "Renovierungsauftrag",
+    "schreiner": "Möbel- oder Schreinerprojekt",
+    "dachdecker": "Dachreparatur",
+    "gipser": "Fassaden- oder Innenputzarbeit",
+    "garten": "Gartengestaltungsauftrag",
+    "fenster": "Fenster- oder Türenmontage",
+    "boden": "Bodenverlegearbeit",
+    "küche": "Kücheninstallation",
+}
+
+
+def _typischer_auftrag(branche: str) -> str:
+    b = (branche or "").lower()
+    for key, val in _AUFTRAG_MAP.items():
+        if key in b:
+            return val
+    return "typischen Kundenauftrag"
+
+
 def _render_template(context: dict) -> str:
     import os
     template_dir = os.path.join(os.path.dirname(__file__), "..", "templates")
@@ -118,6 +141,14 @@ async def run(job_id: int, place_id: Optional[str] = None):
                     "logo_url": b.logo_url or "",
                     "slug": slug,
                     "chat_api_url": settings.CHAT_API_URL,
+                    "inhaber_name": b.inhaber_name or "",
+                    "gewerk": b.branche or "Handwerk",
+                    "region": b.ort or b.kanton or "der Schweiz",
+                    "typischer_auftrag": _typischer_auftrag(b.branche),
+                    "termin_link": settings.TERMIN_LINK,
+                    "dein_name": settings.AMPLIFYR_NAME,
+                    "deine_firma": settings.AMPLIFYR_FIRMA,
+                    "kontakt": settings.AMPLIFYR_KONTAKT,
                 })
 
                 # Nach R2 hochladen
