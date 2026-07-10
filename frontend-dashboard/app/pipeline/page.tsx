@@ -80,7 +80,7 @@ function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
 export default function PipelinePage() {
   const [branche, setBranche] = useState("Maler");
   const [kanton, setKanton] = useState("");
-  const [maxPerSearch, setMaxPerSearch] = useState(0);
+  const [maxPerSearch, setMaxPerSearch] = useState<string>("");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(false);
@@ -120,7 +120,7 @@ export default function PipelinePage() {
     }
   };
 
-  const discoveryBody = { branche, kanton, max_per_search: maxPerSearch };
+  const discoveryBody = { branche, kanton, max_per_search: maxPerSearch === "" ? 0 : Number(maxPerSearch) };
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-8">
@@ -155,7 +155,7 @@ export default function PipelinePage() {
             <input
               type="number"
               value={maxPerSearch}
-              onChange={(e) => setMaxPerSearch(Number(e.target.value))}
+              onChange={(e) => setMaxPerSearch(e.target.value)}
               min={0}
               max={500}
               className="border border-gray-200 rounded px-3 py-2 text-sm w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
