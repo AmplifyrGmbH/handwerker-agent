@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from config import settings
 from database import AsyncSessionLocal
 from models import Betrieb, Job, Kontaktversuch
 from prompts.outreach_prompts import build_emails
@@ -27,7 +28,7 @@ async def _update_job(db: AsyncSession, job_id: int, **kwargs):
         await db.commit()
 
 
-async def run(job_id: int):
+async def run(job_id: int, final_step: bool = True):
     async with AsyncSessionLocal() as db:
         await _append_log(db, job_id, "Outreach gestartet...")
 
@@ -56,7 +57,14 @@ async def run(job_id: int):
                     continue
 
                 firmenname = b.name_anzeige or b.name
-                emails = build_emails(firmenname, b.landing_url)
+                emails = build_emails(
+                    firmenname=firmenname,
+                    landing_url=b.landing_url,
+                    inhaber_name=b.inhaber_name or "",
+                    gewerk=b.branche or "Handwerk",
+                    berater_name=settings.AMPLIFYR_NAME,
+                    kontakt=settings.AMPLIFYR_KONTAKT,
+                )
 
                 campaign_id = instantly_client.get_campaign_id(b.branche or "")
                 if not campaign_id:
@@ -110,8 +118,7 @@ async def run(job_id: int):
         await _append_log(db, job_id, f"Outreach abgeschlossen: {verarbeitet} kontaktiert, {fehler} Fehler.")
         await _update_job(
             db, job_id,
-            status="abgeschlossen",
+            **({"status": "abgeschlossen", "abgeschlossen_am": datetime.now(timezone.utc)} if final_step else {}),
             verarbeitet=verarbeitet,
             fehler=fehler,
-            abgeschlossen_am=datetime.now(timezone.utc),
         )

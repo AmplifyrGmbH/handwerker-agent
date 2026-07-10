@@ -1,55 +1,76 @@
 """
 E-Mail-Templates für den Outreach.
-Platzhalter-Texte — werden vor Go-Live mit finalen Inhalten ersetzt.
-Verfügbare Variablen: {firmenname}, {landing_url}
+Verfügbare Variablen: {firmenname}, {landing_url}, {inhaber_name}, {gewerk}, {berater_name}, {kontakt}
 """
 
-COLD_SUBJECT = "Für {firmenname} gebaut: Ihr digitaler Assistent für neue Aufträge"
+COLD_SUBJECT = "{firmenname} — Ihr Arbeitstag 2026"
 
 COLD_BODY = """\
-Guten Tag
+Guten Tag {inhaber_name}
 
-Wir haben etwas für {firmenname} gebaut — einen digitalen Assistenten, der Ihre Kundenanfragen rund um die Uhr beantwortet.
+Angebote abends auf dem Küchentisch, Rechnungen die irgendwo warten — ich kenne den Alltag im {gewerk}.
 
-Handwerksbetriebe verlieren täglich Aufträge, weil Anfragen zu spät oder gar nicht beantwortet werden. Unser Assistent fängt das auf: Er antwortet sofort, qualifiziert die Anfrage und leitet sie direkt an Sie weiter.
+Wir haben für {firmenname} eine kurze Seite gebaut, die zeigt, wie ein Arbeitstag 2026 aussehen könnte — von Auftrag bis Rechnung. Kein Produkt, nur eine Idee.
 
-Schauen Sie es sich an: {landing_url}
+Schauen Sie kurz rein:
+{landing_url}
 
-Gerne zeigen wir Ihnen in einem kurzen Gespräch, wie das konkret für {firmenname} aussehen würde.
+Falls Sie danach 20 Minuten Zeit haben, reden wir gerne — unverbindlich, kein Verkauf.
 
-Freundliche Grüsse
-Das Amplifyr-Team
+{berater_name}
+Amplifyr
+{kontakt}\
 """
 
-FOLLOWUP1_SUBJECT = "Re: Für {firmenname} gebaut: Ihr digitaler Assistent für neue Aufträge"
+FOLLOWUP1_SUBJECT = "Nochmals: {firmenname} — Ihr Arbeitstag 2026"
 
 FOLLOWUP1_BODY = """\
-Guten Tag
+Guten Tag {inhaber_name}
 
-Kurze Nachfrage zu meiner letzten Mail: Haben Sie die Landing Page für {firmenname} angeschaut? {landing_url}
+Kurze Erinnerung an meine letzte Mail — ich weiß, es ist viel los im {gewerk}.
 
-Ich würde gerne kurz mit Ihnen darüber sprechen — 15 Minuten reichen.
+Die Seite zeigt in wenigen Minuten, wie ein Arbeitstag aussehen könnte:
+{landing_url}
 
-Freundliche Grüsse
-Das Amplifyr-Team
+Hätten Sie danach Lust auf 20 Minuten Gespräch? Unverbindlich.
+
+{berater_name}
+Amplifyr\
 """
 
-FOLLOWUP2_SUBJECT = "Re: Für {firmenname} gebaut: Ihr digitaler Assistent für neue Aufträge"
+FOLLOWUP2_SUBJECT = "Letzte Nachricht: {firmenname}"
 
 FOLLOWUP2_BODY = """\
-Guten Tag
+Hallo {inhaber_name}
 
-Das ist meine letzte Mail zu diesem Thema.
+Letzte Nachricht von mir — versprochen.
 
-Falls Sie irgendwann Interesse an einem digitalen Assistenten für {firmenname} haben — wir sind unter info@amplifyr.ch erreichbar.
+Falls du noch einen Moment hast, schau kurz auf die Seite:
+{landing_url}
 
-Freundliche Grüsse
-Das Amplifyr-Team
+Danach gerne ein kurzes Gespräch, 20 Minuten, ganz ohne Druck. Hast du Interesse?
+
+{berater_name}
+Amplifyr\
 """
 
 
-def build_emails(firmenname: str, landing_url: str) -> dict:
-    ctx = {"firmenname": firmenname, "landing_url": landing_url}
+def build_emails(
+    firmenname: str,
+    landing_url: str,
+    inhaber_name: str = "",
+    gewerk: str = "Handwerk",
+    berater_name: str = "David Staub",
+    kontakt: str = "info@amplifyr.ch",
+) -> dict:
+    ctx = {
+        "firmenname": firmenname,
+        "landing_url": landing_url,
+        "inhaber_name": inhaber_name or "",
+        "gewerk": gewerk,
+        "berater_name": berater_name,
+        "kontakt": kontakt,
+    }
     return {
         "cold_subject": COLD_SUBJECT.format(**ctx),
         "cold_body": COLD_BODY.format(**ctx),

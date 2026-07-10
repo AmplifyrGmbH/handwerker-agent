@@ -88,7 +88,7 @@ def _render_template(context: dict) -> str:
     return template.render(**context)
 
 
-async def run(job_id: int, place_id: Optional[str] = None):
+async def run(job_id: int, place_id: Optional[str] = None, final_step: bool = True):
     async with AsyncSessionLocal() as db:
         await _append_log(db, job_id, "Landing-Page-Generierung gestartet...")
 
@@ -182,8 +182,7 @@ async def run(job_id: int, place_id: Optional[str] = None):
         await _append_log(db, job_id, f"Landing Pages abgeschlossen: {verarbeitet} OK, {fehler} Fehler.")
         await _update_job(
             db, job_id,
-            status="abgeschlossen",
+            **({"status": "abgeschlossen", "abgeschlossen_am": datetime.now(timezone.utc)} if final_step else {}),
             verarbeitet=verarbeitet,
             fehler=fehler,
-            abgeschlossen_am=datetime.now(timezone.utc),
         )

@@ -115,8 +115,8 @@ async def start_discovery_extraktion(req: DiscoveryRequest, db: AsyncSession = D
     job = await _create_job(db, "discovery+extraktion")
 
     async def _run():
-        await discovery.run(job.id, req.branche, req.kanton, req.max_per_search)
-        await extraktion.run(job.id)
+        await discovery.run(job.id, req.branche, req.kanton, req.max_per_search, final_step=False)
+        await extraktion.run(job.id, final_step=True)
 
     _start_task(job.id, _run())
     return {"job_id": job.id, "message": "Discovery + Extraktion gestartet"}
@@ -127,8 +127,8 @@ async def start_extraktion_landing(req: ExtraktionRequest, db: AsyncSession = De
     job = await _create_job(db, "extraktion+landing")
 
     async def _run():
-        await extraktion.run(job.id, req.place_id)
-        await landing_generator.run(job.id)
+        await extraktion.run(job.id, req.place_id, final_step=False)
+        await landing_generator.run(job.id, final_step=True)
 
     _start_task(job.id, _run())
     return {"job_id": job.id, "message": "Extraktion + Landing gestartet"}
@@ -146,10 +146,10 @@ async def start_full(req: FullRequest, db: AsyncSession = Depends(get_db)):
     async def _run():
         global _active_full_job_id
         try:
-            await discovery.run(job.id, req.branche, req.kanton, req.max_per_search)
-            await extraktion.run(job.id)
-            await landing_generator.run(job.id)
-            await outreach.run(job.id)
+            await discovery.run(job.id, req.branche, req.kanton, req.max_per_search, final_step=False)
+            await extraktion.run(job.id, final_step=False)
+            await landing_generator.run(job.id, final_step=False)
+            await outreach.run(job.id, final_step=True)
         finally:
             _active_full_job_id = None
 

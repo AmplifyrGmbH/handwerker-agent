@@ -38,7 +38,7 @@ def _extract_domain(url: str) -> Optional[str]:
     return None
 
 
-async def run(job_id: int, branche: str, kanton: str, max_per_search: int):
+async def run(job_id: int, branche: str, kanton: str, max_per_search: int, final_step: bool = True):
     async with AsyncSessionLocal() as db:
         await _append_log(db, job_id, f"Discovery gestartet: {branche}, Kanton={kanton or 'alle'}, max={max_per_search}")
 
@@ -145,8 +145,7 @@ async def run(job_id: int, branche: str, kanton: str, max_per_search: int):
         )
         await _update_job(
             db, job_id,
-            status="abgeschlossen",
+            **({"status": "abgeschlossen", "abgeschlossen_am": datetime.now(timezone.utc)} if final_step else {}),
             verarbeitet=inserted,
             fehler=skipped,
-            abgeschlossen_am=datetime.now(timezone.utc),
         )
