@@ -24,6 +24,10 @@ journalctl -u handwerker-backend -f
 - **User:** admin
 - **PW:** in Nginx htpasswd (`/etc/nginx/.htpasswd`)
 
+## Workflow-Regeln
+- Vor jedem `git push` und vor jedem Deployment auf den Server **immer zuerst den User fragen**
+- Nie selbstständig pushen oder deployen, auch wenn der User "mach das" sagt — kurz bestätigen lassen
+
 ## Deployment
 ```bash
 # Lokal:
