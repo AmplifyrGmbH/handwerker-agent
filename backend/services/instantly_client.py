@@ -10,15 +10,8 @@ def _headers() -> dict:
     return {"Authorization": f"Bearer {settings.INSTANTLY_KEY}", "Content-Type": "application/json"}
 
 
-def get_campaign_id(branche: str) -> str:
-    mapping = {
-        "Maler": settings.INSTANTLY_CAMPAIGN_ID_MALER,
-        "Elektriker": settings.INSTANTLY_CAMPAIGN_ID_ELEKTRIKER,
-        "Schreiner": settings.INSTANTLY_CAMPAIGN_ID_SCHREINER,
-        "Sanitär": settings.INSTANTLY_CAMPAIGN_ID_SANITAER,
-        "Dachdecker": settings.INSTANTLY_CAMPAIGN_ID_DACHDECKER,
-    }
-    return mapping.get(branche, "")
+def get_campaign_id(branche: str = "") -> str:
+    return settings.INSTANTLY_CAMPAIGN_ID
 
 
 def add_contact(

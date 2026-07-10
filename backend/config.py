@@ -16,11 +16,7 @@ class Settings(BaseSettings):
     R2_PUBLIC_URL: str = ""
 
     INSTANTLY_KEY: str = ""
-    INSTANTLY_CAMPAIGN_ID_MALER: str = ""
-    INSTANTLY_CAMPAIGN_ID_ELEKTRIKER: str = ""
-    INSTANTLY_CAMPAIGN_ID_SCHREINER: str = ""
-    INSTANTLY_CAMPAIGN_ID_SANITAER: str = ""
-    INSTANTLY_CAMPAIGN_ID_DACHDECKER: str = ""
+    INSTANTLY_CAMPAIGN_ID: str = ""
 
     LANDING_DOMAIN: str = "ihr-ki-agent.ch"
     CHAT_API_URL: str = "https://handwerker-api.amplifyr-digital.ch/api/v1/chat/message"
