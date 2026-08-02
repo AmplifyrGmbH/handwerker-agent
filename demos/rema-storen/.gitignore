@@ -1,0 +1,19 @@
+# Sicherungen und Zwischenstände gehören nicht ins Repository —
+# die Historie soll Git führen, nicht ein Ordner voller .bak-Dateien.
+*.bak
+*.bak_*
+*.bak2
+*.bak3
+*.bak4
+_archiv/
+__pycache__/
+
+# Arbeitsdatei: wird bei Bedarf aus auftragsfluss.html neu entpackt
+# ("$PY" _bundle_unpack.py extract auftragsfluss.html arbeit.html)
+arbeit.html
+arbeit_*.html
+
+# Screenshots und Messbilder aus den Prüfläufen
+shot_*.png
+screenshot_*.png
+REMA_Storen_Demo.zip
