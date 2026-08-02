@@ -12,7 +12,8 @@ import io, os, re, sys, json, subprocess
 
 PARENT = 'REMA_Storen_Demo_v3.html'
 BUNDLES = {'auftragsfluss.html': 'Ablauf', 'zahnrad-animation.html': 'Animation',
-           'werkzeugkasten.html': 'Werkzeugkasten'}
+           'Werkzeugwand.html': 'Werkzeugwand',
+           'Zeitstrahl.html': 'Zeitstrahl'}
 PARENTS = [PARENT, 'REMA_Storen_Demo_v4.html']   # v4 = die Fassung, die verschickt wird
 # Praefix eines gelben Kastens -> Zahnrad. 'Treuhand' ist die Finanzschicht:
 # nicht unsere Leistung und kein Produkt, sondern die Uebergabe an einen Dritten.

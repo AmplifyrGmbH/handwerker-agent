@@ -56,13 +56,13 @@ An **ihn** stellen, nie an die Treuhänderin — Kaltkontakt dort ist verboten.
 
 ---
 
-## Zwei Dinge, die wir intern entscheiden müssen — nicht er
+## Was wir intern entscheiden müssen — nicht er
 
 **KI-Telefonie: ja oder nein?**
 Die Demo sagt in Schritt 2: «Nach einem Sturm klingelt es dreissig Mal: der Assistent nimmt an, erfasst Objekt und Schaden und stellt echte Notfälle durch.» Das ist der überzeugendste einzelne Moment für einen Storenbauer — und es setzt voraus, dass wir es anbieten. Zwei interne Papiere widersprechen sich: das Auftragsfluss-Feedback liess die KI-Telefonie streichen, die Szenarienanalyse führt sie als festen Teil der Front-Schicht. **Bieten wir sie nicht an, muss der Satz raus**, und der Sturm wird zur Telefonie-Geschichte (Warteschleife, Ansage, Rückruf).
 
-**«Vier Sachen müssen laufen. Alle vier machen wir.»**
-Eines der vier Zahnräder ist die Treuhand — und die machen wir ausdrücklich **nicht**. Ein Betrieb mit Treuhänder sieht diesen Widerspruch sofort. Vorschlag aus Review 6.1: drei sichtbare Bereiche (IT, Handwerker-Software, Website), KI ausdrücklich in allen dreien, Support als Querschnitt, Treuhand extern. Betrifft auch den Werkzeugkasten, deshalb bisher nicht umgesetzt.
+**~~«Vier Sachen müssen laufen. Alle vier machen wir.»~~ — erledigt am 02.08.2026**
+Der Widerspruch (eines der vier Zahnräder war die Treuhand, die wir ausdrücklich **nicht** machen) ist aufgelöst: drei sichtbare Bereiche — IT, Handwerker-Software, Website —, die KI in allen dreien statt in einem eigenen Kästchen, der Support als Querschnitt, die Treuhand extern. Die Werkzeugwand trägt dieselbe Zählung («Bereich 1 von 3», Zange «über alle drei Bereiche hinweg»).
 
 ---
 

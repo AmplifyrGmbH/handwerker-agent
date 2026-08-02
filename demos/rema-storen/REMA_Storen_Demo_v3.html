@@ -319,9 +319,6 @@
     font-family:'Manrope',system-ui,sans-serif;font-size:.74rem;font-weight:800;letter-spacing:.09em;
     text-transform:uppercase;color:var(--ink2);text-align:center;line-height:1.3;white-space:nowrap}
   @media(max-width:820px){.role-arrow{transform:rotate(90deg)}.role-arrow em{display:none}}
-  .roles-foot{text-align:center;margin-top:28px;font-family:'Fraunces',Georgia,serif;font-size:clamp(1.1rem,2.3vw,1.4rem);color:var(--navy);max-width:60ch;margin-inline:auto;font-weight:600}
-  .roles-foot .rbridge{display:inline-block;margin-top:14px;font-family:'Manrope',system-ui,sans-serif;
-    font-size:.95rem;font-weight:700;color:var(--c-link)}
 
   /* ===== BAUSTEINE ===== */
   .keeps{margin-top:22px;max-width:680px;margin-inline:auto;background:var(--card);
@@ -414,8 +411,9 @@
   .sorglos b{display:block;color:var(--navy);font-size:.97rem;margin-bottom:3px}
   .phases{max-width:900px;margin:36px auto 0}
   .werkzeug-wrap{width:100vw;position:relative;left:50%;transform:translateX(-50%);display:flex;justify-content:center;margin:12px 0 0}
-  .werkzeug-iframe{width:100%;max-width:1900px;aspect-ratio:1600/822;border:none;display:block;border-radius:16px}
-  @media(max-width:640px){.werkzeug-iframe{aspect-ratio:640/838}}
+  /* Startwert, bis die Werkzeugwand ihre echte Hoehe meldet (siehe Skript unten) */
+  .werkzeug-iframe{width:100%;max-width:1900px;aspect-ratio:1600/865;border:none;display:block;border-radius:16px}
+  @media(max-width:640px){.werkzeug-iframe{aspect-ratio:390/1104}}
   .phlead{text-align:center}
   .phlead b{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.2rem,2.6vw,1.55rem);color:var(--navy)}
   .phlead span{display:block;margin-top:8px;color:var(--muted);font-size:.95rem}
@@ -509,7 +507,6 @@
     <div class="sec-head c reveal">
       <div class="eyebrow">Wofür setzen Sie Ihre Arbeitszeit ein?</div>
       <h2>Einen Teil ins Handwerk. Zu viel ins Büro.</h2>
-      <p>Sie sind den halben Tag beim Kunden. Das Büro wartet trotzdem — und es wartet nicht geduldig.</p>
     </div>
     <div class="roles">
       <div class="role-col reveal">
@@ -524,7 +521,6 @@
         <iframe src="zahnrad-animation.html" class="gear-iframe" title="Vier Systeme greifen ineinander — in der Mitte Sie und Ihr Team" loading="lazy" scrolling="no"></iframe>
       </div>
     </div>
-    <p class="roles-foot reveal">Die Büroarbeit verschwindet nicht, und wer sie bisher erledigt, wird nicht ersetzt — sie wartet nur nicht mehr auf Sie.<br><span class="rbridge">Wie das im Einzelnen aussieht? Nehmen wir einen Auftrag.</span></p>
   </div>
 </section>
 
@@ -548,7 +544,7 @@
 <section class="blocks" id="leistungen">
   <div class="wrap">
     <div class="sec-head c reveal">
-      <div class="eyebrow">Wer macht das alles? · Ihr digitaler Generalunternehmer</div>
+      <div class="eyebrow">Wer macht das alles?</div>
       <h2>Drei Sachen müssen laufen. Alle drei machen wir.</h2>
       <p>Wie am Bau: <b>der Generalunternehmer nimmt den ganzen Auftrag</b> und koordiniert die Unternehmer — der Bauherr hat eine Nummer, nicht sieben. Die KI steckt dabei in allen drei Bereichen, nicht in einem eigenen Kästchen. Genauso machen wir es mit Ihrer Technik. <b>Eigene Software verkaufen wir keine</b> — wir nehmen die Systeme, die es gibt, und stehen für das Ganze ein. Angefangen wird dort, wo es am meisten weh tut — <b>der Unterbau aus Geräten, Ablage und Telefon kommt im gleichen Angebot</b>, nicht irgendwann später. Angefangen wird beim Rapport — dort spüren Sie es in der ersten Woche; der Unterbau kommt direkt danach, und betrieben wird er von uns, nicht von Ihnen.</p>
     </div>
@@ -562,11 +558,11 @@
 
     <div class="phases reveal">
       <div class="phlead">
-        <b>So bauen wir das auf — Phase für Phase.</b>
+        <b>Wir sind Ihr digitaler Generalunternehmer.</b>
         <span>Tippen Sie ein Werkzeug an.</span>
       </div>
       <div class="werkzeug-wrap">
-        <iframe src="werkzeugkasten.html" class="werkzeug-iframe" title="Werkzeug wählen: welches Werkzeug steht für welche Phase" loading="lazy" scrolling="no"></iframe>
+        <iframe src="Werkzeugwand.html" class="werkzeug-iframe" title="Werkzeug wählen: drei Bereiche und der Support, der bei allen dreien greift" loading="lazy" scrolling="no"></iframe>
       </div>
     </div>
   </div>
@@ -704,12 +700,17 @@
   /* Werkzeugkasten: er meldet seine Hoehe — auf schmalen Schirmen folgen wir ihr,
      sonst gilt weiter das Seitenverhaeltnis des Bildes. */
   (function(){
+    var letzte = 0;
     window.addEventListener('message', function(e){
       if(!e.data || e.data.type!=='werkzeugwand-resize') return;
       var f=document.querySelector('.werkzeug-iframe');
-      if(!f) return;
-      if(window.innerWidth<=640){ f.style.aspectRatio='auto'; f.style.height=e.data.height+'px'; }
-      else { f.style.aspectRatio=''; f.style.height=''; }
+      if(!f || !e.data.height) return;
+      // Die gemeldete Hoehe gilt auf jeder Breite — exakt, sonst bleibt beim
+      // Auf- und Zuklappen ein paar Pixel Inhalt unter der Kante.
+      if(e.data.height === letzte) return;
+      letzte = e.data.height;
+      f.style.aspectRatio='auto';
+      f.style.height=e.data.height+'px';
     });
   })();
 

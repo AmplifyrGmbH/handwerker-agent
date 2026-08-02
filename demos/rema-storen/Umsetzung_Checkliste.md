@@ -839,6 +839,146 @@ Text 0 Fehler / 3 Hinweise · v3 und v4 im Browser ohne Befund · Höhe −2 px 
 
 ---
 
+## Teil W – C1 umgesetzt, Namensprüfung, Git (02.08.2026)
+
+### W1 – Drei Bereiche statt vier
+
+Der Widerspruch, den ein Betrieb mit Treuhänder in zwei Sekunden sieht («Alle vier machen wir», während eines der vier Zahnräder extern ist), ist aufgelöst. Umgesetzt nach Review 6.1, Punkt C1.
+
+| Wo | vorher | jetzt |
+|---|---|---|
+| Überschrift Leistungsteil (v3 + v4) | «Vier Sachen müssen laufen. Alle vier machen wir.» | «**Drei Sachen müssen laufen. Alle drei machen wir.**» |
+| Chips im Team-Block | IT · Handwerker-Software · **KI & Automatisierung** · Website | IT · Handwerker-Software · Website |
+| Team-Absatz | «Wir decken alle vier Bereiche ab — Technik, Aufträge, Telefon, Auftritt» | «alle drei Bereiche — Technik, Aufträge, Auftritt» |
+| Leistungs-Intro | — | neu: «**Die KI steckt dabei in allen drei Bereichen, nicht in einem eigenen Kästchen.**» — dieselbe Begründung, die der Ablauf schon verwendet |
+| Werkzeugkasten | Bereich 3 von 4 «KI & Automatisierung» (Akkuschrauber) | **aufgelöst.** Zwei seiner Beispiele sind in die Handwerker-Software gewandert («Rechnung noch am selben Abend», «Keine Zettel mehr abtippen»), das dritte war eine Dopplung der Offerte |
+| Werkzeugkasten, Zählung | 1–4 von 4 · «greift bei allen vier» · «Kein fünfter Bereich» · «Vier Bereiche · ein Ansprechpartner» | 1–3 von 3 · «bei allen drei» · «Kein vierter Bereich» · «Drei Bereiche · ein Ansprechpartner» |
+| Die vier Ausreden der Anbieter | Software · IT · Website · **Automatisierung** | Software · IT · Website · **Telefonanbieter** — es bleiben vier, weil es Anbieter sind und nicht unsere Bereiche |
+
+**Bewusst in Kauf genommen:** der Akkuschrauber ist auf dem Foto der Werkzeugwand weiter zu sehen, aber nicht mehr anklickbar. Die Alternative wäre ein neues Bild gewesen.
+
+### W2 – Der Name stimmt, aber es gibt einen anderen Fund
+
+**«Grüezi Herr Redza» ist richtig.** Das Handelsregister ZH führt **Emsat Redza** als Inhaber mit Einzelunterschrift, UID CHE-436.179.565 — passend zum Betreff des Feedback-Mails («Demo Emsat») und zur Facebook-Seite des Betriebs. Die Website selbst nennt keinen Personennamen.
+
+⚠️ **Dafür ein anderer Punkt, den wir prüfen müssen:** Wirtschaftsauskünfte führen den Betrieb inzwischen als **«REMA Redza Sonnenschutz» mit Sitz in Dietikon**, während die Website weiterhin «REMA Redza Storen & Rollladen, Dennlerstrasse 20, 8048 Zürich» zeigt. Die Demo übernimmt durchgehend die Website-Angaben — Firmenname, Adresse, «Familienbetrieb in Zürich». Stimmt die Registerangabe, ist die Betriebs-Karte veraltet, und ausgerechnet die Stelle, die Wiedererkennung erzeugen soll, wäre falsch. **Vor dem Versand im Handelsregister (zefix.ch) verifizieren.**
+
+### W3 – Aufgeräumt
+
+Fünf Sicherungen von gestern und heute nach `_archiv/backups/` verschoben (darunter `werkzeugkasten.html.bak_vor_bild` mit 3.5 MB), dazu `_build_gears.py` und `_screenshot.py` nach `_archiv/skripte-alt/` — beide gehören zu Bausteinen, die es nicht mehr gibt. Nichts gelöscht. Im Arbeitsordner liegen jetzt **15 Dateien, 1.4 MB**.
+
+### W4 – Git
+
+Der Ordner war nach rund dreissig Bearbeitungsrunden noch immer untracked; die `.bak`-Dateien waren die einzige Historie. Jetzt versioniert:
+
+- Stale `.git/index.lock` (0 Bytes, vom Vortag, kein laufender Prozess) entfernt.
+- `demos/rema-storen/.gitignore` hält `_archiv/`, alle `.bak*`, `arbeit*.html` und Prüf-Screenshots draussen.
+- **24 Dateien, 4'650 Zeilen** committet: beide Fassungen, die drei Bausteine, die vier Schriftdateien, die Bilder, die vier Skripte und die drei Dokumente.
+- **Nicht gepusht** — Projektregel. `main` ist einen Commit voraus.
+
+---
+
+## Teil X – Neue Werkzeugwand eingebettet (02.08.2026)
+
+Der Auftraggeber hat die Werkzeugwand überarbeitet und als eigene Datei geliefert (`Werkzeugwand.html`). Sie ersetzt `werkzeugkasten.html` in **beiden** Fassungen; gepflegt wird weiterhin nur eine Datei für beide.
+
+**Inhaltlich mitgebracht** — nichts davon musste nachgezogen werden: drei Bereiche statt vier (Zollstock = Handwerker-Software, Wasserwaage = IT, Kabeltrommel = Website), die Zange als Querschnitt mit eigenen Beispielen, «Ihr digitaler Generalunternehmer.» als Titel im Zangen-Feld, und der Vergleich «Bei drei Anbietern · 6 Telefonate · 4 Tage · Kunde weg» gegen «1 Anruf · 1 Zuständiger · erledigt». Prüflauf: keiner der 13 verbotenen Begriffe, keine Preise, keine Produktnamen.
+
+**Drei Dinge waren zu tun:**
+
+| # | Befund | Behandlung |
+|---|---|---|
+| X1 | 3.43 MB — davon 2'535 KB ein PNG im Manifest | Als JPEG (Q 82, progressiv) 260 KB, Datei **0.47 MB**. `"mime"` mitgeändert. Kein Alphakanal in Gebrauch, also kein Verlust |
+| X2 | Rahmenhöhe folgte der Meldung nur unter 640 px | Sie gilt jetzt **auf jeder Breite**; das `aspect-ratio` ist nur noch Startwert (auf `1600/910` bzw. `390/1104` korrigiert, sonst springt es beim Laden) |
+| X3 | Bildsäule war `width: min(1600px, 128vh)` | **Rückkopplung**: Rahmen richtet sich nach dem Inhalt, Inhalt nach der Rahmenhöhe. Auf dem Handy lief es auf 1'474 px hoch und zeigte statt der Wand einen Ausschnitt einer Wasserwaage. Breite jetzt an denselben Desktop/Handy-Schalter gehängt wie der Rest der Datei (`saeuleW` in `renderVals`) |
+| X4 | Auf breiten Schirmen wuchs die Wand mit und ragte unten aus dem Bild | Säule bei **1160 px absolut gedeckelt**, sonst `76vw`: je breiter das Fenster, desto mehr unscharfer Streifen statt eines grösseren Bildes. Ausgereizt — bei `80vw/1240px` passt es weder auf 1440×900 noch auf 1920×950 unter die Kopfzeile |
+| X5 | Auf dem Handy blieb ein leerer Bank-Streifen von gut 100 px | Die Bankhöhe wird aus dem Textfeld berechnet, das darauf steht — das gibt es nur auf dem Desktop, auf dem Handy blieb der Wert der ersten Messung liegen. `measureBench()` setzt sie dort jetzt ausdrücklich auf null |
+| X6 | Die drei Beispielzeilen im aufgeklappten Feld standen mit 13.5 px deutlich unter dem Einleitungssatz (bis 18 px) | Auf `clamp(14.5px, 1.2vw, 16.5px)` gehoben, Zeilenabstand 1.35 → 1.4. Der Abschnitt bleibt auf 1440×900 bei 778 px; nur auf 1280 px Breite wächst er auf 691 px, weil die drei Spalten dort mehr umbrechen |
+
+**Gemessen, in beiden Fassungen gleich:**
+
+| Fenster | scharfes Bild | unscharf je Seite | Rahmen | Inhalt | nach Klick auf die Zange |
+|---|---|---|---|---|---|
+| 1440×900 | 1094 | 173 | 778 | 778 | 778 / 778 |
+| 1920×950 | 1160 | 380 | 824 | 824 | 824 / 824 |
+| 390×844 | 1080 | — | 1104 | 1104 | 1551 / 1551 |
+
+Die Werte sind exakt die, die die Datei allein im Browser zeigt — eingebettet also unverändert. Das `aspect-ratio` als Startwert steht auf `1600/865`. Kein Überlauf, keine Konsolenfehler, **externe Hosts: keine** (`unpkg.com` steht nur als Asset-Kennung im Manifest, es wird nichts geladen).
+
+Aus derselben Runde, ausserhalb der Werkzeugwand: die beiden Absätze «Sie sind den halben Tag beim Kunden…» (unter der Überschrift «Einen Teil ins Handwerk. Zu viel ins Büro.») und «Die Büroarbeit verschwindet nicht…» samt Brückensatz «Was Ihnen das abnimmt, steht gleich darunter.» sind auf Wunsch des Auftraggebers in **beiden** Fassungen gestrichen, mitsamt den dadurch verwaisten CSS-Regeln `.roles-foot` und `.rbridge`.
+
+`_pruef.py` kennt jetzt `Werkzeugwand.html` statt `werkzeugkasten.html`. Die abgelöste Datei liegt unter `_archiv/backups/werkzeugkasten.html.abgeloest_02.08`, die unbearbeitete neue Fassung als `Werkzeugwand.html.original`.
+
+## Teil Y – Titel ans Bild gebunden, v4 ausgedünnt (02.08.2026)
+
+Ab hier wird **nur noch in `REMA_Storen_Demo_v4.html` gearbeitet** — v3 bleibt als ausführliche Gesprächsfassung stehen. Die beiden iframes teilen sich beide Fassungen weiterhin.
+
+### Y1 – «Wir sind Ihr digitaler Generalunternehmer.» über der Werkzeugwand
+
+Über der Wand stand «So bauen wir das auf — Phase für Phase.» — ein Rest aus der Zeit, als die Wand Phasen zeigte; sie zeigt drei Bereiche plus Zange. Ersetzt durch den Positionierungssatz, in **beiden** Fassungen. Die Augenbraue darüber hiess «Wer macht das alles? · Ihr digitaler Generalunternehmer» und wurde auf «Wer macht das alles?» gekürzt, sonst stand der Satz dreimal auf einem Bildschirm (Augenbraue, Titel, Zangen-Feld).
+
+**Der Titel wirkte nicht zum Bild gehörig** — er stand auf weissem Grund über einem dunklen Vollbild. Gelöst, indem der Grund der Wand nach oben gezogen wurde: `.werkzeug-wrap` ist jetzt ein dunkles Band (`#1A2744`, dieselbe Farbe wie die Textfelder in der Wand), das Titel, Hinweiszeile und Bild trägt; der Titel steht hell darauf. Das Bild läuft im Band bündig bis an beide Kanten (`border-radius:0`, kein seitlicher Innenabstand) — eine abgerundete Karte auf gleichfarbigem Grund liest sich als Fremdkörper.
+
+Grösse: `clamp(1.2rem, 2.6vw, 1.55rem)` → `clamp(1.5rem, 3.4vw, 2.15rem)`, also 25 → 34 px. Bewusst unter der Abschnitts-Überschrift (bis 2.6 rem).
+
+**Falle:** Die Breite des Titelkastens war zuerst in `ch` gesetzt. `ch` rechnet mit der Schrift **des Kastens** (16 px), nicht mit der des Titels darin (34 px) — der Titel brach dadurch auf drei Zeilen. Jetzt in px.
+
+### Y2 – Gestrichen (nur v4)
+
+| Weg | Umfang |
+|---|---|
+| Abschnitt «Der Kern in vier Sätzen / Was Ihnen abgenommen wird» | Vier Entlastungs-Karten, «Und Ihre Leute?», der Preis-Satz und **der zweite Anruf-Knopf**. In v3 gab es diesen Abschnitt nicht |
+| Kopf des Leistungsteils | Augenbraue «Wer macht das alles?», Überschrift «Drei Sachen müssen laufen. Alle drei machen wir.», der Generalunternehmer-Absatz und die zwei Garantie-Karten «Fertig ist, wenn Sie abnehmen» / «Was nicht läuft, ist unser Fehler» |
+
+Der Leistungsteil besteht damit nur noch aus dem dunklen Band mit Titel und Werkzeugwand. Seite: 6'219 → **5'754 px**. Ein Anruf-Knopf statt zwei.
+
+**Verloren gegangen und nirgends sonst gesagt:** die zwei Garantien. Der Generalunternehmer-Vergleich steht dagegen weiter im Zangen-Feld der Wand («Wie auf dem Bau: Sie reden mit einem, der Rest läuft im Hintergrund»), das Streichen war dort also Entdopplung.
+
+**Beim Aufräumen der verwaisten CSS-Regeln ist ein Fehler passiert:** Ein Regex-Sammellauf über `.entl|.ecard|.etag|.grenze|.leute|.weiter` hat zwei Regeln zerschnitten und dabei `.sorglos` beschädigt (`.ecard  .sorglos{…repeat(2,1gin:26px auto 0}`). Gefunden durch einen Selektor-Abgleich gegen `git show HEAD`, aus dem Git-Stand wiederhergestellt. **Lehre: CSS-Regeln einzeln und mit vollem Text entfernen, nie per Sammel-Regex, und danach immer die Selektorenliste gegen HEAD diffen.**
+
+---
+
+## Teil Z – Der Auftrag wird ein Zeitstrahl (02.08.2026)
+
+Der Auftraggeber hat in Claude Design mehrere Fassungen des Ablaufs entworfen und als `assets/Zeitstrahl Varianten (offline).html` abgelegt: vier Runden, sieben Entwürfe, dazu interne Notizen. Auf die Kundenseite gehört davon genau einer.
+
+**Gewählt: 3a**, der anklickbare Zeitstrahl in REMA-Farben. Die Schwesterfassung 4a ist dieselbe Grafik in Amplifyr-CI und trägt in der Datei selbst den Vermerk «für Unterlagen von uns; auf der Kundenseite bleibt REMA-Farbe richtig». Die Runden 1 und 2 sind ältere Ansätze.
+
+Daraus ist `Zeitstrahl.html` geworden — ein eigener Baustein wie die Werkzeugwand:
+
+| Schritt | Was |
+|---|---|
+| Zuschnitt | Nur der 3a-Abschnitt; die drei anderen Runden und die internen Notizen («Turn 3 · Zeitstrahl, anklickbar», die Marke «3a») sind raus. `id="3a"` → `id="zeitstrahl"`, weil ein CSS-Selektor nicht mit einer Ziffer beginnen darf |
+| Grund | `body{background:#f7f9fc}` → `transparent`, sonst gäbe es im iframe eine sichtbare Kante zum Papierton der Seite |
+| Handy | Der Entwurf war reiner Desktop: fünf Schritte nebeneinander liefen auf 390 px **210 px** über den Rand, die IT-Leiste mit `white-space:nowrap` nochmals **111 px**. Gelöst über eine Media-Query im Kopf (`.zs-steps`, `.zs-panel`, `.zs-rail`, `.zs-dot`, `.zs-bar`) — mit `!important`, weil die Datei durchgehend Inline-Styles benutzt |
+| Höhen-Sender | Neu angehängt, ausserhalb des Bundles, Muster wie `auftragsfluss.html`; meldet `zeitstrahl-resize` |
+
+**Zwei Anläufe beim Messen** — dieselbe Falle wie bei der Werkzeugwand, in zwei Varianten:
+
+1. `body.scrollHeight` meldete die **Fensterhöhe** (900 px statt 620 px Inhalt) → toter Weissraum unter der Grafik.
+2. Die Unterkante aller Nachfahren wuchs **endlos**: der Wurzelknoten des Bundles füllt die Fensterhöhe, im iframe ist die Fensterhöhe die Rahmenhöhe — Rahmen und Inhalt schaukelten sich hoch, Playwright meldete «element is not stable».
+
+Gemessen wird jetzt der **Inhalts-Abschnitt** (`document.querySelector('section')`). Merksatz für den nächsten Baustein: **im iframe nie etwas messen, dessen Höhe von der Fensterhöhe abhängt.**
+
+### Was in v4 dafür weggefallen ist
+
+Der ganze Abschnitt «Und an einem einzelnen Auftrag? / Von der Anfrage bis zum Geld.» — Kopf, die fünf Vergleichszeilen (heute ↔ bei Ihnen) und der Schlusssatz. Titel und Schlusssatz bringt der Zeitstrahl selbst mit. Sieben tote `.k*`-Regeln entfernt; diesmal als **geprüfter** Bereich (nur Selektoren, die mit `k` beginnen, Klammern ausgeglichen) statt per Sammel-Regex.
+
+**Inhaltlich verloren: die linke Spalte «Wie es oft läuft».** Der Zeitstrahl zeigt nur noch den Soll-Zustand — bewusst, laut Notiz in der Entwurfsdatei («keine Behauptungen über Ihren Betrieb»). Der Kontrast heute↔morgen steht damit in v4 nur noch in der Chaos-/Zahnrad-Grafik. In v3 gab es diesen Abschnitt nie; dort bleibt der zehnstufige Auftragsfluss.
+
+**Gemessen** (v4, alle drei iframes melden ihre Höhe, Rahmen = Inhalt auf den Pixel):
+
+| | Zeitstrahl | Werkzeugwand | Zahnrad | Seite |
+|---|---|---|---|---|
+| 1440×900 | 623 | 778 | 624 | 5'696 |
+| 390×844 | 1'355 | 1'104 | 334 | 7'756 |
+
+Kein Überlauf, keine Konsolenfehler, keine externen Hosts. `_pruef.py` kennt `Zeitstrahl.html` jetzt als vierten Baustein.
+
+---
+
+---
+
 ## Alle 61 Punkte
 
 ### Teil A – Das Grundproblem

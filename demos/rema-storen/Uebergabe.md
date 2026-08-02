@@ -75,7 +75,7 @@ Im `text/x-dc`-Script, direkt am Anfang (`const AREAS = {`), mit Kommentarblock 
 
 Die Ripple-Ringe stehen jetzt bei ihren eigenen Zahnraedern (`a3`/`a4` waren vertauscht), der Ring der Mitte ist entfernt, und `'a2'` ist aus der Lab-/Ring-Schleife in `renderVals()` heraus.
 
-Dieselbe Karte steckt in `zahnrad-animation.html` (`areas()` und `center.lines`) und ist mitgezogen. `werkzeugkasten.html` zeigt **nicht** diese Karte, sondern unser Leistungsportfolio (vier Bereiche, ohne bexio) — dort ist «KI & Automatisierung» absichtlich stehen geblieben, siehe `Umsetzung_Checkliste.md`, Teil H.
+Dieselbe Karte steckt in `zahnrad-animation.html` (`areas()` und `center.lines`) und ist mitgezogen. `Werkzeugwand.html` zeigt **nicht** diese Karte, sondern unser Leistungsportfolio — seit Review 6.1 drei Bereiche (Handwerker-Software, IT, Website) plus die Zange als Querschnitt; «KI & Automatisierung» ist als eigener Bereich aufgeloest, die KI steckt in allen dreien.
 
 ## 5. Höhen-Sender — fertig, nicht anfassen
 
@@ -89,6 +89,12 @@ Dieselbe Karte steckt in `zahnrad-animation.html` (`areas()` und `center.lines`)
 - Der `ResizeObserver` hängt sich neu an, weil der Bootstrap das `document` ersetzt (`seenBody`-Vergleich). Der IIFE selbst überlebt, weil er an `window` hängt.
 - Elternseite bleibt unverändert; `.flow-iframe{height:1500px}` ist nur noch Fallback, `scrolling="no"` bleibt.
 - Nach jeder Textänderung prüfen: `"$PY" _test_hoehe.py` — Überhang muss ≤ 0 bleiben.
+
+**Die Werkzeugwand hat einen eigenen, einfacheren Sender** (`werkzeugwand-resize`, `document.body.scrollHeight`, in der Komponente selbst). Die Elternseite folgt ihm **auf jeder Breite** — bis 01.08. nur unter 640 px, darüber galt ein festes Seitenverhältnis. Das `aspect-ratio` im CSS ist seither nur noch Startwert, bis die erste Meldung eintrifft.
+
+**Die Falle dabei:** Eine Seite, die ihre Höhe selbst meldet, darf sich nicht nach der Fensterhöhe bemessen — sonst jagen sich Rahmen und Inhalt. Genau das passierte: die Bildsäule war `width: min(1600px, 128vh)`, der Rahmen wuchs, damit `vh`, damit das Bild, damit der Inhalt. Auf dem Handy lief es bis 1'474 px hoch und zeigte statt der Wand einen Ausschnitt einer einzelnen Wasserwaage. Die Breite steht jetzt als `saeuleW` in `renderVals()` und haengt am selben Desktop/Handy-Schalter wie der Rest: `min(1160px, 76vw)` bzw. `1080px`. **In allen drei iframes gilt: keine `vh`-Einheit, kein `100vh`.**
+
+Der **absolute Deckel von 1160 px** ist kein Schoenheitswert: ohne ihn waechst die Wand mit der Fensterbreite mit und ragt auf einem breiten, flachen Schirm unten aus dem Bild. Ausgereizt ist er auch — bei `80vw/1240px` passt der Abschnitt weder auf 1440×900 noch auf 1920×950 unter die Kopfzeile. Wer daran dreht, misst nach: Abschnittshoehe + 85 px Kopfzeile muss unter die Fensterhoehe passen.
 
 ## 6. Tag-Regeln (harte Regeln, maschinell prüfbar)
 
@@ -162,14 +168,14 @@ Diese lassen sich erst schliessen, wenn alle neun Schritte durch sind:
 
 ## 9. Bereits abgeschlossen — nicht neu aufrollen
 
-- **Konsistenz ausserhalb des Auftragsflusses: nichts zu ändern.** Sichtbarer Text von `werkzeugkasten.html`, `zahnrad-animation.html` und der Elternseite enthält keine KI-Telefonie, kein Meisterwerk, keine Preise, keine Chatbot-Tag-Sprache.
-- Die drei `CHF`-Treffer in `werkzeugkasten.html` sind **Fehlalarme in base64-Asset-Daten**, kein sichtbarer Text. Immer auf dem entpackten Template prüfen, nicht auf der Rohdatei.
+- **Konsistenz ausserhalb des Auftragsflusses: nichts zu ändern.** Sichtbarer Text von `Werkzeugwand.html`, `zahnrad-animation.html` und der Elternseite enthält keine KI-Telefonie, kein Meisterwerk, keine Preise, keine Chatbot-Tag-Sprache.
+- Die `CHF`-Treffer in `Werkzeugwand.html` sind **Fehlalarme in base64-Asset-Daten**, kein sichtbarer Text. Immer auf dem entpackten Template prüfen, nicht auf der Rohdatei.
 - `betriebs-section.html` wird nirgends eingebunden — verwaiste Datei, ignorieren.
 - Kein Build-Skript für den Ablauf; `_build_gears.py` betrifft nur die SVG-Zahnräder der anderen Section.
 
 ## 9b. Zwei Fassungen — v3 und v4
 
-Seit dem 01.08.2026 gibt es die Demo zweimal. **Beide nutzen dieselben drei iframes** (`auftragsfluss.html`, `zahnrad-animation.html`, `werkzeugkasten.html`) — Inhalt wird also nur einmal gepflegt. Unterschiedlich ist nur die Elternseite.
+Seit dem 01.08.2026 gibt es die Demo zweimal. **Beide nutzen dieselben drei iframes** (`auftragsfluss.html`, `zahnrad-animation.html`, `Werkzeugwand.html`) — Inhalt wird also nur einmal gepflegt. Unterschiedlich ist nur die Elternseite.
 
 | | `REMA_Storen_Demo_v3.html` | `REMA_Storen_Demo_v4.html` |
 |---|---|---|
@@ -214,6 +220,8 @@ Zum Nachziehen (andere Schnitte, andere Familie): CSS mit einem modernen Browser
 Der Werkzeugkasten wog **3.49 MB** — davon 3'442 KB ein einziges PNG im Bundle-Manifest. Als JPEG (Qualität 82, progressiv) sind es **244 KB**; die Datei liegt jetzt bei **0.45 MB**. Der Alphakanal war durchgehend 255, es ging also nichts verloren.
 
 Im Manifest steht der Typ mit dabei (`"mime":"image/jpeg"`), er muss beim Austausch **mitgeändert** werden — der Bundler baut die Data-URL daraus. Sicherung: `werkzeugkasten.html.bak_vor_bild`.
+
+**Am 02.08.2026 durch eine neue Fassung des Auftraggebers ersetzt: `Werkzeugwand.html`.** Dieselbe Rechnung noch einmal — 2'535 KB PNG im Manifest, als JPEG (Qualitaet 82) 260 KB, Datei von 3.43 MB auf 0.47 MB. Der alte `werkzeugkasten.html` liegt unter `_archiv/backups/werkzeugkasten.html.abgeloest_02.08`, die unbearbeitete neue Fassung als `Werkzeugwand.html.original`.
 
 ## 10. Prüflauf vor Abgabe
 
