@@ -134,7 +134,7 @@ function LeadCard({
         </button>
 
         {/* Name + Telefon */}
-        <div className="shrink-0 w-44">
+        <div className="shrink-0 w-64">
           <Link
             href={`/betriebe/${betrieb.place_id}`}
             className="font-medium text-gray-900 hover:text-blue-600 text-sm leading-tight block"
@@ -303,7 +303,7 @@ export default function ColdCallPage() {
   }, [items, search]);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-5">Cold Calling</h1>
 
       {/* Quick-Filter */}
