@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import AsyncSessionLocal
 from models import Betrieb, Job
-from services import gemini_client, r2_client, screenshot_client
+from services import gemini_client, r2_client
 
 logger = logging.getLogger(__name__)
 
@@ -198,26 +198,11 @@ async def _process_betrieb_inner(db: AsyncSession, betrieb: Betrieb, job_id: int
                 key = f"handwerker/{place_id}/logo.{ext}"
                 logo_url_r2 = r2_client.upload_bytes(logo_bytes, key, logo_mime)
                 hat_logo = True
-
-                # Farbe aus Logo
-                info = gemini_client.extract_logo_info(logo_bytes, logo_mime)
-                farbe_primary = info.get("color")
             except Exception as e:
                 logger.warning("Logo-Fehler für %s: %s", place_id, e)
 
-        # Primärfarbe — Fallback CSS
-        if not farbe_primary:
-            farbe_primary = _extract_color_from_css(all_html)
-
-        # Primärfarbe — Fallback Screenshot
-        if not farbe_primary:
-            try:
-                screenshot_bytes = await screenshot_client.take_screenshot(base_url)
-                key = f"handwerker/{place_id}/screenshot.jpg"
-                r2_client.upload_bytes(screenshot_bytes, key, "image/jpeg")
-                farbe_primary = gemini_client.extract_primary_color(screenshot_bytes)
-            except Exception as e:
-                logger.warning("Screenshot-Fehler für %s: %s", place_id, e)
+        # Primärfarbe — nur CSS (kostenlos, kein Gemini)
+        farbe_primary = _extract_color_from_css(all_html)
 
         # E-Mail
         email = _extract_email(all_html)

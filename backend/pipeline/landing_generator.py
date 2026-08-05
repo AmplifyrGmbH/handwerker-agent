@@ -3,6 +3,7 @@ import re
 from datetime import datetime, timezone
 from typing import Optional
 
+import httpx
 from jinja2 import Environment, FileSystemLoader
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config import settings
 from database import AsyncSessionLocal
 from models import Betrieb, Job
-from services import gemini_client, r2_client
+from services import gemini_client, r2_client, screenshot_client
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +121,29 @@ async def run(job_id: int, place_id: Optional[str] = None, final_step: bool = Tr
                 ort = b.ort or ""
                 base_slug = _slugify(f"{firmenname}-{ort}")
                 slug = await _unique_slug(db, base_slug, b.place_id)
+
+                # Primärfarbe per Gemini falls noch nicht vorhanden
+                if not b.farbe_primary:
+                    if b.logo_url:
+                        try:
+                            async with httpx.AsyncClient(timeout=10) as http:
+                                logo_resp = await http.get(b.logo_url)
+                                logo_bytes = logo_resp.content
+                            ext = b.logo_url.rsplit(".", 1)[-1].lower().split("?")[0]
+                            mime_map = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "svg": "image/svg+xml", "webp": "image/webp", "gif": "image/gif"}
+                            logo_mime = mime_map.get(ext, "image/png")
+                            info = gemini_client.extract_logo_info(logo_bytes, logo_mime)
+                            b.farbe_primary = info.get("color")
+                        except Exception as e:
+                            logger.warning("Farbe aus Logo fehlgeschlagen für %s: %s", b.place_id, e)
+                    if not b.farbe_primary and b.website_url:
+                        try:
+                            screenshot_bytes = await screenshot_client.take_screenshot(b.website_url)
+                            b.farbe_primary = gemini_client.extract_primary_color(screenshot_bytes)
+                        except Exception as e:
+                            logger.warning("Farbe aus Screenshot fehlgeschlagen für %s: %s", b.place_id, e)
+                    if b.farbe_primary:
+                        await db.commit()
 
                 # Einleitung generieren
                 einleitung = ""
