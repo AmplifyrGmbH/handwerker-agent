@@ -4,54 +4,23 @@ import { useState, useEffect, useRef } from "react";
 import { apiFetch, wsUrl } from "@/lib/api";
 import { Job, BRANCHEN } from "@/types";
 
-const STATUS_COLORS = {
+const JOB_STATUS_COLORS: Record<string, string> = {
   laufend: "bg-yellow-100 text-yellow-800",
   abgeschlossen: "bg-green-100 text-green-800",
   fehler: "bg-red-100 text-red-800",
 };
 
-function JobRow({ job, onSelect }: { job: Job; onSelect: (j: Job) => void }) {
-  const color = STATUS_COLORS[job.status] || "bg-gray-100 text-gray-700";
-  return (
-    <tr
-      className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
-      onClick={() => onSelect(job)}
-    >
-      <td className="px-4 py-3 text-sm font-mono text-gray-500">#{job.id}</td>
-      <td className="px-4 py-3 text-sm">{job.typ}</td>
-      <td className="px-4 py-3">
-        <span className={`text-xs font-medium px-2 py-1 rounded-full ${color}`}>{job.status}</span>
-      </td>
-      <td className="px-4 py-3 text-sm text-gray-600">
-        {job.total != null ? `${job.verarbeitet}/${job.total}` : "—"}
-      </td>
-      <td className="px-4 py-3 text-sm text-red-500">{job.fehler > 0 ? job.fehler : "—"}</td>
-      <td className="px-4 py-3 text-sm text-gray-400">
-        {job.gestartet_am ? new Date(job.gestartet_am).toLocaleString("de-CH") : "—"}
-      </td>
-    </tr>
-  );
-}
-
 function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
   const [liveJob, setLiveJob] = useState<Job>(job);
-  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    if (job.status === "laufend") {
-      const ws = new WebSocket(wsUrl(`/api/v1/pipeline/ws/jobs/${job.id}`));
-      wsRef.current = ws;
-      ws.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        setLiveJob(data);
-      };
-      return () => ws.close();
-    } else {
-      setLiveJob(job);
-    }
+    if (job.status !== "laufend") { setLiveJob(job); return; }
+    const ws = new WebSocket(wsUrl(`/api/v1/pipeline/ws/jobs/${job.id}`));
+    ws.onmessage = (e) => setLiveJob(JSON.parse(e.data));
+    return () => ws.close();
   }, [job]);
 
-  const color = STATUS_COLORS[liveJob.status] || "bg-gray-100 text-gray-700";
+  const color = JOB_STATUS_COLORS[liveJob.status] || "bg-gray-100 text-gray-700";
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -61,7 +30,7 @@ function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
             <span className="font-semibold">Job #{liveJob.id} — {liveJob.typ}</span>
             <span className={`text-xs font-medium px-2 py-1 rounded-full ${color}`}>{liveJob.status}</span>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl">×</button>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl leading-none">×</button>
         </div>
         <div className="px-6 py-3 flex gap-6 text-sm text-gray-600 border-b border-gray-100">
           <span>Verarbeitet: <strong>{liveJob.verarbeitet}</strong>{liveJob.total != null && `/${liveJob.total}`}</span>
@@ -90,27 +59,25 @@ export default function PipelinePage() {
     try {
       const data = await apiFetch<Job[]>("/api/v1/pipeline/jobs");
       setJobs(data);
-    } catch {
-      /* ignore */
-    }
+    } catch { /* ignore */ }
   };
 
   useEffect(() => {
     loadJobs();
-    const interval = setInterval(loadJobs, 5000);
-    return () => clearInterval(interval);
+    const iv = setInterval(loadJobs, 5000);
+    return () => clearInterval(iv);
   }, []);
 
-  const startJob = async (endpoint: string, body: object) => {
+  const start = async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await apiFetch<{ job_id: number; message: string }>(endpoint, {
+      const body = { branche, kanton, max_per_search: maxPerSearch === "" ? 0 : Number(maxPerSearch) };
+      const res = await apiFetch<{ job_id: number }>("/api/v1/pipeline/full/start", {
         method: "POST",
         body: JSON.stringify(body),
       });
       await loadJobs();
-      // Open the new job automatically
       const job = await apiFetch<Job>(`/api/v1/pipeline/jobs/${res.job_id}`);
       setSelectedJob(job);
     } catch (e: unknown) {
@@ -120,15 +87,13 @@ export default function PipelinePage() {
     }
   };
 
-  const discoveryBody = { branche, kanton, max_per_search: maxPerSearch === "" ? 0 : Number(maxPerSearch) };
-
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="max-w-4xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-8">Pipeline</h1>
 
-      {/* Controls */}
+      {/* Start */}
       <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <h2 className="font-semibold mb-4">Neuen Job starten</h2>
+        <h2 className="font-semibold mb-4 text-gray-700">Discovery + Extraktion starten</h2>
         <div className="flex flex-wrap gap-4 mb-6">
           <div>
             <label className="block text-xs text-gray-500 mb-1">Branche</label>
@@ -162,49 +127,17 @@ export default function PipelinePage() {
             />
           </div>
         </div>
-
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        <div className="flex flex-wrap gap-3">
-          <button
-            disabled={loading}
-            onClick={() => startJob("/api/v1/pipeline/discovery/start", discoveryBody)}
-            className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-          >
-            Discovery
-          </button>
-          <button
-            disabled={loading}
-            onClick={() => startJob("/api/v1/pipeline/extraktion/start", {})}
-            className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-          >
-            Extraktion
-          </button>
-          <button
-            disabled={loading}
-            onClick={() => startJob("/api/v1/pipeline/landing/start", {})}
-            className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-          >
-            Landing Pages
-          </button>
-          <button
-            disabled={loading}
-            onClick={() => startJob("/api/v1/pipeline/outreach/start", {})}
-            className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-          >
-            Outreach
-          </button>
-          <button
-            disabled={loading}
-            onClick={() => startJob("/api/v1/pipeline/full/start", discoveryBody)}
-            className="bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-black disabled:opacity-50"
-          >
-            Alles starten
-          </button>
-        </div>
+        <button
+          disabled={loading}
+          onClick={start}
+          className="bg-gray-900 text-white px-6 py-2.5 rounded-lg hover:bg-black disabled:opacity-50 font-medium"
+        >
+          {loading ? "Startet…" : "Starten"}
+        </button>
       </div>
 
-      {/* Job list */}
+      {/* Job-Liste */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="font-semibold">Letzte Jobs</h2>
@@ -224,21 +157,35 @@ export default function PipelinePage() {
             </thead>
             <tbody>
               {jobs.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-400">Keine Jobs vorhanden</td>
-                </tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-400">Keine Jobs vorhanden</td></tr>
               )}
-              {jobs.map((j) => (
-                <JobRow key={j.id} job={j} onSelect={setSelectedJob} />
-              ))}
+              {jobs.map((j) => {
+                const color = JOB_STATUS_COLORS[j.status] || "bg-gray-100 text-gray-700";
+                return (
+                  <tr
+                    key={j.id}
+                    className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => setSelectedJob(j)}
+                  >
+                    <td className="px-4 py-3 text-sm font-mono text-gray-500">#{j.id}</td>
+                    <td className="px-4 py-3 text-sm">{j.typ}</td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${color}`}>{j.status}</span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{j.total != null ? `${j.verarbeitet}/${j.total}` : "—"}</td>
+                    <td className="px-4 py-3 text-sm text-red-500">{j.fehler > 0 ? j.fehler : "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-400">
+                      {j.gestartet_am ? new Date(j.gestartet_am).toLocaleString("de-CH") : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
 
-      {selectedJob && (
-        <JobDetail job={selectedJob} onClose={() => setSelectedJob(null)} />
-      )}
+      {selectedJob && <JobDetail job={selectedJob} onClose={() => setSelectedJob(null)} />}
     </div>
   );
 }
