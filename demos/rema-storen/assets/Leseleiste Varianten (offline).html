@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<title>Leseleiste — drei Fassungen zum Aussuchen</title>
+<!-- Werkstattdatei, gehoert nicht in die Demo. Zeigt die drei Fassungen der
+     Leseleiste nebeneinander, auf beiden Hintergruenden der Seite. Schriften
+     und Farben sind dieselben Tokens wie in REMA_Storen_Demo_v4.html. -->
+<style>
+@font-face{font-family:'Manrope';font-style:normal;font-weight:400;font-display:swap;
+  src:url('assets/fonts/manrope-4.woff2') format('woff2')}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:600;font-display:swap;
+  src:url('assets/fonts/manrope-4.woff2') format('woff2')}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:700;font-display:swap;
+  src:url('assets/fonts/manrope-4.woff2') format('woff2')}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:800;font-display:swap;
+  src:url('assets/fonts/manrope-4.woff2') format('woff2')}
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:600;font-display:swap;
+  src:url('assets/fonts/fraunces-2.woff2') format('woff2')}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:#fff;color:#16203a}
+.zeile{display:grid;grid-template-columns:repeat(4,1fr)}
+.feld{padding:28px 20px 32px;min-height:330px;display:flex;flex-direction:column;align-items:flex-end}
+.feld.hell{background:#eef2f9}
+.kopf{width:100%;text-align:left;font-size:.75rem;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:#1A2744;margin-bottom:20px}
+.kopf small{display:block;margin-top:4px;font-weight:600;letter-spacing:0;text-transform:none;
+  font-size:.75rem;color:#6f7890}
+
+/* ============ HEUTE ============ */
+.v0 ol{list-style:none;position:relative}
+.v0 ol::before,.v0 ol::after{content:"";position:absolute;right:4px;top:14px;width:1.5px;border-radius:1px}
+.v0 ol::before{bottom:14px;background:#d7dfec}
+.v0 ol::after{height:56px;background:#1A2744}
+.v0 a{display:grid;grid-template-columns:1fr 9px;align-items:center;gap:12px;height:28px;text-decoration:none}
+.v0 a span{font-size:.75rem;line-height:1.3;text-align:right;color:#6f7890;white-space:nowrap;opacity:.62}
+.v0 a i{width:9px;height:9px;border-radius:50%;background:#fff;border:1.5px solid #B0C4DE}
+.v0 a[aria-current] span{opacity:1;color:#1A2744;font-weight:800}
+.v0 a[aria-current] i{background:#1A2744;border-color:#1A2744;transform:scale(1.25)}
+
+/* ============ A · KRAEFTIG ============ */
+.vA ol{list-style:none;position:relative}
+.vA ol::before,.vA ol::after{content:"";position:absolute;right:5px;top:18px;width:2px;border-radius:2px}
+.vA ol::before{bottom:18px;background:#d3dcea}
+.vA ol::after{height:72px;background:#1A2744}
+.vA a{display:grid;grid-template-columns:1fr 12px;align-items:center;gap:14px;height:36px;text-decoration:none}
+.vA a span{font-size:.875rem;line-height:1.3;text-align:right;color:#6b7488;font-weight:600;
+  white-space:nowrap;transition:.2s}
+.vA a i{width:10px;height:10px;margin-left:1px;border-radius:50%;background:#fff;
+  border:2px solid #B0C4DE;transition:.2s}
+.vA a:hover span{color:#1A2744}
+.vA a[aria-current] span{color:#1A2744;font-weight:800}
+.vA a[aria-current] i{background:#1A2744;border-color:#1A2744;transform:scale(1.2)}
+
+/* ============ B · NUR DER AKTIVE SPRICHT ============ */
+/* Kein durchgehender Strich: die Striche selbst sind der Fortschritt —
+   zurueckgelegt dunkel, kommend hell. */
+.vB ol{list-style:none}
+.vB a{display:grid;grid-template-columns:1fr 36px;align-items:center;gap:14px;height:34px;text-decoration:none}
+.vB a span{font-size:1rem;line-height:1.3;text-align:right;color:#1A2744;font-weight:800;
+  white-space:nowrap;opacity:0;transform:translateX(6px);transition:.25s}
+.vB a i{height:2px;width:20px;border-radius:2px;background:#c9d3e3;justify-self:end;transition:.25s}
+.vB a.vor i{background:#1A2744;opacity:.42}
+.vB a:hover span{opacity:.55;transform:none;font-size:.875rem;font-weight:700}
+.vB a:hover i{width:28px;background:#1A2744}
+.vB a[aria-current] span{opacity:1;transform:none}
+.vB a[aria-current] i{width:36px;background:#1A2744;height:3px}
+
+/* ============ C · ALS KARTE ============ */
+.vC .karte{background:#fff;border:1px solid #e4e9f2;border-radius:18px;padding:16px 18px;
+  box-shadow:0 14px 38px -30px rgba(26,39,68,.5)}
+.vC ol{list-style:none;position:relative}
+.vC ol::before,.vC ol::after{content:"";position:absolute;right:5px;top:18px;width:2px;border-radius:2px}
+.vC ol::before{bottom:18px;background:#e0e7f2}
+.vC ol::after{height:72px;background:#1A2744}
+.vC a{display:grid;grid-template-columns:1fr 12px;align-items:center;gap:14px;height:36px;text-decoration:none}
+.vC a span{font-size:.875rem;line-height:1.3;text-align:right;color:#6b7488;font-weight:600;white-space:nowrap}
+.vC a i{width:10px;height:10px;margin-left:1px;border-radius:50%;background:#fff;border:2px solid #B0C4DE}
+.vC a[aria-current] span{color:#1A2744;font-weight:800}
+.vC a[aria-current] i{background:#1A2744;border-color:#1A2744;transform:scale(1.2)}
+</style>
+</head>
+<body>
+
+<div class="zeile" id="hell">
+  <div class="feld hell v0"><div class="kopf">Heute<small>12 px · 62 % Deckkraft</small></div><div id="s0"></div></div>
+  <div class="feld hell vA"><div class="kopf">A · Kräftig<small>14 px, echte Farben, mehr Luft</small></div><div id="sA"></div></div>
+  <div class="feld hell vB"><div class="kopf">B · Nur der aktive spricht<small>Striche statt Punkte, 16 px aktiv</small></div><div id="sB"></div></div>
+  <div class="feld hell vC"><div class="kopf">C · Als Karte<small>A auf weisser Platte</small></div><div id="sC"></div></div>
+</div>
+
+<div class="zeile" id="weiss">
+  <div class="feld v0"><div class="kopf">Heute</div><div id="t0"></div></div>
+  <div class="feld vA"><div class="kopf">A · Kräftig</div><div id="tA"></div></div>
+  <div class="feld vB"><div class="kopf">B · Nur der aktive spricht</div><div id="tB"></div></div>
+  <div class="feld vC"><div class="kopf">C · Als Karte</div><div id="tC"></div></div>
+</div>
+
+<script>
+var NAMEN=['Ihr Alltag','Ein Auftrag','Werkzeuge','Zusammenspiel','Über uns','Einwände','Kontakt'];
+var AKTIV=2;   // «Werkzeuge» leuchtet, damit man Vorher/Nachher am Strich sieht
+function bau(ziel, karte){
+  var html='<ol>';
+  NAMEN.forEach(function(n,i){
+    html+='<li><a href="#"'+(i===AKTIV?' aria-current="true"':'')+(i<AKTIV?' class="vor"':'')+
+          '><span>'+n+'</span><i></i></a></li>';
+  });
+  html+='</ol>';
+  document.getElementById(ziel).innerHTML = karte ? '<div class="karte">'+html+'</div>' : html;
+}
+['0','A','B','C'].forEach(function(v){ bau('s'+v, v==='C'); bau('t'+v, v==='C'); });
+</script>
+</body>
+</html>

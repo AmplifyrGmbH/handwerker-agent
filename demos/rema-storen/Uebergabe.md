@@ -92,9 +92,11 @@ Dieselbe Karte steckt in `zahnrad-animation.html` (`areas()` und `center.lines`)
 
 **Die Werkzeugwand hat einen eigenen, einfacheren Sender** (`werkzeugwand-resize`, `document.body.scrollHeight`, in der Komponente selbst). Die Elternseite folgt ihm **auf jeder Breite** — bis 01.08. nur unter 640 px, darüber galt ein festes Seitenverhältnis. Das `aspect-ratio` im CSS ist seither nur noch Startwert, bis die erste Meldung eintrifft.
 
-**Die Falle dabei:** Eine Seite, die ihre Höhe selbst meldet, darf sich nicht nach der Fensterhöhe bemessen — sonst jagen sich Rahmen und Inhalt. Genau das passierte: die Bildsäule war `width: min(1600px, 128vh)`, der Rahmen wuchs, damit `vh`, damit das Bild, damit der Inhalt. Auf dem Handy lief es bis 1'474 px hoch und zeigte statt der Wand einen Ausschnitt einer einzelnen Wasserwaage. Die Breite steht jetzt als `saeuleW` in `renderVals()` und haengt am selben Desktop/Handy-Schalter wie der Rest: `min(1160px, 76vw)` bzw. `1080px`. **In allen drei iframes gilt: keine `vh`-Einheit, kein `100vh`.**
+**Die Falle dabei:** Eine Seite, die ihre Höhe selbst meldet, darf sich nicht nach der Fensterhöhe bemessen — sonst jagen sich Rahmen und Inhalt. Genau das passierte: die Bildsäule war `width: min(1600px, 128vh)`, der Rahmen wuchs, damit `vh`, damit das Bild, damit der Inhalt. Auf dem Handy lief es bis 1'474 px hoch und zeigte statt der Wand einen Ausschnitt einer einzelnen Wasserwaage. Die Breite steht jetzt als `saeuleW` in `renderVals()` und haengt am selben Desktop/Handy-Schalter wie der Rest: `min(1160px, 76vw)` bzw. `1080px`. **Die Regel genau genommen: keine `vh`-Einheit in einem iframe, das seine Hoehe selbst meldet.** Das gilt fuer `auftragsfluss.html`, `Werkzeugwand.html` und `Zeitstrahl.html` — dort ist jede `vh` ein Rueckkanal und damit eine Schaukel. `zahnrad-animation.html` **darf** `92vh` benutzen und tut es auch: es hat keinen Sender, seine Rahmenhoehe steht fest im CSS der Elternseite (`.gear-iframe`), und es liest sie nur. Wer ihm einen Sender anhaengt, muss die `vh` zuerst herausnehmen.
 
-Der **absolute Deckel von 1160 px** ist kein Schoenheitswert: ohne ihn waechst die Wand mit der Fensterbreite mit und ragt auf einem breiten, flachen Schirm unten aus dem Bild. Ausgereizt ist er auch — bei `80vw/1240px` passt der Abschnitt weder auf 1440×900 noch auf 1920×950 unter die Kopfzeile. Wer daran dreht, misst nach: Abschnittshoehe + 85 px Kopfzeile muss unter die Fensterhoehe passen.
+Der **Deckel von 1160 px** ist kein Schoenheitswert: ohne ihn waechst die Wand mit der Fensterbreite mit und ragt auf einem breiten, flachen Schirm unten aus dem Bild. Ausgereizt ist er auch — bei `80vw/1240px` passt der Abschnitt weder auf 1440×900 noch auf 1920×950 unter die Kopfzeile. Wer daran dreht, misst nach: Abschnittshoehe + 85 px Kopfzeile muss unter die Fensterhoehe passen.
+
+**Seit dem 03.08.2026 steht der Deckel in v4 auf 1020 px** (Teil AE6). 1160 bleibt die Obergrenze, nach unten war Luft — und 1020 ist die Breite von `.wrap`: die Wand fluchtet damit exakt mit den Ueberschriften und dem uebrigen Text, eine Kante weniger im Sinn von AC3. Der Block wurde dadurch 7 % kuerzer (712 → 664 px bei 1440). **`.phlead` und `.werkzeug-iframe` tragen dieselbe Angabe und muessen sie behalten** — Titelplatte und Foto teilen die Breite, sonst stoesst das dunkle Band gegen die unscharfen Schultern des Fotos.
 
 ## 6. Tag-Regeln (harte Regeln, maschinell prüfbar)
 
@@ -175,33 +177,34 @@ Diese lassen sich erst schliessen, wenn alle neun Schritte durch sind:
 
 ## 9b. Zwei Fassungen — v3 und v4
 
-Seit dem 01.08.2026 gibt es die Demo zweimal. **Beide nutzen dieselben drei iframes** (`auftragsfluss.html`, `zahnrad-animation.html`, `Werkzeugwand.html`) — Inhalt wird also nur einmal gepflegt. Unterschiedlich ist nur die Elternseite.
+Seit dem 01.08.2026 gibt es die Demo zweimal. Sie teilen sich die Bausteine, die Elternseite ist verschieden.
 
 | | `REMA_Storen_Demo_v3.html` | `REMA_Storen_Demo_v4.html` |
 |---|---|---|
 | Zweck | Arbeits- und Gesprächsfassung, vollständig | **die Fassung, die verschickt wird** |
-| Reihenfolge | Hero · Betriebs-Karte · Zeit/Zahnrad · Ablauf · Leistungen · Team · Einwände · CTA | Hero · Betriebs-Karte · **vier Entlastungen** · Zeit/Zahnrad · Ablauf · Leistungen · Team · Einwände · CTA |
-| Botschaft steht ab | ~3300 px (im Ablauf verteilt) | **1294 px** — zweiter Bildschirm |
-| Sorglos-Kacheln | vier | zwei (zwei sind in den Karten aufgegangen) |
-| Annahmen-Kasten | vier Annahmen einzeln | zwei Sätze |
-| GU-Erklärung | vier Sätze | zwei Sätze |
+| Ablauf | `auftragsfluss.html` — zehn Stationen zum Aufklappen | **kein Baustein mehr** — «Zeitstrahl leicht» steckt als Markup direkt in der Seite (`#zs-root`, Teil AF3) |
+| Zahnrad | `zahnrad-animation.html`, oben neben dem Chaos-Bild | dieselbe Datei, **allein hinter der Werkzeugwand** |
+| Chaos-Bild | `assets/chaos-illustration-final.png` | **nicht mehr enthalten** (Teil AD) |
+| Leistungen | `Werkzeugwand.html` | dieselbe Datei, dazu das dunkle Titelband |
+| Leseleiste | keine | `<nav class="jrail">` rechts, sieben Punkte |
+| Werkzeugwand-Breite | `min(1160px, 76vw)` | **`min(1020px, 76vw)`** — fluchtet mit `.wrap` |
+| iframes | drei | **zwei** (Werkzeugwand, Zahnrad) |
+| Flächen | Papier durchgehend | hell/weiss lückenlos abwechselnd (AE1) |
+| Seitenhöhe (1440 px) | rund 8'000 px | **6'395 px** |
+| roter Faden | — | «Generalunternehmer» 4× (Hero · Band · Zusammenspiel · über uns), Teil AG |
 
-**Der Gedanke dahinter:** der Ablauf ist nicht zu detailliert, er stand nur an der falschen Stelle. In v4 kommt zuerst die Antwort («was fällt für mich weg») in vier Karten, danach das Bild, danach der Ablauf als Beleg. Wer nach den Karten aufhört, hat die Botschaft; wer weiterliest, bekommt den Beweis.
+**Der Gedanke dahinter:** Der Ablauf ist nicht zu detailliert, er stand nur an der falschen Stelle und in der falschen Auflösung. v3 zeigt zehn Stationen für das Gespräch, v4 fünf Schritte für das erste Lesen. Die fünf sind eine **Verdichtung** der zehn, keine zweite Wahrheit: Anfrage · Offerte · Baustelle · Rechnung · Jahre danach. Wer die zehn ändert, prüft, ob einer der fünf Schritte mitmuss.
 
-**Die vier Karten sind dieselben vier wie im Zahnrad** — Handwerker-Software, IT/Geräte/Telefon, Website, Treuhand (extern). Drei Ebenen, dieselbe Aussage: Bild → was es für Sie heisst → an einem Auftrag gezeigt.
+**Am 02.08.2026 ist v4 deutlich ausgedünnt worden** (Teil Y und Z der Checkliste) — wer ältere Notizen liest, findet dort noch Dinge, die es nicht mehr gibt:
 
-Jede Karte hat denselben Bau: Bereich als Chip · Titel als Entlastung · zwei Sätze · **«Was bleibt:»** mit einer ehrlichen Grenze. Die Grenzen sind dieselben, die im Ablauf stehen — nur in seiner Sprache.
-
-**Der Ablauf ist in den beiden Fassungen verschieden — das ist der Kern des Unterschieds.**
-
-- **v3** bindet `auftragsfluss.html` ein: zehn Stationen zum Aufklappen, Zahnrad, gelbe Kästen. Diese Datei ist die Quelle der Wahrheit für alles Inhaltliche und wird **nicht** für v4 verändert.
-- **v4** hat **keinen** Ablauf-iframe, sondern fünf Zeilen direkt in der Elternseite (`.kurz` / `.kzeile`): Schritt · wie es heute läuft · Pfeil · wie es bei ihm läuft. Kein Aufklappen, kein Zahnrad, keine Kästen — in zwanzig Sekunden gelesen. Der Ablauf-Abschnitt schrumpft dadurch von 2698 px auf 827 px.
-- Die fünf Zeilen sind eine **Verdichtung** der zehn Stationen, keine zweite Wahrheit: Anfrage · Offerte · Baustelle · Rechnung · Jahre danach. Wer die zehn ändert, sollte prüfen, ob eine der fünf Zeilen mitmuss.
-- Die Annahme steht als **eine Zeile** darunter, nicht mehr als Kasten: «unsere Annahme, gelesen von Ihrer Website. Stimmt etwas nicht, sagen Sie es uns.»
+- Der Abschnitt «Der Kern in vier Sätzen / Was Ihnen abgenommen wird» mit den **vier Entlastungs-Karten**, «Und Ihre Leute?», dem Preis-Satz und dem **zweiten Anruf-Knopf** ist gestrichen. v4 hat noch **einen** Anruf-Knopf, unten im CTA.
+- Der Kopf des Leistungsteils ist gestrichen: Augenbraue, Überschrift «Drei Sachen müssen laufen», der Generalunternehmer-Absatz und die zwei Garantie-Kacheln. Übrig bleibt das dunkle Band mit dem Titel «Wir sind Ihr digitaler Generalunternehmer.» und der Werkzeugwand.
+- Die **fünf Vergleichszeilen** (`.kurz`/`.kzeile`, heute ↔ bei Ihnen) sind durch den Zeitstrahl ersetzt. Damit ist auch die Spalte «Wie es oft läuft» weg — der Kontrast heute↔morgen stand danach nur noch in der Chaos-/Zahnrad-Grafik, und seit dem 03.08. (Teil AD) zwischen zwei Abschnitten: **Arbeitstag = heute, Zeitstrahl = morgen.**
+- Die zwei Absätze «Sie sind den halben Tag beim Kunden…» und «Die Büroarbeit verschwindet nicht…» sind in **beiden** Fassungen gestrichen.
 
 **Verworfen:** ein Kompaktmodus über `auftragsfluss.html?kompakt=1`, der nur die Überschrift ausblendet. Er machte den Ablauf nicht einfacher, nur kürzer betitelt — und hätte eine gemeinsam genutzte Datei mit Sonderlogik belastet.
 
-**Beim Ändern beachten:** Textänderungen in den iframes wirken in beiden Fassungen. Änderungen an der Elternseite müssen bewusst in v3, v4 oder beiden gemacht werden. `_pruef.py` prüft die Doktrin-Begriffe in beiden, die Browser-Prüfungen laufen gegen v3.
+**Beim Ändern beachten:** `zahnrad-animation.html` und `Werkzeugwand.html` wirken in **beiden** Fassungen, `auftragsfluss.html` nur in v3, `Zeitstrahl.html` nur in v4. Änderungen an der Elternseite müssen bewusst in v3, v4 oder beiden gemacht werden — seit dem 02.08. gilt die Ansage des Auftraggebers: **nur noch in v4 arbeiten**, v3 bleibt als Gesprächsfassung stehen. `_pruef.py` prüft die Doktrin-Begriffe in allen vier Bausteinen und beiden Elternseiten, die Browser-Prüfungen laufen gegen v3.
 
 ## 9c. Schriften liegen lokal
 
@@ -223,6 +226,82 @@ Im Manifest steht der Typ mit dabei (`"mime":"image/jpeg"`), er muss beim Austau
 
 **Am 02.08.2026 durch eine neue Fassung des Auftraggebers ersetzt: `Werkzeugwand.html`.** Dieselbe Rechnung noch einmal — 2'535 KB PNG im Manifest, als JPEG (Qualitaet 82) 260 KB, Datei von 3.43 MB auf 0.47 MB. Der alte `werkzeugkasten.html` liegt unter `_archiv/backups/werkzeugkasten.html.abgeloest_02.08`, die unbearbeitete neue Fassung als `Werkzeugwand.html.original`.
 
+## 9e. Der Zeitstrahl (nur v4)
+
+> **Stand 03.08.2026: dieser Abschnitt beschreibt den abgeloesten Baustein.**
+> Der Zeitstrahl ist seit Teil AF3 die Fassung «Zeitstrahl leicht» und steckt als
+> Markup **direkt in `REMA_Storen_Demo_v4.html`** (`#zs-root`) — kein iframe, kein
+> Hoehen-Sender, kein `zeitstrahl-resize`. Der alte Bundle liegt unter
+> `_archiv/backups/Zeitstrahl.html.abgeloest_03.08`. Was unten steht, gilt
+> weiterhin als **Anleitung fuer den naechsten Baustein aus Claude Design** —
+> die vier Griffe sind dieselben, und Teil AF3 nennt fuenf weitere.
+
+`Zeitstrahl.html` ist der vierte Baustein, seit dem 02.08.2026. Er ersetzt in v4 die fünf Vergleichszeilen.
+
+**Herkunft:** Der Auftraggeber hat mehrere Fassungen in Claude Design entworfen; die Werkstattdatei liegt unter `assets/Zeitstrahl Varianten (offline).html` (vier Runden, sieben Entwürfe, interne Notizen). Übernommen ist **Variante 3a**, der anklickbare Zeitstrahl in REMA-Farben. Die Schwesterfassung 4a ist dieselbe Grafik in Amplifyr-CI und trägt in der Datei selbst den Vermerk «für Unterlagen von uns; auf der Kundenseite bleibt REMA-Farbe richtig». Wer den Zeitstrahl neu bauen will, geht von dieser Werkstattdatei aus, nicht vom Baustein.
+
+**Was beim Zuschnitt geändert wurde** — dieselben vier Griffe braucht jeder weitere Baustein aus Claude Design:
+
+1. Nur der gewählte Abschnitt bleibt; die anderen Runden und alle internen Notizen fliegen raus. `id="3a"` → `id="zeitstrahl"` (ein CSS-Selektor darf nicht mit einer Ziffer beginnen).
+2. **Grund durchsichtig — und zwar `html` *und* `body`.** Das Laufzeit-Skript des Bundlers setzt `html, body { background: #f0eee6 }`, den beigen Canvas von Claude Design. Der Wert steht **nirgends im Dateitext**, auch nicht im entpackten Template — er kommt aus einem der komprimierten Skripte im Manifest und ist nur im Browser sichtbar (`getComputedStyle(document.documentElement)`). Nur `body` durchsichtig zu setzen reicht nicht: der beige Rand blieb als Passepartout rund um die Karte stehen. Nötig ist `html,body{background:transparent !important}` im Kopf des Templates.
+3. **Handy.** Der Entwurf war reiner Desktop: fünf Schritte nebeneinander liefen auf 390 px 210 px über den Rand, die IT-Leiste mit `white-space:nowrap` nochmals 111 px. Gelöst über eine Media-Query im Kopf (`.zs-steps`, `.zs-panel`, `.zs-rail`, `.zs-dot`, `.zs-bar`) — mit `!important`, weil die Datei durchgehend Inline-Styles benutzt.
+4. Höhen-Sender anhängen, **ausserhalb** des Bundles, Muster wie `auftragsfluss.html`. Meldet `zeitstrahl-resize`; der Listener in v4 nimmt beide Meldungen an (`zeitstrahl-resize` und `werkzeugwand-resize`).
+
+**Die Höhenmessung hat zwei Anläufe gebraucht** — die Falle aus Abschnitt 5, in zwei Ausprägungen:
+
+- `body.scrollHeight` meldete die **Fensterhöhe** (900 px statt 620 px Inhalt) → toter Weissraum unter der Grafik.
+- Die Unterkante aller Nachfahren wuchs **endlos**: der Wurzelknoten des Bundles füllt die Fensterhöhe, im iframe ist die Fensterhöhe die Rahmenhöhe. Rahmen und Inhalt schaukelten sich hoch, Playwright meldete «element is not stable».
+
+Gemessen wird jetzt `document.querySelector('section')` — der Inhalts-Abschnitt. **Merksatz: im iframe nie etwas messen, dessen Höhe von der Fensterhöhe abhängt.**
+
+**Stand der Messung** (v4, alle drei iframes, Rahmen = Inhalt auf den Pixel):
+
+| | Zeitstrahl | Werkzeugwand | Zahnrad | Seite |
+|---|---|---|---|---|
+| 1440×900 | 623 | 778 | 624 | 5'696 |
+| 390×844 | 1'355 | 1'104 | 334 | 7'756 |
+
+Diese Zahlen sind der Stand vom 02.08. **Nach Teil AB, AC und AD gemessen** (v4, 1440×900): Zeitstrahl 555 · Werkzeugwand 712 · Zahnrad 560 · Seite 5'984. Auf 390×844: 1'169 · 602 · 350 · 7'775. Das Zahnrad steht seither fest im CSS (`.gear-iframe`, 560 px) und hat weiter **keinen** Höhen-Sender — es rechnet seine eigene Grösse als `min(100%, 1100px, 92vh)`, und `vh` ist im iframe die Rahmenhöhe, die von aussen gesetzt ist. Kein Sender heisst: keine Schaukel zwischen Rahmen und Inhalt.
+
+## 9f. Die Leseleiste (nur v4, seit 03.08.2026)
+
+`<nav class="jrail">` im Markup **vor** dem Hero, damit sie in der Tastatur-Reihenfolge vor dem Inhalt liegt. Sieben Einträge, jeder ein Anker auf einen Abschnitt: `#alltag` · `#ablauf` · `#leistungen` · `#zusammenspiel` · `#ueberuns` · `#fragen` · `#cta`. **Wer einen Abschnitt umbenennt oder verschiebt, zieht die Leiste mit** — Anker ohne Ziel meldet `_pruef.py`, eine Marke am falschen Abschnitt ebenfalls.
+
+Drei Dinge, die man beim Ändern wissen muss:
+
+1. **Der gefüllte Strich hängt am aktiven Punkt**, nicht an einem eigenen Prozentwert: `--p` ist der `offsetTop` des aktiven Eintrags, und `ol::after` startet bei denselben 14 px wie `ol::before`. Wer die Zeilenhöhe von 28 px oder den Abstand ändert, ändert beides zugleich — genau das ist der Zweck. Der Prüfer vergleicht `--p` mit dem `offsetTop` und schlägt an, wenn sie auseinanderlaufen.
+2. **Die Umbruchpunkte sind gerechnet:** rechte Kante des Inhalts bei `v/2 + 510`, Leiste braucht 109 + 24 px, passt also ab `v > 1286`. Beschriftungen darum unter **1340 px** weg, die Leiste unter **900 px**. Wer eine Beschriftung verlängert, rechnet neu — «Zusammenspiel» ist die längste und bestimmt die 109 px.
+3. **Gemessen wird gegen 45 % der Fensterhöhe**, und am Fussende gilt immer die letzte Marke. Ohne die zweite Regel bleibt der Abschluss unmarkiert: er ist kürzer als das Fenster.
+4. **Die Leiste ist `fixed` — hinter ihr wechselt der Grund.** Ab dem Abschluss läuft eine dunkle Fläche durch; dort tragen die hellen Töne den Text (`.jrail.dunkel`, Regel aus AC2). Umgeschaltet wird gemessen, nicht nach Abschnittsnamen: sobald die Oberkante des Abschlusses über die Unterkante der Leiste steigt. **Wer einen weiteren dunklen Abschnitt einführt, muss ihn in diese Messung aufnehmen** — sonst steht die Leiste dort wieder unsichtbar. Der Prüfer rechnet die Helligkeit der gerenderten Schrift und fällt durch, wenn sie zu dunkel wird.
+5. **Die Beschriftungen nehmen ein Wort, das im Abschnitt selbst steht** (Teil AE4) — «Ihr Arbeitstag», «Werkzeug wählen», «Der Haken», «Jetzt anrufen». Nicht unsere Wörter («Einwände», «Kontakt»), sondern seine. Wer eine Überschrift ändert, prüft die zugehörige Beschriftung mit.
+
+## 9f2. Der rote Faden — «Generalunternehmer»
+
+Seit Teil AG traegt **ein** Wort die Zusage, die vorher unter drei Namen lief («digitaler Generalunternehmer», «drei Bereiche · ein Ansprechpartner», «einer, den Sie anrufen»). Vier Stellen, in dieser Reihenfolge: **Hero** (saeen) → **dunkles Band der Werkzeugwand** (nennen) → **Zusammenspiel** (erklaeren) → **ueber uns** (in Personen). Der Abschluss loest ein.
+
+**Zwei Regeln beim Weiterschreiben:**
+
+1. **Nicht im Arbeitstag und nicht im Zeitstrahl.** Die erste Haelfte der Seite ist seine Welt; wir treten erst ab der Werkzeugwand auf. Das Wort dort waere ein Bruch — roter Faden heisst nicht «das Wort ueberall».
+2. **Nicht in die Leseleiste.** Gemessen: «Generalunternehmer» braucht dort 189 px, die Beschriftungen kaemen erst ab 1426 px wieder — 1366- und 1400-px-Laptops haetten keine mehr.
+
+**Die Haftungszusage ist der Kern** («klemmt es zwischen zwei Systemen, ist das unsere Aufgabe, nicht Ihre») und stand bis Teil AG nur im zugeklappten Einwand. Sie unterscheidet einen Generalunternehmer von einem Lieferanten — sie gehoert sichtbar. Dasselbe galt fuer die Treuhand-Zusage.
+
+**Seit dem 03.08.2026 steht die Treuhand im Zange-Panel — auf ausdrueckliche Ansage des Auftraggebers.** Dort stand vorher «Wir uebernehmen: das Hin und Her mit Herstellern und Lieferanten», dann kurzzeitig «Hersteller, Lieferanten und Ihre Treuhand». **Beides falsch:** Hersteller und Lieferanten koordinieren wir nicht, das ist sein Geschaeft, nicht unseres. Die Zeile heisst jetzt:
+
+> Wir koordinieren: **Ihre Treuhand** — damit der Übergang läuft.
+
+Nur die **sichere Form** ist zugesagt: unsere Koordination, nicht ihre Buecher. Die Finanzschicht liegt seit Teil R ausserhalb, und Kaltkontakt bei der Treuhaenderin ist laut `Fragen_Democall.md` verboten.
+
+**Ausserhalb der Zange steht die Treuhand nur noch an einer Stelle:** der Zusammenspiel-Fussnote «Mit Ihrer Treuhand reden wir, damit Sie es nicht muessen.» Am 03.08. entfernt wurden die Erwaehnung im Zeitstrahl-Schritt 4 (steht jetzt «geht raus, ohne dass jemand sie abtippt», Chip-Zeile auf einen Chip) und die in der Einwand-Antwort. Der Einwand hiess dort «Ich habe schon Software, einen IT-ler oder einen Treuhaender» — die Frage ist mitgezogen worden auf «Ich habe schon Software und einen IT-ler», weil eine Frage, die die Antwort nicht mehr aufgreift, halb unbeantwortet stehen bleibt. Der Zahnrad-Satellit «Treuhand» bleibt: er sagt extern, nicht Leistung.
+
+## 9g. Zeichen gegen die Schrift-Subsets pruefen
+
+Die Demo bringt nur die lateinischen Schnitte mit (Abschnitt 9c). Ein Zeichen ausserhalb der `unicode-range` fällt auf die Systemschrift zurück und sieht fremd aus — falsche Strichstärke, falsche Höhe. Genau das war der Aufklapp-Pfeil: **U+2304, in keinem Subset**, ersetzt durch ein SVG (Teil AE5).
+
+**Merksatz: `›` (U+203A), `↓` (U+2193), `—`, `«»` sind drin — `→` (U+2192) und `⌄` (U+2304) nicht.** Wer ein Zeichen einsetzt, prüft es gegen die `@font-face`-Blöcke im Kopf. Im Zweifel ein SVG in der Sprache von `.ic`: `currentColor`, 2.2 px Strich, runde Enden.
+
+Geprüft wird das mit einem Skript im Arbeitsverzeichnis (nicht im Repo), das **jedes sichtbare Zeichen** beider Elternseiten und aller vier Bausteine gegen die Ranges hält, `::before`/`::after` eingeschlossen. Stand: **v4 sauber**, v3 hat noch ein `→` in `auftragsfluss.html` — im Bundle, also Extract/Inject nötig, bewusst offen gelassen.
+
 ## 10. Prüflauf vor Abgabe
 
 **Zuerst immer:**
@@ -233,7 +312,9 @@ Im Manifest steht der Typ mit dabei (`"mime":"image/jpeg"`), er muss beim Austau
 "$PY" _pruef.py --text                          # nur Text, ohne Browser
 ```
 
-`_pruef.py` gibt 1 zurueck, wenn etwas bricht. Es prueft: `a2` nirgends in `AREAS` · je Schritt genau ein gelber Kasten pro leuchtendem Zahnrad · kein `KI:`-Praefix · `IT:` mit «richten wir ein» · `Website:` mit «bauen wir» · max. 6 Woerter · keine Preise · 2–3 Saetze je Aufklapp-Text · ein Kategorie-E-Satz · fuenf verbotene Begriffe · Bundle im Takt mit `arbeit.html` · Datum an allen Stellen gleich · Anker-Links aus iframes mit `target="_parent"` · keine 404 und keine Konsolenfehler · nichts unter 12 px · keine toten Anker · Einwand-Chips mit Panel und genau eines offen · Hero-Chip klappt das Team auf · Symmetrie im Vergleichsbild (mit 6.5 s Wartezeit fuer die Einflug-Animation) · nichts ragt bei 390 px heraus · iframe-Hoehe.
+`_pruef.py` gibt 1 zurueck, wenn etwas bricht. Es prueft: `a2` nirgends in `AREAS` · je Schritt genau ein gelber Kasten pro leuchtendem Zahnrad · kein `KI:`-Praefix · `IT:` mit «richten wir ein» · `Website:` mit «bauen wir» · max. 6 Woerter · keine Preise · 2–3 Saetze je Aufklapp-Text · ein Kategorie-E-Satz · fuenf verbotene Begriffe · Bundle im Takt mit `arbeit.html` · Datum an allen Stellen gleich · Anker-Links aus iframes mit `target="_parent"` · keine 404 und keine Konsolenfehler · nichts unter 12 px · keine toten Anker · Einwand-Chips mit Panel und genau eines offen · Hero-Chip klappt das Team auf · Symmetrie im Vergleichsbild (mit 6.5 s Wartezeit fuer die Einflug-Animation) · **Leseleiste: Marke folgt allen sieben Abschnitten, Strich endet im aktiven Punkt, im Hero noch unsichtbar, Abstand zum Inhalt, auf 390 px ausgeblendet** · nichts ragt bei 390 px heraus · iframe-Hoehe.
+
+**Zwei Pruefungen haengen an der Existenz eines Elements, nicht am Dateinamen** — sonst brechen sie an der Fassung, die das Element nicht hat: die Symmetrie im Vergleichsbild laeuft nur, wo `.roles` steht (v3), die Leseleiste nur, wo `.jrail` steht (v4). Wer eine dritte Fassung anlegt, erbt das Verhalten automatisch richtig.
 
 **Gegengeprueft:** dieselbe Logik auf `auftragsfluss.html.bak_vor_H` angewendet findet dort 22 Verstoesse — der Pruefer schlaegt also wirklich an und ist kein Gruenlicht-Automat.
 

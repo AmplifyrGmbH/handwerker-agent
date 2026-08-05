@@ -975,7 +975,447 @@ Der ganze Abschnitt «Und an einem einzelnen Auftrag? / Von der Anfrage bis zum 
 
 Kein Überlauf, keine Konsolenfehler, keine externen Hosts. `_pruef.py` kennt `Zeitstrahl.html` jetzt als vierten Baustein.
 
+### Z-Nachtrag – wie er wirklich eingebaut aussieht
+
+Der erste Einbau sah auf einem breiten Schirm schlecht aus, aus drei Gründen:
+
+| Befund | Behandlung |
+|---|---|
+| **Beiges Passepartout** rund um die Karte | Das Laufzeit-Skript setzt `html, body { background: #f0eee6 }` — der Canvas von Claude Design. Steht in keinem Dateitext, nur im Browser sichtbar. `body` allein durchsichtig zu setzen half nicht; nötig war `html,body{background:transparent !important}` |
+| Karte zu schmal, verloren im weissen Feld | Der Abschnitt nutzt jetzt `wrap wrap-wide`, der Baustein damit seine vollen **1180 px** statt 976 |
+| Zu viel Luft darüber | `#ablauf{padding:46px 0 54px}` statt der üblichen 72 px — der Abschnitt trägt keine eigene Überschrift, die bringt der Baustein mit |
+| **Äussere Karte** (weiss, Rahmen, Radius 18, grosser Schatten) | Entfernt. Sie liess die Grafik wie ein aufgeklebtes Fenster wirken statt wie einen Teil der Seite. Den nötigen Rahmen gibt drinnen die graue Fläche um die Schritte. Abschnitt dadurch 695 → **637 px** |
+
+
 ---
+
+## Teil AA – Der typische Arbeitstag statt der Betriebs-Karte (02.08.2026)
+
+Die Betriebs-Karte war ein **Dossier**: Adresse, Stand-Datum, nummerierte Zeilen, Fakten links, Schluss rechts. Alles darin hatte der Empfänger selbst auf seine Website geschrieben — er liest zwölf bekannte Fakten und fühlt sich überprüft, nicht verstanden. Ersetzt durch **Variante 1a** aus `assets/Variante 1a typischer Arbeitstag.html`: vier Zeitmarken eines Arbeitstags (07:10 · 11:30 · 14:00 · 19:40), eine kursive Schlusszeile «Wir wissen nicht, ob es genau so läuft. Aber ungefähr, oder?» und eine kleine Quellenzeile.
+
+**Der Research beweist sich jetzt in den Details** (Fassadenmarkise, Typenschild, Verwaltung, Masse auf dem Block) statt behauptet zu werden, und die Schlusszeile macht aus der Annahme eine Einladung. Adresse und Firmenname fallen weg — damit auch das Risiko, dass ausgerechnet dort ein falscher Fakt steht (Dietikon/Zürich ist weiterhin ungeprüft).
+
+**Direkt in die Seite, nicht als iframe.** Der Entwurf ist reines HTML mit Inline-Styles — keine Bindungen, kein Skript, keine Bilder. Also kein vierter Baustein, kein Höhen-Sender, keine Kante: der Inhalt steht als Markup in `<section class="pstrip">`. Seine Farben und Schriften waren schon die der Seite.
+
+**Ohne die Karte, in der er steckte.** Der Entwurf liefert den Block in einer weissen Karte mit Rahmen und Schatten — auf dem weissen Abschnitt derselbe aufgeklebte Rahmen, der beim Zeitstrahl gerade entfernt wurde. Weggelassen; dafür trägt der Abschnitt jetzt richtige Abstände (`46px 0 52px`, auf dem Handy `34px 0 38px`) statt der 17 px, die zur Karte gehörten. 16 tote `.betrieb-*`-Regeln entfernt, in zwei geprüften Bereichen.
+
+**Variante 1b** (weicher Grund, kräftigere Zeitachse) liegt in derselben Datei und ist ein Austausch von wenigen Zeilen.
+
+### AA2 – Hero-Titel
+
+«Wie ein Kundenauftrag oft läuft — und wie er bei Ihnen laufen könnte.» → **«Wie ein Kundenauftrag bei Ihnen laufen könnte.»**
+
+Der Titel versprach einen Vergleich **an einem Auftrag**, Schritt für Schritt. Den gibt es seit Teil Z nicht mehr: der Zeitstrahl zeigt nur den Soll-Zustand. Der Kontrast ist damit nicht verschwunden, er hat die Ebene gewechselt — der Arbeitstag oben ist das Heute, der Zeitstrahl das Optimum —, aber der Titel beschrieb die alte Anordnung. «könnte» bleibt: was bei ihm wirklich läuft, wissen wir nicht.
+
+**Gemessen:** Seite 1440×900 **5'670 px** (390×844: 7'718), kein Überlauf, keine Konsolenfehler, Textprüfung 0 Fehler.
+
+---
+
+## Teil AB – Farbregel und Rhythmus (02.08.2026)
+
+### AB1 – Wem gehört welche Farbe
+
+**Regel des Auftraggebers: Die Marke des Kunden gilt im Hero und in der Kopfzeile. Alles darunter läuft in Amplifyr-CI.** Quelle: `Amplifyr/Intranet - Dokumente/1_Intern/Branding/Logo/Logo_Meta.txt` — Dunkelblau `#1A2744`, Hellblau `#B0C4DE`, Weiss, Schrift Georgia.
+
+Vorher lag ein Zwischenschritt daneben: Ich hatte den Zeitstrahl auf REMA-Töne umgefärbt (Gold für den aktiven Punkt, `--navy` für die Leiste), weil in der Entwurfsdatei stand «auf der Kundenseite bleibt REMA-Farbe richtig». Diese Notiz ist überholt — zurückgenommen.
+
+Umgesetzt als **Überschreibung der Tokens im Geltungsbereich**, nicht als Suchen-und-Ersetzen:
+
+```css
+body > section:not(.hero), body > footer{
+  --navy:#1A2744; --c-link:#1A2744; --gold:#B0C4DE; … }
+```
+
+Damit bleiben alle Regeln unverändert; nur die Werte wechseln unterhalb des Hero. Dazu kamen die Stellen, die die Farbe **fest** im Code haben und deshalb nicht auf Tokens reagieren: sechs `rgba(252,204,12,…)` (Gold-Schatten und -Tönungen), der CTA-Verlauf, die Fusszeile (`#071a27`), der Arbeitstag-Block (kam mit `#00304f`/`#0067a8`/`#b9c4dc` aus Claude Design) und der Zeitstrahl (`#0067a8` an zehn Stellen).
+
+**Zwei Regeln für das Hellblau:** Auf hellem Grund trägt nur das Dunkelblau Text; `#B0C4DE` ist Fläche, Linie und Akzent, nie Fliesstext — sonst reisst der Kontrast. Der Anruf-Knopf ist jetzt `#B0C4DE` auf `#1A2744`-Text: genau die Kombination von Logo 2.
+
+Kontrolliert wird das gemessen, nicht gelesen: ein Skript zählt die **gerenderten** Farben aller sichtbaren Elemente unterhalb von Hero und Kopfzeile. Übrig geblieben sind dort exakt zwei Treffer der Kundenmarke — der Vorschau-Streifen ganz oben mit «REMA Storen» in Gold, und der gehört zur Kopfzeile.
+
+### AB2 – Rhythmus der Flächen
+
+Weiss (`#fff`) und Papier (`#fbfcfe`) unterscheiden sich um ein Prozent. Dadurch lief von der Betriebs-Karte bis «über uns» ein einziger heller Block von rund 3'400 px. Nach dem Vorbild von `amplifyr.ch/it-solutions` wechseln sich helle und weisse Flächen jetzt ab, mit drei dunklen Ankern:
+
+| | Abschnitt | vorher | jetzt |
+|---|---|---|---|
+| 1 | Hero | dunkel (REMA) | unverändert |
+| 2 | Arbeitstag | weiss | weiss |
+| 3 | Problem: Chaos + Zahnrad | Papier | **hell `#eef2f9`** |
+| 4 | Zeitstrahl | weiss | weiss |
+| 5 | Werkzeugwand | Papier + dunkles Band | unverändert |
+| 6 | Über uns | Papier | **hell** |
+| 7 | Einwände | hell | **weiss** |
+| 8 | Abschluss | dunkel (REMA-Verlauf) | **dunkel `#1A2744`** |
+| — | Fusszeile | `#071a27` | **`#1A2744`** mit Haarlinie |
+
+Das Helle ist der Schmerz, das Weisse die Lösung — der Wechsel hat also einen inhaltlichen Grund und ist nicht nur Dekoration.
+
+### AB3 – Zwei Überleitungen
+
+Abschnitt 3, 4 und 5 sind drei Bildwelten hintereinander; 4 und 5 haben in der Seite selbst keinen Text mehr. Die Überleitungen stehen deshalb **am Ende** eines Abschnitts, nicht am Anfang des nächsten — sie schliessen ab und kündigen an, statt die Überschrift der nächsten Grafik zu doppeln.
+
+- unter dem Zahnrad: «Das ist das Bild. **So sieht es an einem einzelnen Auftrag aus:**»
+- unter dem Zeitstrahl: «Fünf Schritte, drei Bereiche — **und eine Nummer, die Sie anrufen.**»
+
+Stil `.brueck`: zentriert, Fraunces, 54 Zeichen breit, zweiter Teil in Dunkelblau.
+
+**Gemessen:** 1440×900 → 5'773 px, 390×844 → 7'803 px, kein Überlauf, keine Konsolenfehler, Textprüfung 0 Fehler.
+
+---
+
+## Teil AC – Der Durchgang eines Gestalters (02.08.2026)
+
+Nicht nach Gefühl, sondern gemessen: ein Skript nimmt sechs Perspektiven ein, die ein Gestalter nacheinander einnimmt, und zählt, was es sieht. Fast alles, was ein Mensch als «irgendwie unruhig» empfindet, steckt in diesen sechs Zahlen.
+
+| | Perspektive | vorher | nachher |
+|---|---|---|---|
+| 1 | Schriftgrössen bei 1440 px | **29**, davon 21 weniger als 1 px auseinander | **8**, keine Fast-Dubletten |
+| 2 | Abstandswerte neben dem 4-px-Raster | **101** | **2** |
+| 3 | Textblöcke über 78 Zeichen pro Zeile | **3** (112 / 104 / 102) | **0** (längster 67) |
+| 4 | Linke Kanten der Inhalte | drei (230 / 232 / Vollbild) | zwei (230 / Vollbild) |
+| 5 | Kontrast unter WCAG AA | **1 echter Fall** | 0 |
+| 6 | Radien | 16 · 18 · 20 nebeneinander | 18 (plus Pillen und Kreise) |
+
+### AC1 – Die Skalen
+
+**Schrift: 12 · 14 · 16 · 18 · 21 · 26 · 34 · 46 · 64 px.** Ursache des Wildwuchses waren `clamp()`-Angaben mit krummen Enden (`.82`/`.83`/`.84`/`.85rem`, `.92`–`.95rem`, `1.02`–`1.05rem`). Bei 1440 px greift fast überall das obere Ende, also sind beide Enden auf die Skala geschnappt worden; 67 Angaben geändert, keine sichtbare Grössenänderung über 0.9 px.
+
+**Abstand: Vielfache von 4, ab 8 in Achterschritten** (0 · 2 · 4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 56 · 64 · 72 · 80 · 96). 81 Werte im CSS und 14 im Arbeitstag-Block gerastert.
+
+**Zeilenabstand: 1.1 · 1.3 · 1.5 · 1.62** statt neun Werten. **Versalabstand: durchgehend `.12em`** statt fünf verschiedenen.
+
+### AC2 – Der eine echte Fehler
+
+Die Augenbraue «Und jetzt?» im Abschluss stand **`#1A2744` auf `#1A2744`** — unsichtbar. Verursacht von der Farbregel aus Teil AB: auf dunklem Grund kehrt sich die Rolle der beiden Blau um, dort trägt das Hellblau. Behoben mit `.cta .eyebrow, footer .eyebrow{color:var(--c-brand-lt)}`. Ebenfalls gefunden: der Schatten des zweiten Knopfes trug noch `rgba(0,120,192,…)`, das Blau der Kundenmarke.
+
+### AC3 – Kanten
+
+Der Zeitstrahl begann 80 px links von der Textkante der Seite — eine dritte Kante neben `.wrap` und Vollbild. Jetzt liegt er auf 1020 px, seine Textkante damit exakt auf der der übrigen Abschnitte (beide 230 px). Der Innenabstand im Baustein musste dafür von 22 auf 20 px, weil das Rastern `.wrap` von 22 auf 20 gebracht hatte — sonst wären es 2 px Versatz geblieben.
+
+### AC4 – Zeilenumbruch
+
+`text-wrap:balance` für alle Überschriften. «Ein Elektriker, ein Systemtechniker und einer aus der Immobilien-Bewirtschaftung.» brach vorher in vier ungleiche Zeilen mit «Immobilien-» am Ende der dritten; jetzt sind es drei ausgeglichene. `.sec-head` von 680 auf 760 px.
+
+**Gemessen:** 1440 → 5'861 px, 1900 → 5'907 px, 390 → 7'586 px. Kein Überlauf, keine Schrift unter 12 px, keine Konsolenfehler, Textprüfung 0 Fehler. Sicherung: `_archiv/backups/REMA_Storen_Demo_v4.html.bak_vor_system`.
+
+---
+
+## Teil AD – Fremdes Auge: das Chaos-Bild weg, das Zahnrad nach unten (03.08.2026)
+
+Der Auftraggeber hat die Seite jemandem gezeigt, der sie nicht gebaut hat. Drei Sätze kamen zurück, und alle drei sind umgesetzt.
+
+### AD1 – Der Problem-Abschnitt fällt weg
+
+**«Der erste Teil ist gut. Danach kommt diese Grafik — die Seite wegmachen.»** Gemeint war der Abschnitt «Einen Teil ins Handwerk. Zu viel ins Büro.» mit dem Chaos-Bild links und dem Zahnrad rechts.
+
+Der Einwand trifft etwas, das seit Teil AA im Aufbau steckte, aber nicht auffiel: **das Chaos-Bild sagte dasselbe wie der Arbeitstag darüber, nur allgemeiner.** Der Handwerker in der Mitte, umringt von Telefon, Angebote, Umplanen, Bestellen, Nachfragen, Zeiterfassung, Rechnungen — das ist eine Illustration von 07:10 · 11:30 · 14:00 · 19:40. Vor Teil AA stand dort eine Betriebs-Karte mit Fakten, da war das Bild die einzige Erzählung des Heute. Seit der Arbeitstag sie besser erzählt, war es eine Dopplung. Wer zwei Mal dasselbe liest, hält das zweite für einen neuen Punkt und findet keinen.
+
+Weg sind damit auch die Zwei-Spalten-Gegenüberstellung (`.roles`, «Typische Ausgangslage» → runder Pfeil «unsere Arbeit» → «Was möglich ist»), die Überschrift und 33 Zeilen CSS. Der Kontrast heute↔morgen ist nicht verschwunden, er steht jetzt zwischen zwei Abschnitten statt in einem Bild: **Arbeitstag = heute, Zeitstrahl = morgen.** Die Rolle des Pfeils «unsere Arbeit» — wir zwischen Problem und Lösung — trägt das dunkle Band «Wir sind Ihr digitaler Generalunternehmer.»
+
+`assets/chaos-illustration-final.png` bleibt liegen: **v3 zeigt das Bild weiter.** Dort steht es richtig, weil v3 keinen Arbeitstag-Block hat.
+
+### AD2 – Das Zahnrad hinter die Werkzeugwand
+
+**«Das Zahnrad viel weiter unten nutzen, nach der Grafik des Werkzeugkastens — die sollen zeigen, wir bringen all die Teile im Werkzeugkasten zusammen.»**
+
+Oben war das Zahnrad die halbe Antwort auf ein Bild, das es nicht mehr gibt. Hinter der Wand bekommt es eine eigene Aufgabe, und die Reihenfolge stimmt inhaltlich: die Wand zeigt **drei Werkzeuge zum Auswählen**, das Zahnrad zeigt **dieselben drei, wie sie greifen** — plus die Treuhand aussen und den Betrieb in der Mitte. Neuer Abschnitt `.greifen` / `#zusammenspiel`:
+
+- Augenbraue «Und wie greift das zusammen?», Überschrift **«Drei Werkzeuge, ein Betrieb.»**
+- darunter ein Satz: «Einzeln kann man das alles kaufen. Die Arbeit ist, es so zusammenzusetzen, dass eines ins andere greift — genau die machen wir.»
+- das Zahnrad allein, mittig, **560 statt 480 px** (Handy 420) — es steht nicht mehr neben einem Bild, dessen Höhe es treffen musste; der negative Rand von −30 px, der genau dafür da war, ist weg
+- Schlusszeile: «In der Mitte stehen **Sie und Ihr Team** — die Systeme richten sich nach Ihrem Ablauf, nicht umgekehrt. Ihre Treuhänderin bleibt, wo sie ist, und bekommt, was sie braucht.»
+
+**Die Nabe bleibt «Sie und Ihr Team».** Naheliegend wäre, für die neue Aussage Amplifyr in die Mitte zu setzen — das verstösst gegen die harte Regel aus Teil H und dreht die Aussage der Grafik um. Dass wir zusammenbringen, sagt der Text; dass entschieden wird im Betrieb, sagt das Bild. Keine neuen CSS-Klassen: der Abschnitt benutzt `.sec-head` und `.phfoot`, die es schon gab.
+
+### AD3 – Was der Wegfall nach sich zieht
+
+**Der Zeitstrahl stand plötzlich wortlos da.** Er hat auf der Seite keine eigene Überschrift — sein Einstieg war die Überleitung aus dem Problem-Abschnitt («Das ist das Bild. So sieht es an einem einzelnen Auftrag aus:»), und die fiel mit weg. Eine neue Überschrift wäre falsch: der Baustein trägt selbst «Ein Auftrag, von vorn bis hinten / Wie ein Auftrag optimal durchläuft.» Statt dessen eine Überleitung am **Ende des Arbeitstags**, wie es die Regel aus Teil AB3 vorschreibt: **«Das ist der Alltag. So könnte derselbe Auftrag durchlaufen:»**
+
+**Der Farbrhythmus brach.** Der Problem-Abschnitt war die helle Fläche zwischen Arbeitstag (weiss) und Zeitstrahl (weiss); ohne ihn stiessen zwei weisse Abschnitte aneinander. Der Arbeitstag ist jetzt der helle — er ist seit AD1 der einzige Abschnitt, der das Heute zeigt, trägt also die Farbe des Schmerzes zu Recht.
+
+| | Abschnitt | vorher | jetzt |
+|---|---|---|---|
+| 1 | Hero | dunkel (REMA) | unverändert |
+| 2 | Arbeitstag | weiss | **hell** |
+| 3 | Problem: Chaos + Zahnrad | hell | **weg** |
+| 4 | Zeitstrahl | weiss | unverändert |
+| 5 | Werkzeugwand | hell + dunkles Band | unverändert |
+| 6 | **Zusammenspiel: Zahnrad** | — | **neu, hell** |
+| 7 | Über uns | weiss | unverändert |
+| 8 | Einwände | hell | unverändert |
+| 9 | Abschluss | dunkel | unverändert |
+
+Werkzeugwand und Zusammenspiel teilen den hellen Grund **absichtlich** — das Zahnrad ist die zweite Hälfte desselben Gedankens, und getrennt werden die beiden ohnehin vom dunklen Titelband der Wand. Damit gilt die Bedeutung «hell = Schmerz» nur noch für den Arbeitstag; weiter unten ist der Wechsel Rhythmus, keine Aussage. Das steht als Kommentar in der Datei, damit es nicht als Fehler gelesen wird.
+
+### AD4 – Die Leseleiste
+
+**«Links oder rechts an der Website so ein Strich, wo man versteht, wie die Customer Journey ist, wenn man runterscrollt.»**
+
+Gelesen als **Leseleiste der Seite**, nicht als Reise des Auftrags — die steht schon im Zeitstrahl, ein zweites Mal wäre eine Dopplung wie das Chaos-Bild. `<nav class="jrail">`, rechts fixiert, ein Punkt je Abschnitt: Ihr Alltag · Ein Auftrag · Werkzeuge · Zusammenspiel · Über uns · Einwände · Kontakt. Anklickbar, `aria-current` auf dem aktiven Punkt.
+
+- **Dieselbe Zeichensprache wie die Zeitleiste des Arbeitstags:** 9-px-Kreis, 1.5 px Rand, Hellblau; der aktive Punkt gefüllt in Dunkelblau, 1.25-fach. Der Betrachter hat das Zeichen 200 px weiter oben schon gesehen.
+- **Gemessen wird gegen 45 % der Fensterhöhe**, nicht gegen die Oberkante — sonst springt die Marke, sobald ein Abschnitt nur mit dem Rand hereinschaut. Am Fussende gilt immer die letzte Marke: der Abschluss ist kürzer als das Fenster, sein Anfang liegt dann nie unter der Probe.
+- **Der gefüllte Teil des Strichs endet in der Mitte des aktiven Punkts** (`--p` = `offsetTop` des aktiven Eintrags). Ein zweiter, unabhängig gerechneter Fortschrittswert würde neben dem Punkt landen; so können die zwei nicht auseinanderlaufen. Der Prüfer vergleicht beide Zahlen.
+- **Sichtbar erst nach dem Hero.** Über dem ersten Abschnitt hat sie nichts zu markieren.
+- **Neu vermessen statt nur auf Scroll:** die drei iframes melden ihre Höhe nach, damit verschieben sich die Abschnitte unter der Leiste, ohne dass gescrollt wurde. Ein `ResizeObserver` auf `body` fängt das.
+
+**Der Platz ist gerechnet, nicht geschätzt.** Der Inhalt steht in einer 1020 px breiten Spalte in der Mitte, seine rechte Kante also bei `v/2 + 510`. Die Leiste braucht mit Beschriftung 109 px plus 24 px Abstand — sie passt daneben, sobald `v > 1286`. Beschriftungen fallen deshalb **unter 1340 px** weg (1366 px behält sie, 1280 px nicht), die ganze Leiste **unter 900 px**. Die Werkzeugwand (`min(1160px, 76vw)`) ist nie die engere Kante. Ohne diese Rechnung ragte die Leiste bei 1280 px 3 px und bei 1220 px 33 px in den Text — gemessen, nicht gesehen.
+
+Anker dazu vergeben: `#alltag` am Arbeitstag, `#zusammenspiel` am Zahnrad, `#fragen` an den Einwänden. `#ablauf`, `#leistungen`, `#ueberuns` und `#cta` gab es schon.
+
+### AD5 – Was der Prüfer dazugelernt hat
+
+- Die **Symmetrie-Prüfung** (Chaos-Bild ← Pfeil → Zahnrad, mit 6.5 s Wartezeit für den Einflug) lief über beide Fassungen und wäre an v4 gescheitert. Sie hängt jetzt an der Existenz von `.roles`, nicht am Dateinamen — in v3 prüft sie weiter, in v4 entfällt sie.
+- **Vier neue Prüfungen für die Leseleiste:** folgt die Marke jedem der sieben Abschnitte · endet der Strich in der Mitte des aktiven Punkts · ist die Leiste im Hero noch weg · hält sie Abstand zur engsten Kante des Inhalts. Dazu auf 390 px: ist sie ausgeblendet.
+- **Zwei Altlasten mitgenommen:** Die Ausnahme für den kleinen Datums-Chip suchte den Text «Vorschau ·», der Chip in v3 heisst aber «Beispiel ·» — die Ausnahme lief ins Leere und meldete ihn als Fehler. Sie greift jetzt auf die Klasse `vtag`. Und der Lauf starb beim Ausdrucken des Berichts, weil die Konsole hier cp1252 spricht und der Unterprozess ein Ersatzzeichen erzeugt hatte; `sys.stdout.reconfigure(encoding='utf-8')` steht jetzt am Anfang. Die Browser-Prüfungen waren vorher schon durchgelaufen — der Bericht kam nur nicht mehr an.
+
+**Gemessen:** `_pruef.py` **0 Fehler, 2 Hinweise** (die zwei Zeichenzahlen im Ablauf von v3, Altbestand). Sieben Fensterbreiten von 1900 bis 390 px: kein Überlauf, keine Konsolenfehler, keine toten Anker, 8 Schriftstufen wie nach Teil AC. Seite 1440×900 **5'984 px** (1900: 6'027 · 390×844: 7'775). iframes bei 1440: Zeitstrahl 555 · Werkzeugwand 712 · Zahnrad 560.
+
+---
+
+## Teil AE – Durchgang am Bildschirm: Flächen, Leiste, Gewicht (03.08.2026)
+
+Der Auftraggeber ist mit Teil AD durch die Seite gescrollt und hat gemeldet, was auffällt. Sieben Punkte, alle umgesetzt. Zwei davon sind Fehler, die meine Prüfungen nicht gesehen hätten.
+
+### AE1 – Der Flächenwechsel bis zum Abschluss durchgezogen
+
+**«Wenn hellblau und weiss wechselt, müsste hier weiss sein?»** — beim Zahnrad. Ja, und meine Begründung in AD3 war falsch: ich hatte notiert, Werkzeugwand und Zusammenspiel dürften denselben Ton teilen, weil das dunkle Titelband sie trenne. **Das Band sitzt aber oben an der Wand.** Zwischen Foto und Zahnrad stand gar keine Grenze; es lief ein heller Block von der Titelplatte bis unter das Zahnrad durch.
+
+Nur das Zahnrad weiss zu machen hätte die fehlende Grenze eine Stelle nach unten verschoben, an «über uns». Der Wechsel ist deshalb bis zum Abschluss durchgezogen:
+
+| | Abschnitt | vorher | jetzt |
+|---|---|---|---|
+| 6 | Zusammenspiel | hell | **weiss** |
+| 7 | Über uns | weiss | **hell** |
+| 8 | Einwände | hell | **weiss** |
+
+Damit wechselt es lückenlos: Hero dunkel · Arbeitstag hell · Zeitstrahl weiss · Werkzeugwand hell · Zusammenspiel weiss · über uns hell · Einwände weiss · Abschluss dunkel.
+
+**Zwei Folgen, die mit dem Ton kommen** — beides Farben, die für den alten Grund gewählt waren:
+
+- Der Antwort-Kasten der Einwände (`.obody`) stand weiss auf weiss und trug nur noch den Umriss. Er hat jetzt denselben Schatten wie die Team-Karten.
+- **Die Zeitachse des Arbeitstags war praktisch unsichtbar.** Sie ist `#e4e9f2` — gewählt für weissen Grund. Gegen `#eef2f9` ist das ein Unterschied von einem Prozent. Fünf Linien im Block auf `#d3dcea`, denselben Ton wie der Grundstrich der Leseleiste.
+
+Die Team-Karten gewinnen: weiss mit Rahmen und Schatten auf hellem Grund heben sich besser ab als auf weissem.
+
+### AE2 – Die Leseleiste war zu klein
+
+**«Der Inhalt der Leiste ist gut, aber alles viel zu klein.»** Messbar richtig: 12 px bei 62 % Deckkraft war der schwächste Text der ganzen Seite. 12 px ist auf dieser Seite für Etiketten reserviert, die man überfliegt — Augenbrauen, Quellenzeile. **Die kleinste Lesegrösse ist 14 px.**
+
+Zur Frage, ob Claude Design das machen soll: nein, und der Grund ist strukturell. Die Leiste muss wissen, wo die Abschnitte der Seite stehen, also muss sie in der Elternseite leben — ein Baustein im iframe kann das nicht. Die vier Handgriffe aus Abschnitt 9e (Grund durchsichtig, Handy-Query, Höhen-Sender, Notizen entfernen) wären reine Kosten. Was Claude Design liefert — **mehrere Fassungen nebeneinander** —, steht stattdessen als Werkstattdatei unter `assets/Leseleiste Varianten (offline).html`: vier Fassungen, beide Hintergründe, dieselben Tokens.
+
+| | Fassung | Urteil |
+|---|---|---|
+| — | heute: 12 px, 62 % | zu schwach |
+| **A** | 14 px, echte Farben, 36 px Zeilen | **gewählt** |
+| B | Striche statt Punkte, nur der aktive beschriftet | elegant, nimmt aber den Überblick weg — genau das, was gewünscht war |
+| C | A auf weisser Platte | die Karte konkurriert mit dem Inhalt |
+
+Umgesetzt: 14 px in `#6b7488` statt 12 px auf 62 %, aktiv `#1A2744` in 800; Zeilen 36 statt 28 px; Punkte 10 px mit 2 px Rand; Strich 2 px.
+
+### AE3 – Der Fehler auf dunklem Grund
+
+**«Schrift bei dunklem Hintergrund nicht lesbar.»** Ein echter Fehler, und einer, den meine Prüfungen nicht hätten finden können: sie messen Geometrie und aktive Marke, aber **nie den Kontrast gegen das, was hinter der Leiste liegt.** Die Leiste ist `fixed` — ab dem Abschluss läuft eine dunkle Fläche unter ihr durch.
+
+Behoben nach der Regel aus Teil AC2: auf dunklem Grund kehrt sich die Rolle der zwei Blau um. Beschriftungen in Hellblau, der aktive in Weiss, Strich und Punkt in Hellblau. Umgeschaltet wird **gemessen**, nicht nach Abschnittsnamen geraten: sobald die Oberkante des Abschlusses über die Unterkante der Leiste steigt, ist alles hinter ihr dunkel.
+
+**Und der Prüfer rechnet jetzt Helligkeit.** Er liest die gerenderte Farbe der aktiven und der ruhigen Beschriftung über dem Abschluss und fällt durch, wenn aktiv unter 0.60 oder ruhig unter 0.45 liegt. Der Fehler kann nicht zurückkommen.
+
+### AE4 – Beschriftungen, die im Abschnitt vorkommen
+
+**«Könnte man die Titel noch passender machen?»** Regel: jede Beschriftung nimmt ein Wort, das in ihrem Abschnitt wirklich steht — dann erkennt der Leser, wo er gelandet ist.
+
+| Anker | vorher | jetzt | steht im Abschnitt als |
+|---|---|---|---|
+| `#alltag` | Ihr Alltag | **Ihr Arbeitstag** | «Sieht so ein typischer Arbeitstag aus?» |
+| `#ablauf` | Ein Auftrag | **Auftragsablauf** | «Wie ein Auftrag optimal durchläuft.» |
+| `#leistungen` | Werkzeuge | **Werkzeug wählen** | Titel im Baustein: «Werkzeug wählen» |
+| `#zusammenspiel` | Zusammenspiel | Zusammenspiel | «Und wie greift das zusammen?» |
+| `#ueberuns` | Über uns | **Wer wir sind** | «über uns, nicht über Sie» |
+| `#fragen` | Einwände | **Ihre Fragen** | «Was Sie jetzt vermutlich denken.» |
+| `#cta` | Kontakt | Kontakt | Abschluss |
+
+«Einwände» war unser Wort, nicht seines. Dazu ein `title` an jedem Punkt, damit sie unter dem Umbruchpunkt nicht namenlos sind.
+
+**Zwei Korrekturen nach dem ersten Durchgang** (03.08.2026, direkt danach):
+
+- **«Der Haken» klang negativ.** Es war die Augenbraue des Abschnitts («Wo ist der Haken?») — als Frage an sich selbst gestellt trägt sie, als Etikett in einer Leiste liest sie sich wie ein Vorbehalt gegen das eigene Angebot. Jetzt **«Ihre Fragen»**, nach der Überschrift «Was Sie jetzt vermutlich denken.»
+- **«Jetzt anrufen» zurück auf «Kontakt».** Die Handlungsaufforderung gehört auf den Knopf, nicht in die Navigation.
+- **«Ein Auftrag» → «Auftragsablauf».** Gewünscht war «optimaler Auftragsablauf». Das geht nicht: die längste Beschriftung bestimmt die Breite der Leiste, und «Optimaler Auftragsablauf» misst rund 165 statt 105 px — der Umbruchpunkt wäre von 1370 auf etwa 1500 px gestiegen und damit hätten alle üblichen Laptops keine Beschriftungen mehr. «Auftragsablauf» behält das Wort und die Breite; das «optimal» steht im Titel des Bausteins selbst.
+
+**Der Umbruchpunkt wanderte mit:** «Werkzeug wählen» ist länger als «Zusammenspiel», die Leiste damit 139 statt 131 px breit. Beschriftungen fallen jetzt unter **1370 px** weg statt unter 1365. Die Rechnung steht als Kommentar in der Datei — wer eine Beschriftung ändert, misst nach.
+
+### AE5 – Das billige Zeichen, und der Sweep dahinter
+
+**«Dieses Zeichen rechts auf dem Bild wirkt billig, behebe das überall.»** Der Aufklapp-Pfeil war das Schriftzeichen U+2304. **Es steckt in keinem der beiden Schrift-Subsets** und fiel auf die Systemschrift zurück — falsche Strichstärke, falsche Höhe, sichtbar fremd. Jetzt ein Winkel als SVG in der Sprache der übrigen Symbole: 2.2 px Strich, runde Enden, `currentColor`. Zwei Stellen in v4, eine in v3.
+
+Statt nur diese eine Stelle zu flicken, prüft ein Skript **jedes sichtbare Zeichen** beider Fassungen und aller vier Bausteine gegen die `unicode-range` der `@font-face`-Blöcke, `::before`/`::after` eingeschlossen. Ergebnis:
+
+- **v4: alle Zeichen im Subset.**
+- v3: ein Treffer, `→` (U+2192) in `auftragsfluss.html`. Bekannt seit Abschnitt 9c. Steckt im Bundle, also Extract/Inject nötig — **offen, bewusst nicht angefasst.** Der Ersatz wäre `›` (U+203A), das im latin-Subset liegt.
+
+Das Skript liegt im Arbeitsverzeichnis, nicht im Repo. Merksatz: **wer ein Zeichen einsetzt, prüft es gegen die `unicode-range`** — `›` und `↓` sind drin, `→` und `⌄` nicht.
+
+### AE6 – Gewicht: Werkzeugwand, Zahnrad, Arbeitstag
+
+**«Kannst du das ganze hier ein bisschen kleiner machen?»** — die Werkzeugwand. Der Deckel lag bei `min(1160px, 76vw)`; nach Abschnitt 5 ist 1160 die **Obergrenze** (darüber ragt der Abschnitt unter der Kopfzeile heraus), nach unten war Luft. Jetzt **1020 px** — damit hat die Wand genau die Kante von `.wrap`, der Abschnitt fluchtet mit allen anderen, und der Block ist auf 1440 px 7 % kürzer (712 → 664 px). Eine Kante weniger, im Sinn von AC3. Platte und Foto teilen die Breite, beide Angaben müssen gleich bleiben.
+
+**«Über und unter dem Zahnrad weniger Abstand, und das Zahnrad kleiner.»** 560 → **480 px**, Handy 420 → 380. Über dem Zahnrad 40 → 16 px, darunter 16 → 8. Die Grafik rechnet sich als 92 % der Rahmenhöhe und hat darin ohnehin Luft — doppelte Abstände wirken dort als Loch. Weil der Abschnitt seit AE1 weiss ist, braucht er oben dagegen echten Abstand zum Foto: 48 px.
+
+**«Wie könnte man den Arbeitstag schneller erfassbar machen? Allenfalls animiert einfliegen?»** Was ihn langsam machte: vier gleich aussehende Sätze. Man musste alle vier lesen, um zu merken, dass es immer dieselbe Sache ist.
+
+1. **Ein Schlagwort führt jede Zeile:** **Aufmass.** · **Rückfrage.** · **Dreimal Telefon.** · **Jetzt erst Ihr Teil.** Die vier fetten Wörter allein erzählen den Tag. **Kein Fakt geändert**, nur die Satzstellung — Fassadenmarkisen, Masse auf dem Block, klemmender Store, nicht notiertes Modell, Typenschild, drei Anrufe, Offerte am Abend stehen alle noch da.
+2. **Die vier Zeilen fliegen gestaffelt ein** (0 / 80 / 160 / 240 ms, 0.45 s statt 0.7 s). Das Auge wird nach unten geführt und kommt bei 19:40 an. Nutzt den `.reveal`-Beobachter, der schon da war. Neu dazu: `prefers-reduced-motion` schaltet Übergang **und** Verzögerung ab — das fehlte für die ganze Seite.
+3. Überschrift **34 → 26 px**, die vier Trennlinien weg (die Achse mit den Punkten trägt schon), Innenabstände 16 → 12 px, Quelle als eine kleine Zeile statt als Kasten mit Etikett. Punkte und Achsenstücke von 28 auf 24 px nachgezogen: 12 px Polster plus halbe Zeilenhöhe.
+
+**Zur Hierarchie der Überschriften:** vorher rief die *Frage* mit 34 px lauter als die *Antwort* mit 26 (der Zeitstrahl trägt seinen Titel selbst, im Bundle, seit AC3 auf 26 px ausgerichtet). Jetzt stehen beide auf 26 und lesen als ein Zug, deutlich unter den 46 px der übrigen Abschnitte — die Geschichte ist leise, das Angebot laut. Damit sind **neun** Schriftstufen in Gebrauch statt acht; alle neun liegen auf der Skala von AC1 (12·14·16·18·21·26·34·46·64). Die «8» dort war die Zahl der genutzten Stufen, keine Obergrenze.
+
+### AE7 – Zwei Dinge, die nicht gemacht wurden
+
+**Die Überleitung «Das ist der Alltag. So könnte derselbe Auftrag durchlaufen:» ist gelöscht** — auf Ansage. Der Zeitstrahl beginnt jetzt direkt mit seinem eigenen Titel. Mitgezogen: das Polster unter dem Arbeitstag war auf 40 px verkürzt, **weil** er mit einer Überleitung endete; ohne sie klebte die Quellenzeile am Abschnittsrand, also zurück auf 72 px.
+
+**Die Zeitmarken 11:30 und 14:00 sind nicht zusammengelegt**, obwohl freigegeben. Ich hatte das selbst vorgeschlagen mit der Begründung, beide sagten «jemand ruft an, die Information fehlt». Beim genauen Lesen hält das nicht:
+
+- Es sind **zwei verschiedene Fehler**: bei 11:30 ist die Information über eine bestehende Anlage nirgends erfasst (→ hinfahren), bei 14:00 ist die Information, die er hat, dem Büro nicht zugänglich (→ drei Anrufe).
+- **14:00 ist die Auflösung von 07:10.** «Masse auf den Block» wird um 14:00 zum Problem und um 19:40 zur Abendarbeit. Fällt die Mitte weg, bricht der Bogen.
+- Das Typenschild bei 11:30 ist das stärkste Stück Research auf der Seite.
+
+Mit den Schlagwörtern aus AE6 sehen die zwei Zeilen ohnehin nicht mehr gleich aus — **Rückfrage** gegen **Dreimal Telefon** —, damit ist der Anlass für das Zusammenlegen weg. Wer es trotzdem will: es ist eine Zeile Markup.
+
+**Gemessen:** `_pruef.py` **0 Fehler, 2 Hinweise** (Zeichenzahlen im Ablauf von v3, Altbestand). Acht Fensterbreiten von 1900 bis 390 px, überall mindestens 16 px Luft zwischen Leiste und Inhalt, kein Überlauf, keine Konsolenfehler, keine toten Anker, alle Zeichen im Subset. Seite 1440×900 **5'778 px** (390×844: 7'667). Arbeitstag 661 → **583 px**. iframes bei 1440: Zeitstrahl 555 · Werkzeugwand 664 · Zahnrad 480.
+
+---
+
+## Teil AF – Belastbare Beispiele, Kopfzeile, neuer Zeitstrahl (03.08.2026)
+
+### AF1 – «Sind die Beispiele bombenfest?»
+
+Die Frage war: **nimm die schlechte Arbeitsweise, die zu 99 % stimmt — nicht etwas, was er vielleicht richtig macht.** Jede der vier Zeitmarken einzeln daraufhin geprüft, *was sie behauptet*:
+
+| | behauptete vorher | Risiko | jetzt |
+|---|---|---|---|
+| 07:10 | «die Masse landen auf Ihrem Block» | benennt ein **Medium**. Er könnte sie abfotografieren oder in ein Formular tippen | «Danach haben die Masse Sie — und sonst niemand.» Nur noch die Struktur: nicht geteilt. Gilt für jedes Medium |
+| 11:30 | «Sie fahren hin und fotografieren das Typenschild» | benennt ein **Verhalten**. Er könnte auch eine alte Offerte durchsuchen | «Das steht auf dem Typenschild an der Anlage, in keiner Liste bei Ihnen.» Das Typenschild bleibt — aber als Tatsache über die Anlage, nicht über ihn |
+| 14:00 | «das Büro will die Offerte schreiben und ruft **dreimal** an» | behauptete ein **Büro** und eine **Zahl**. Beides ungeprüft, die Zahl erfunden. Ob es ein Büro gibt, ist ausgerechnet die erste Frage im Democall-Blatt | «Stillstand. Sie sind auf der Montage. Die Offerte von heute Morgen kann niemand schreiben — die Masse haben Sie.» Folge aus 07:10, ohne Büro und ohne Zahl |
+| 19:40 | «Jetzt erst Ihr Teil» | keines. Abendarbeit beim Inhaber ist die sicherste Aussage der Seite | unverändert |
+
+Die Schlagwortspalte heisst damit **Aufmass · Rückfrage · Stillstand · Jetzt erst Ihr Teil**. Der Preis dafür ist Anschaulichkeit: «ruft dreimal an» war das bildhaftere Detail. Getauscht gegen Belastbarkeit — genau so bestellt.
+
+**Merksatz für weitere Beispiele:** eine Behauptung über die *Struktur* («die Information ist nicht geteilt») hält; eine über sein *Verhalten* («Sie fahren hin») oder über eine *Zahl* («dreimal») kann er im Gespräch umwerfen. Tatsachen über die Welt («das Modell steht auf dem Typenschild») sind immer sicher.
+
+### AF2 – Datum mittig in der Kopfzeile
+
+Es hing unter unserem Logo, in `--muted` auf 12 px — das schwächste Element der Kopfzeile. Jetzt drei Felder statt zwei: **Empfänger links, Datum in der Mitte, Absender rechts**, in `--navy` und 800. Die Kundenmarke gilt in der Kopfzeile (Farbregel AB1), das Dunkelblau ist dort also richtig. Auf dem Handy bleibt es bei 12 px statt 11.
+
+**Dabei ging etwas kaputt, das kein bestehender Prüfer gesehen hätte.** Rasterspalten schrumpfen nicht unter ihren Inhalt: unter etwa 520 px schoben sich Kundenlogo und Amplifyr-Logo **übereinander**. Der Überlauf-Prüfer schwieg — nichts ragte über den Rand, es lag nur übereinander. Behoben mit `minmax(0,1fr)` und einem Rückfall auf zwei Felder unter 520 px (drei Felder brauchen zusammen rund 414 px).
+
+**Neue Prüfung:** die drei Felder der Kopfzeile werden auf **Überlappung** geprüft, auf 390 und auf 1400 px. Von Hand nachgemessen über zehn Breiten von 1900 bis 360 px — das Datum steht ab 521 px mittig, darunter weicht es.
+
+### AF3 – «Zeitstrahl leicht» ersetzt den Baustein
+
+Neue Fassung aus Claude Design (Projekt `3e6aaae0`, Datei `Zeitstrahl leicht.dc.html`): fünf Schritte **senkrecht** an einer Mittelachse, abwechselnd links und rechts, nummerierte Punkte, darunter ein Querbalken «IT, Geräte & Telefon — trägt alle fünf Schritte». Sie ersetzt die fünf antippbaren Karten.
+
+**Direkt in die Seite, nicht als iframe** — dieselbe Entscheidung wie beim Arbeitstag in Teil AA, und hier noch klarer: der Entwurf ist statisches Markup mit Inline-Styles, sein einziges Skript setzte eine CSS-Klasse. Damit fallen **Höhen-Sender, `aspect-ratio` als Startwert und der ganze `zeitstrahl-resize`-Zweig** weg. Die Falle aus Abschnitt 5 der Übergabe — eine Seite, die ihre Höhe meldet, darf sich nicht nach der Fensterhöhe bemessen — existiert für diesen Abschnitt nicht mehr.
+
+Fünf Griffe beim Zuschnitt, über die vier aus Abschnitt 9e hinaus:
+
+1. **Google Fonts raus.** Der Entwurf lud Fraunces und Manrope von `fonts.googleapis.com`. Die Seite holt seit 9c nichts von aussen; die Schriften liegen lokal und werden geerbt.
+2. **Farben auf die Tokens der Seite.** Der Entwurf hatte `#1A2744`, `#B0C4DE`, `#EEF3FA`, `#76808F` als Festwerte. Jetzt `var(--navy)`, `var(--blue)`, `var(--soft)`, `var(--muted)` — ändert sich die Farbregel, folgt der Zeitstrahl mit, statt zurückzufallen.
+3. **Schriftgrössen auf die Skala von AC1 geschnappt:** h3 19 → 21, Text 17 → 18, Zahl im Punkt 13 → 14, Balken 17 → 16, Chip-Etikett **11 → 12** (das war ein Verstoss gegen die harte Grenze). Versalabstand `.13em`/`.09em` → `.12em`. Abstände auf das 4er-Raster, mit **einer** bewussten Ausnahme: die Querstriche sitzen auf 15 px, der Mitte des 30-px-Punkts — ein Ausrichtungswert.
+4. **Ein Fehler im Entwurf, der nur auf dem Handy sichtbar wird.** Die Media-Query setzte `grid-column` und `padding` zurück, aber **nicht** `text-align` und `align-items` — die Zeilen 1, 3 und 5 blieben rechtsbündig, während 2 und 4 links standen. Auf 390 px brach die Reihe optisch auseinander. Text, Ausrichtung und Chip-Reihe müssen mit; ausserdem läuft die Einflug-Animation der Punkte dort auf `zsIn` statt `zsPop`, weil `zsPop` ein `translateX(-50%)` mitbringt, das auf dem Handy nicht mehr gilt.
+5. **Einflug beim Hereinscrollen statt beim Laden.** Der Entwurf startete ihn in `componentDidMount`. Der Abschnitt liegt in der Mitte der Seite — die Bewegung wäre vorbei, bevor jemand hinsieht. Jetzt ein `IntersectionObserver` bei 25 %, der sich danach abmeldet. `prefers-reduced-motion` war im Entwurf schon berücksichtigt und ist übernommen.
+
+Die Inline-Styles der wiederkehrenden Teile sind in eine Regelgruppe unter `#zs-root` gezogen — fünf Zeilen mit demselben Muster als fünf Mal dieselben 400 Zeichen Inline-Style zu pflegen, war der einzige Weg zurück in den Entwurf, aber nicht in eine Seite, die weiterlebt. Was pro Zeile verschieden ist (`animation-delay`, `margin-left/right:50%`), steht weiter inline.
+
+**`Zeitstrahl.html` ist damit verwaist** und liegt unter `_archiv/backups/Zeitstrahl.html.abgeloest_03.08`. Aus `BUNDLES` in `_pruef.py` entfernt — es gibt jetzt drei Bausteine statt vier, und nur noch **zwei** iframes in v4 (Werkzeugwand, Zahnrad).
+
+**Der Abschnitt ist länger geworden:** 555 → 1'037 px, die Seite 5'778 → 6'260 px (Handy 7'803). Das ist die Bauart — fünf Schritte untereinander statt fünf Karten nebeneinander. Wer die Seite kürzen will, greift hier an, nicht am Arbeitstag.
+
+**Gemessen:** `_pruef.py` **0 Fehler, 2 Hinweise**. Keine Konsolenfehler, kein Überlauf, keine Schrift unter 12 px, alle Zeichen im Subset, Leiste hält überall 16 px Abstand, Kopfzeile ohne Überlappung auf zehn Breiten. Zeitstrahl-Geometrie nachgemessen: Achse auf 720 px (Seitenmitte), Punkte darauf zentriert, Querstriche 38 × 1 px, linke Textkante auf 230 px — dieselbe wie im übrigen Abschnitt (AC3).
+
+---
+
+## Teil AG – Der rote Faden: ein Versprechen, ein Wort (03.08.2026)
+
+Frage des Auftraggebers: **was bräuchte es, damit der rote Faden mehr da ist — müsste «Generalunternehmer» konstanter ausgespielt werden, und wo?**
+
+### AG1 – Der Befund: es waren nicht drei Fäden, sondern einer unter drei Namen
+
+Die Seite machte dieselbe Zusage dreimal, jedes Mal anders benannt:
+
+| Formulierung | wie oft | wo |
+|---|---|---|
+| «digitaler Generalunternehmer» | 2× | dunkles Band · Zange-Panel im Werkzeugwand-Bild |
+| «drei Bereiche · ein Ansprechpartner» | 1× | im Werkzeugwand-Bild |
+| «einer, den Sie anrufen» | 2× | Team-Karte Sinan · Abschluss |
+
+Ein Versprechen, das sich dauernd umbenennt, kann der Leser nicht aufaddieren. Das Problem war **nicht zu wenig Substanz, sondern zu viele Namen für dieselbe**.
+
+**«Generalunternehmer» ist das richtige Wort**, weil es aus seinem Gewerbe kommt und nicht aus dem Marketing: ein Handwerker weiss ohne Erklärung, dass ein GU den ganzen Auftrag nimmt, die Gewerke koordiniert, einen Vertrag hat und **für das Ganze haftet**. Die anderen zwei Formulierungen sind Umschreibungen davon.
+
+Die Metapher hat eine Struktur, die zur Hälfte schon auf der Seite lag:
+
+| was ein GU im Bau tut | wo die Seite es zeigt | Stand vorher |
+|---|---|---|
+| ein Vertrag statt sieben | — | fehlte |
+| koordiniert die Gewerke | Zahnrad, «Drei Werkzeuge, ein Betrieb» | da, aber ohne das Wort |
+| **haftet für das Ganze** | «Klemmt es zwischen zwei Systemen, ist das unsere Aufgabe» | **im zugeklappten Einwand versteckt** |
+| eine Nummer anrufen | Abschluss, Team-Karte | da, anderes Wort |
+
+Die dritte Zeile war der eigentliche Fund: **der GU-artigste Satz der ganzen Seite stand hinter einem Klick.** Das ist die Zusage, die einen Generalunternehmer von einem Lieferanten unterscheidet.
+
+### AG2 – Vier Stellen, nicht überall
+
+1. **Hero — der Faden fängt an.** Das Wort fiel vorher erst nach rund 2'500 px. Neue Lead-Zeile: «Drei Sachen müssen laufen: die Aufträge, die Technik, der Auftritt. Wir nehmen alle drei — **wie ein Generalunternehmer, nur digital.**» Der Satz beginnt bei ihm und endet bei uns, damit der Hero seine Rolle behält. «Drei Sachen müssen laufen» war in Teil Y als Überschrift des Leistungsteils gestrichen — als Hero-Zeile ist die Formulierung an der besseren Stelle.
+2. **Werkzeugwand — der Anker.** Steht schon, zweimal (Band und Zange-Panel). Nicht angefasst.
+3. **Zusammenspiel — das Wort wird erklärt.** «Ein Generalunternehmer kauft nicht die Werkzeuge — er bringt sie zum Zusammenspielen.»
+4. **Der Haftungssatz nach vorn**, aus dem Einwand in den sichtbaren Abschnitt: «Und **klemmt es zwischen zwei Systemen, ist das unsere Aufgabe, nicht Ihre.**» Im Einwand bleibt er stehen — dort antwortet er auf einen Zweifel, hier ist er ein Versprechen. Gleiche Worte, verschiedene Aufgaben.
+5. **Über uns trägt den Faden schon in Personen** und brauchte nur den Anschluss: «… statt nur ein Stück davon: drei Gewerke, ein Ansprechpartner. Das ist gemeint mit Generalunternehmer.»
+
+**Wo bewusst nicht:** Arbeitstag und Zeitstrahl. Die erste Hälfte der Seite ist seine Welt; wir treten erst ab der Werkzeugwand auf. Das hält die Seite von Anfang an ein — das Wort dort wäre ein Bruch. **Roter Faden heisst nicht «das Wort überall».**
+
+**Und die Leseleiste kann ihn nicht tragen.** Gemessen: «Generalunternehmer» ist 167 px breit, die Leiste damit 189 px — die Beschriftungen bräuchten dann ab **1426 px** Platz, und 1366- wie 1400-px-Laptops hätten keine mehr. Zum Vergleich: «Die Werkzeuge» braucht 129 px und kommt ab 1350 px aus. Der Faden muss im Inhalt laufen, nicht in der Navigation.
+
+### AG3 – Der Übergang von der Werkzeugwand zum Zahnrad
+
+Rückmeldung: **der Übergang ist nicht klar, vor allem weil dort «Sie und Ihr Team» plötzlich vorkommt.** Vier Ursachen, alle im Text, keine in der Grafik:
+
+1. **Die Zahlen widersprachen sich.** Die Wand kündigt *drei* Bereiche an, das Bild zeigt *vier* Kreise plus Nabe. Die Überschrift «Drei Werkzeuge, ein Betrieb» machte es schlimmer, weil sie zu zählen aufforderte.
+2. **Die Nabe kam aus dem Nichts.** Sein Team war in v4 nie Thema — die Karte «Und Ihre Leute?» ist in Teil Y gestrichen. Erklärt wurde die Nabe erst **unter** dem Bild.
+3. **Die Treuhand** ist ein fünftes Element, das die Wand nicht kennt, und las sich wie ein vierter Bereich aus unserem Angebot.
+4. **Die Metapher wechselt** von Werkzeugen an einer Wand zu einer laufenden Maschine.
+
+**Das Zahnrad wurde nicht ersetzt** — es ist die einzige Grafik, die *Zusammenspiel* zeigt: die Wand zeigt Auswahl, der Zeitstrahl Reihenfolge. Und was man stattdessen bauen würde (drei Kästen, darunter ein Balken «hält es zusammen») hat der neue Zeitstrahl mit seinem Querbalken schon — es wäre die dritte Wiederholung derselben Figur.
+
+**Gelöst wurde es im Text, und zwar vor dem Bild.** Die Überschrift erklärt jetzt die Nabe, statt von ihr überrascht zu werden — und das trägt den GU-Faden mit: **ein Generalunternehmer stellt sich nicht in die Mitte, der Bauherr steht in der Mitte.**
+
+| | vorher | jetzt |
+|---|---|---|
+| Überschrift | «Drei Werkzeuge, ein Betrieb.» | **«In der Mitte steht Ihr Betrieb, nicht die Software.»** |
+| Lead | «Einzeln kann man das alles kaufen …» | «Ein Generalunternehmer kauft nicht die Werkzeuge — er bringt sie zum Zusammenspielen. **Drei davon sind unsere, Ihre Treuhand bleibt daneben.** Angetrieben wird das Ganze von Ihnen und Ihrem Team.» |
+| Schluss | Nabe · Treuhand · — | Ablauf · **Treuhand-Zusage** · **Haftung** |
+
+Der Lead erklärt jetzt das Bild — inklusive der Zählung (drei von uns, Treuhand daneben) und der Nabe —, der Schluss macht die Zusagen. Der Rückbezug «drei» auf die Werkzeugwand ist erhalten, steht aber im Lead statt in der Überschrift.
+
+### AG4 – Warum die Treuhand **nicht** ins Zange-Panel kommt
+
+Frage: **müsste der Treuhänder dort auch erwähnt werden?** Das Panel verspricht «Wir übernehmen: Das Hin und Her mit Herstellern und Lieferanten» — die Treuhänderin ist dieselbe Kategorie. Trotzdem nein:
+
+- Die **Finanzschicht liegt seit Teil R ausserhalb**, das Treuhand-Zahnrad ist absichtlich extern und ohne Produktnamen.
+- Im Democall-Blatt steht, dass die Treuhand-Frage **ihm** gestellt wird und **Kaltkontakt dort verboten** ist.
+- Das Panel sind drei knappe Zusagen (Eine Nummer · Wir übernehmen · Wir bleiben dran). Eine vierte verdünnt sie. Und es steckt im Bundle, also Extract/Inject für einen Satz.
+
+**Die Frage hat aber eine echte Unstimmigkeit offengelegt:** die Seite versprach es längst — nur versteckt. Im zugeklappten Einwand steht «Ihr Treuhänder bleibt Ihr Treuhänder — und wir sprechen mit ihm, damit Sie es nicht müssen». Das Aufklapp-Panel versprach mehr als die sichtbare Seite. Die Zusage steht jetzt sichtbar, und zwar **dort, wo das Treuhand-Zahnrad liegt**: «Mit Ihrer Treuhand reden wir, damit Sie es nicht müssen.» Kein neues Versprechen, nur ein sichtbares — und ohne die Finanzschicht zu betreten.
+
+**«Generalunternehmer» kommt jetzt viermal in v4 vor** (Hero · Band · Zusammenspiel · über uns), plus einmal im Werkzeugwand-Bild. Vorher zweimal.
+
+**Gemessen:** `_pruef.py` **0 Fehler, 2 Hinweise**, keiner der 13 verbotenen Begriffe. Acht Fensterbreiten grün, Kopfzeile ohne Überlappung, alle Zeichen im Subset. Seite 1440×900 **6'395 px** (390×844: 7'971).
+
+### AG5 – Was dabei noch aufgefallen ist, aber offen bleibt
+
+- Die **Reihenfolge der Bereiche** stimmt zwischen Werkzeugwand (Handwerker-Software · IT · Website) und Zahnrad (oben links IT, oben rechts Website, unten rechts Software) nicht überein. Die Namen stimmen, nur die Positionen nicht — und die sitzen samt Ripple-Ringen in `zahnrad-animation.html`, also im Bundle. Niemand vergleicht Positionen, alle vergleichen Namen und Anzahl; deshalb nicht angefasst.
+- Die **Seite ist mit dem neuen Zeitstrahl auf 6'395 px gewachsen** (Tiefstand war 5'670 nach Teil AA). Der Zeitstrahl allein trägt 1'037 px davon. Wer kürzen will, greift dort an.
+- Die zwei Überleitungen sind auf Ansage **gelöscht**, damit ist die Klasse `.brueck` und mit ihr das verkürzte Polster von `.flow` weggefallen — beide Werte hingen an den zwei Sätzen.
 
 ---
 

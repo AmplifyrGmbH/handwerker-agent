@@ -10,10 +10,22 @@ Rueckgabewert 1, wenn eine Pruefung fehlschlaegt.
 """
 import io, os, re, sys, json, subprocess
 
+# Die Konsole hier laeuft auf cp1252. Ohne das bricht der Lauf ab, sobald ein
+# Zeichen ausserhalb davon durchkommt — zuletzt das Ersatzzeichen, das der
+# Unterprozess selbst erzeugt: die Browser-Pruefungen liefen durch und der
+# Bericht starb beim Ausdrucken.
+try:
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+except Exception:
+    pass
+
 PARENT = 'REMA_Storen_Demo_v3.html'
+# `Zeitstrahl.html` steht hier nicht mehr: seit dem 03.08.2026 steckt der
+# Zeitstrahl als Markup direkt in v4 (Fassung «Zeitstrahl leicht» aus Claude
+# Design), nicht mehr als Baustein im iframe. Der abgeloeste Bundle liegt unter
+# _archiv/backups/Zeitstrahl.html.abgeloest_03.08.
 BUNDLES = {'auftragsfluss.html': 'Ablauf', 'zahnrad-animation.html': 'Animation',
-           'Werkzeugwand.html': 'Werkzeugwand',
-           'Zeitstrahl.html': 'Zeitstrahl'}
+           'Werkzeugwand.html': 'Werkzeugwand'}
 PARENTS = [PARENT, 'REMA_Storen_Demo_v4.html']   # v4 = die Fassung, die verschickt wird
 # Praefix eines gelben Kastens -> Zahnrad. 'Treuhand' ist die Finanzschicht:
 # nicht unsere Leistung und kein Produkt, sondern die Uebergabe an einen Dritten.
@@ -160,7 +172,8 @@ JS = r"""() => {
     .filter(e => e.children.length === 0 && e.textContent.trim().length > 2
                  && getComputedStyle(e).display !== 'none'
                  && parseFloat(getComputedStyle(e).fontSize) < 12)
-    .map(e => Math.round(parseFloat(getComputedStyle(e).fontSize) * 10) / 10 + 'px: '
+    .map(e => (e.className || e.tagName.toLowerCase()) + ' · '
+              + Math.round(parseFloat(getComputedStyle(e).fontSize) * 10) / 10 + 'px: '
               + e.textContent.trim().slice(0, 30));
   R.groessen = new Set([...document.querySelectorAll('body *')]
     .filter(e => e.children.length === 0 && e.textContent.trim().length > 2)
@@ -180,6 +193,85 @@ JS_ROLLEN = r"""() => {
           pfeil: R(document.querySelector('.role-arrow')),
           iframe: R(document.querySelector('.gear-iframe'))};
 }"""
+
+
+def pruefe_leseleiste(pg, mobil=False):
+    """Leseleiste am rechten Rand — seit 03.08.2026, nur in v4.
+
+    Geprueft wird, was von Hand niemand zuverlaessig sieht: dass die Marke
+    wirklich dem Abschnitt folgt, dass der gefuellte Strich in der Mitte des
+    aktiven Punkts endet, dass die Leiste im Hero noch weg ist und dass sie
+    dem Inhalt nicht ins Bild ragt.
+    """
+    if not pg.query_selector('.jrail'):
+        return
+    if mobil:
+        d = pg.eval_on_selector('.jrail', 'e=>getComputedStyle(e).display')
+        if d == 'none':
+            return ok('Leseleiste auf dem Handy ausgeblendet')
+        return fail('Leseleiste steht auf 390 px im Bild (display:%s)' % d)
+
+    print('   -- Leseleiste')
+    ziele = pg.eval_on_selector_all('.jrail a', 'l=>l.map(a=>a.getAttribute("href"))')
+    falsch = []
+    for z in ziele:
+        pg.eval_on_selector(z, 'e=>e.scrollIntoView({block:"center",behavior:"instant"})')
+        pg.wait_for_timeout(400)
+        cur = pg.evaluate("()=>{const a=document.querySelector('.jrail a[aria-current]');"
+                          "return a?a.getAttribute('href'):'-';}")
+        if cur != z:
+            falsch.append('%s statt %s' % (cur, z))
+    if falsch:
+        fail('Leseleiste markiert den falschen Abschnitt: %s' % ', '.join(falsch))
+    else:
+        ok('Leseleiste folgt allen %d Abschnitten' % len(ziele))
+
+    strich = pg.evaluate("""()=>{const r=document.querySelector('.jrail');
+        const a=r.querySelector('a[aria-current]');
+        return [parseFloat(r.style.getPropertyValue('--p'))||0, a?a.offsetTop:-1];}""")
+    if strich[0] == strich[1]:
+        ok('Strich endet in der Mitte des aktiven Punkts (%d px)' % strich[0])
+    else:
+        fail('Strich und aktiver Punkt laufen auseinander: --p=%s, Punkt bei %s' % tuple(strich))
+
+    # scroll-behavior:smooth wuerde hier Sekunden brauchen — instant erzwingen.
+    pg.evaluate('window.scrollTo({top:0,behavior:"instant"})')
+    pg.wait_for_timeout(500)
+    if pg.eval_on_selector('.jrail', "e=>e.classList.contains('on')"):
+        fail('Leseleiste ist schon im Hero sichtbar')
+    else:
+        ok('Leseleiste erscheint erst nach dem Hero')
+
+    # Die Leiste ist `fixed` — ab dem Abschluss laeuft eine dunkle Flaeche
+    # hinter ihr durch, und dort war sie in der ersten Fassung unsichtbar.
+    pg.eval_on_selector('.cta', 'e=>e.scrollIntoView({block:"center",behavior:"instant"})')
+    pg.wait_for_timeout(500)
+    d = pg.evaluate("""()=>{const r=document.querySelector('.jrail');
+        const a=r.querySelector('a[aria-current]');
+        const hell=c=>{const m=c.match(/[\\d.]+/g)||[0,0,0];
+          return (0.299*m[0]+0.587*m[1]+0.114*m[2])/255;};
+        return {um:r.classList.contains('dunkel'),
+                aktiv:hell(getComputedStyle(a.querySelector('span')).color),
+                ruhig:hell(getComputedStyle(r.querySelector('a:not([aria-current]) span')).color)};}""")
+    if not d['um']:
+        fail('Leseleiste schaltet auf dunklem Grund nicht um')
+    elif d['aktiv'] < 0.6 or d['ruhig'] < 0.45:
+        fail('Leseleiste auf dunklem Grund zu dunkel (aktiv %.2f, ruhig %.2f)'
+             % (d['aktiv'], d['ruhig']))
+    else:
+        ok('Leseleiste kehrt sich auf dunklem Grund um (aktiv %.2f, ruhig %.2f)'
+           % (d['aktiv'], d['ruhig']))
+
+    # Platz gegen die Textspalte und gegen die Werkzeugwand, die breiter ist.
+    geo = pg.evaluate("""()=>{const R=s=>{const e=document.querySelector(s);
+          return e?Math.round(e.getBoundingClientRect().right):0;};
+        return [Math.round(document.querySelector('.jrail').getBoundingClientRect().left),
+                R('.qas .wrap'), R('.werkzeug-iframe')];}""")
+    eng = max(geo[1], geo[2])
+    if geo[0] >= eng:
+        ok('Leseleiste haelt Abstand: %d px, engste Kante des Inhalts %d px' % (geo[0], eng))
+    else:
+        fail('Leseleiste ragt in den Inhalt: %d px gegen %d px' % (geo[0], eng))
 
 
 def pruefe_browser():
@@ -233,8 +325,12 @@ def pruefe_seite(b, datei):
         r = pg.evaluate(JS)
         if r['klein']:
             for x in r['klein']:
-                if 'Vorschau ·' in x:
-                    continue          # Datums-Chip am Kopf, bewusst klein
+                # Datums-Chip am Kopf, bewusst klein. Geprueft wird die Klasse,
+                # nicht der Text: die Beschriftung hiess schon «Vorschau ·»
+                # und heisst in v3 «Beispiel ·» — die Ausnahme lief dadurch
+                # ins Leere und meldete den Chip als Fehler.
+                if 'vtag' in x:
+                    continue
                 fail('Schrift unter 12 px — %s' % x)
         ok('Schriftgroessen: %d Stufen, nichts Wesentliches unter 12 px' % r['groessen'])
         if r['groessen'] > 18:
@@ -259,27 +355,57 @@ def pruefe_seite(b, datei):
             else:
                 fail('Hero-Chip fuehrt in ein zugeklapptes Team')
 
-        print('   -- Symmetrie im Vergleichsbild')
-        pg.eval_on_selector('.roles', 'e=>e.scrollIntoView()')
-        pg.wait_for_timeout(6500)                      # Einflug der Zahnraeder abwarten
-        d = pg.evaluate(JS_ROLLEN)
-        rahmen = [f for f in pg.frames if 'zahnrad' in (f.url or '')]
-        if rahmen:
-            g = rahmen[0].evaluate("""()=>{const gs=[...document.querySelectorAll('svg path')]
-                .map(p=>p.getBoundingClientRect());
-                return Math.round(Math.min(...gs.map(x=>x.left)));}""")
-            pm = (d['pfeil'][0] + d['pfeil'][1]) // 2
-            links, rechts = pm - d['bild'][1], d['iframe'][0] + g - pm
-            if abs(links - rechts) <= 14:
-                ok('Pfeil mittig: %d px links, %d px rechts' % (links, rechts))
-            else:
-                fail('Pfeil nicht mittig: %d px links, %d px rechts' % (links, rechts))
+        # Das Vergleichsbild (Chaos-Foto ← Pfeil → Zahnrad) steht seit dem
+        # 03.08.2026 nur noch in v3. In v4 ist es weg: das Chaos-Bild sagte
+        # dasselbe wie der Arbeitstag darueber, und das Zahnrad steht jetzt
+        # allein hinter der Werkzeugwand. Die Pruefung haengt darum an der
+        # Existenz von .roles, nicht am Dateinamen.
+        if pg.query_selector('.roles'):
+            print('   -- Symmetrie im Vergleichsbild')
+            pg.eval_on_selector('.roles', 'e=>e.scrollIntoView()')
+            pg.wait_for_timeout(6500)                  # Einflug der Zahnraeder abwarten
+            d = pg.evaluate(JS_ROLLEN)
+            rahmen = [f for f in pg.frames if 'zahnrad' in (f.url or '')]
+            if rahmen:
+                g = rahmen[0].evaluate("""()=>{const gs=[...document.querySelectorAll('svg path')]
+                    .map(p=>p.getBoundingClientRect());
+                    return Math.round(Math.min(...gs.map(x=>x.left)));}""")
+                pm = (d['pfeil'][0] + d['pfeil'][1]) // 2
+                links, rechts = pm - d['bild'][1], d['iframe'][0] + g - pm
+                if abs(links - rechts) <= 14:
+                    ok('Pfeil mittig: %d px links, %d px rechts' % (links, rechts))
+                else:
+                    fail('Pfeil nicht mittig: %d px links, %d px rechts' % (links, rechts))
+
+        pruefe_leseleiste(pg)
 
         print('   -- Mobil (390 px)')
         pm2 = b.new_page(viewport={'width': 390, 'height': 900})
         pm2.goto(url, wait_until='networkidle')
         pm2.add_style_tag(content='.reveal{opacity:1!important}')
         pm2.wait_for_timeout(1500)
+        pruefe_leseleiste(pm2, mobil=True)
+        # Die Kopfzeile traegt drei Felder: Empfaengerlogo, Datum, Absenderlogo.
+        # Auf schmalen Schirmen ist dafuer kein Platz, und Rasterspalten
+        # schrumpfen nicht unter ihren Inhalt — die Logos schoben sich
+        # uebereinander. Der Ueberlauf-Pruefer sieht das nicht: nichts ragt ueber
+        # den Rand. Also gegen Ueberlappung pruefen, auf beiden Breiten.
+        for seite, wo in ((pm2, '390 px'), (pg, '1400 px')):
+            k = seite.evaluate("""()=>{const R=s=>{const e=document.querySelector(s);
+                if(!e||!e.offsetParent) return null;
+                const b=e.getBoundingClientRect(); return [b.left,b.right];};
+                return {marke:R('.top-in .brand'), datum:R('.top-in .datum'),
+                        wir:R('.top-in .topnav')};}""")
+            paare = [('Marke', 'Datum', k['marke'], k['datum']),
+                     ('Datum', 'Absender', k['datum'], k['wir']),
+                     ('Marke', 'Absender', k['marke'], k['wir'])]
+            schlimm = [(a, b) for a, b, x, y in paare
+                       if x and y and min(x[1], y[1]) - max(x[0], y[0]) > 0]
+            if schlimm:
+                fail('Kopfzeile bei %s: %s ueberlappen'
+                     % (wo, ', '.join('%s/%s' % p for p in schlimm)))
+            else:
+                ok('Kopfzeile bei %s: die Felder halten Abstand' % wo)
         JS_UEBER = """()=>{const W=document.documentElement.clientWidth; const o=[];
             // Nur abgeschnittener TEXT zaehlt. Bilder und SVG-Formen duerfen bewusst
             // ueber den Rand laufen (Cover-Zuschnitt des Werkzeugwand-Fotos).

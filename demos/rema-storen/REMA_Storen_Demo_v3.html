@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>REMA Storen — Vorschau von Amplifyr · August 2026</title>
-<meta property="og:title" content="REMA Storen — Ihr Betrieb 2026 · Vorschau von Amplifyr">
-<meta property="og:description" content="Eine persönliche Vorschau für REMA Storen: ein Auftrag von der ersten Suche bis zum Service. Gebaut von Amplifyr.">
+<title>REMA Storen — Beispiel von Amplifyr · August 2026</title>
+<meta property="og:title" content="REMA Storen — Ihr Betrieb 2026 · Beispiel von Amplifyr">
+<meta property="og:description" content="Ein Beispiel für REMA Storen: ein Auftrag von der ersten Suche bis zum Service. Gebaut von Amplifyr.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/logo.png">
 <style>
@@ -214,7 +214,7 @@
   .ph::after{content:attr(data-ph);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.62);font-size:.8rem;font-weight:700;text-align:center;padding:14px;letter-spacing:.04em;white-space:pre-line;line-height:1.5}
   .ph img{opacity:0}
 
-  /* ===== VORSCHAU-LEISTE + KOPF ===== */
+  /* ===== BEISPIEL-LEISTE + KOPF ===== */
   .demobar{background:var(--navy);color:#fff;text-align:center;font-size:.82rem;padding:10px 16px;font-weight:600}
   .demobar b{color:var(--gold)}
   header.top{position:sticky;top:0;z-index:60;background:rgba(251,252,254,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
@@ -357,7 +357,11 @@
   .expander summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--blue-d);font-size:.95rem;padding:11px 22px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);transition:.2s}
   .expander summary::-webkit-details-marker{display:none}
   .expander summary:hover{border-color:var(--blue)}
-  .expander summary .arr{transition:transform .25s}
+  /* Winkel als SVG statt als Schriftzeichen (U+2304): das Zeichen steckt in
+     keinem der beiden Schrift-Subsets und fiel auf die Systemschrift zurueck. */
+  .expander summary .arr{display:flex;transition:transform .25s}
+  .expander summary .arr svg{width:16px;height:16px;display:block;stroke:currentColor;
+    stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .expander[open] summary{margin-bottom:30px}
   .expander[open] summary .arr{transform:rotate(180deg)}
 
@@ -423,7 +427,7 @@
 </head>
 <body>
 
-<div class="demobar">Persönliche Vorschau für <b>REMA Storen</b> — erstellt von Amplifyr · August 2026</div>
+<div class="demobar">Beispiel für <b>REMA Storen</b> — erstellt von Amplifyr · August 2026</div>
 
 <header class="top">
   <div class="wrap top-in">
@@ -434,7 +438,7 @@
       <span class="wordmark" style="display:none">REMA Storen</span>
     </div>
     <nav class="topnav">
-      <span class="vtag">Vorschau · August 2026</span>
+      <span class="vtag">Beispiel · August 2026</span>
     </nav>
   </div>
 </header>
@@ -442,12 +446,11 @@
 <section class="hero">
   <div class="wrap hero-in">
     <div>
-      <div class="eyebrow">Grüezi Herr Redza · eine Vorschau von Amplifyr</div>
       <h1>Wie ein Kundenauftrag oft läuft — <span class="u">und wie er bei Ihnen laufen könnte.</span></h1>
-      <div class="credlead">Wer diese Vorschau gebaut hat</div>
+      <div class="credlead">Wer das gebaut hat</div>
       <div class="herocred">
+        <a class="hcr" href="#ueberuns"><img src="assets/timo.jpg" alt="Timo Steinfort" onerror="this.remove()"><span><b>Timo Steinfort</b><i>Kennt die Bewirtschaftungen · MSc Real Estate</i></span></a>
         <a class="hcr" href="#ueberuns"><img src="assets/david.jpg" alt="David Staub" onerror="this.remove()"><span><b>David Staub</b><i>Gelernter Handwerker · MSc Data Science</i></span></a>
-        <a class="hcr" href="#ueberuns"><img src="assets/timo.jpg" alt="Timo Steinfort" onerror="this.remove()"><span><b>Timo Steinfort</b><i>Kennt die Verwaltungen · MSc Real Estate</i></span></a>
         <a class="hcr" href="#ueberuns"><img src="assets/sinan.jpg" alt="Sinan Sen" onerror="this.remove()"><span><b>Sinan Sen</b><i>Systemtechniker EFZ · 10 Jahre IT</i></span></a>
       </div>
     </div>
@@ -535,7 +538,7 @@
         <li>Montage und Service macht Ihr eigenes Team</li>
         <li>Hausverwaltungen sind ein wesentlicher Teil Ihrer Kundschaft</li>
       </ul>
-      <p class="ann-foot">Stimmt eine davon nicht, ist nicht der Vorschlag falsch, sondern unsere Annahme — sagen Sie es uns, dann rechnen wir es um. <b>Genau dafür ist diese Vorschau da.</b> In welchem Programm Ihre Treuhänderin bucht, müssen wir dafür nicht wissen — der Ablauf oben bleibt derselbe. Zwei der gezeigten Bausteine sind beim Hersteller gerade neu; <b>wir setzen sie erst ein, wenn sie bei Ihnen sicher laufen.</b></p>
+      <p class="ann-foot">Stimmt eine davon nicht, ist nicht der Vorschlag falsch, sondern unsere Annahme — sagen Sie es uns, dann rechnen wir es um. <b>Genau dafür ist dieses Beispiel da.</b> In welchem Programm Ihre Treuhänderin bucht, müssen wir dafür nicht wissen — der Ablauf oben bleibt derselbe. Zwei der gezeigten Bausteine sind beim Hersteller gerade neu; <b>wir setzen sie erst ein, wenn sie bei Ihnen sicher laufen.</b></p>
     </div>
     <iframe src="auftragsfluss.html" class="flow-iframe" title="Auftragsfluss: ein Kunde sucht Fassadenmarkisen" loading="lazy" scrolling="no"></iframe>
   </div>
@@ -575,12 +578,19 @@
       <h2>Ein Elektriker, ein Systemtechniker und einer aus der Immobilien-Bewirtschaftung.</h2>
     </div>
     <details class="expander">
-      <summary>Team kennenlernen <span class="arr">⌄</span></summary>
-      <p>Sich selbst kennen Sie am besten — hier stehen darum die, die Ihnen diese Vorschau gebaut haben. Wir decken alle drei Bereiche ab — Technik, Aufträge, Auftritt —, statt nur ein Stück davon. Mit welchem wir anfangen, entscheiden Sie; umgebaut wird nichts, was funktioniert.</p>
+      <summary>Team kennenlernen <span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+      <p>Sich selbst kennen Sie am besten — hier stehen darum die, die Ihnen dieses Beispiel gebaut haben. Wir decken alle drei Bereiche ab — Technik, Aufträge, Auftritt —, statt nur ein Stück davon. Mit welchem wir anfangen, entscheiden Sie; umgebaut wird nichts, was funktioniert.</p>
       <div class="scopechips">
         <span>IT, Geräte &amp; Daten</span><span>Handwerker-Software</span><span>Website &amp; Auffindbarkeit</span>
       </div>
       <div class="tcards">
+        <div class="tcard">
+          <img src="assets/timo.jpg" alt="Timo Steinfort">
+          <b>Timo Steinfort</b>
+          <span class="rl">Markt &amp; Strategie</span>
+          <p>Zehn Jahre Versicherung, Finanzen und <b>Immobilien-Bewirtschaftung</b>. Er weiss aus erster Hand, warum eine Bewirtschaftung einen Auftrag vergibt — und warum sie den Handwerker wechselt. Er hat selbst Handwerker beauftragt.</p>
+          <ul><li>BSc Betriebsökonomie</li><li>Double MSc Real Estate &amp; Finance</li><li>MIT-Zertifikat: KI &amp; Transformation</li></ul>
+        </div>
         <div class="tcard">
           <img src="assets/david.jpg" alt="David Staub">
           <b>David Staub</b>
@@ -594,13 +604,6 @@
           <span class="rl">Systeme &amp; Technik</span>
           <p>Gelernter <b>Systemtechniker</b>, seit über zehn Jahren die IT von Schweizer Betrieben. Er sorgt dafür, dass die Technik läuft — und ist der, den Sie anrufen, wenn sie es nicht tut.</p>
           <ul><li>Systemtechniker EFZ</li><li>10+ Jahre System Engineering</li><li>Microsoft- &amp; Cloud-Experte</li></ul>
-        </div>
-        <div class="tcard">
-          <img src="assets/timo.jpg" alt="Timo Steinfort">
-          <b>Timo Steinfort</b>
-          <span class="rl">Markt &amp; Strategie</span>
-          <p>Zehn Jahre Versicherung, Finanzen und <b>Immobilien-Bewirtschaftung</b>. Er weiss aus erster Hand, warum eine Verwaltung einen Auftrag vergibt — und warum sie den Handwerker wechselt. Er hat selbst Handwerker beauftragt.</p>
-          <ul><li>BSc Betriebsökonomie</li><li>Double MSc Real Estate &amp; Finance</li><li>MIT-Zertifikat: KI &amp; Transformation</li></ul>
         </div>
       </div>
     </details>
@@ -641,14 +644,14 @@
       </div>
       <div class="obody" id="ob7" role="tabpanel" aria-labelledby="oc7">
         <div class="oq">«Was geht künftig automatisch an meine Kunden raus?»</div>
-        <div class="oa"><b>Nichts, was nicht vorher jemand von Ihnen gesehen hat.</b> Offerten, Rechnungen, Erinnerungen und Mahnungen werden vorbereitet — rausgehen tut nur, was jemand bei Ihnen freigibt. Jede Automatik lässt sich einzeln abschalten, ohne uns anzurufen. Und Kunden, die nie mit einem Assistenten sprechen sollen, sagen Sie uns — die werden direkt durchgestellt.</div>
+        <div class="oa"><b>Nichts, was nicht vorher jemand von Ihnen gesehen hat.</b> Offerten, Rechnungen, Erinnerungen und Mahnungen werden vorbereitet — rausgehen tut nur, was jemand bei Ihnen freigibt.</div>
       </div>
       <div class="obody" id="ob6" role="tabpanel" aria-labelledby="oc6">
         <div class="oq">«Wie viel Arbeit ist das für mich?»</div>
-        <div class="oa">Für Sie sind es ein paar kurze Absprachen. Mehr Zeit braucht, wer bei Ihnen das Büro macht: zehn Minuten pro Woche für die Zahlungseingänge — sonst mahnt das System bezahlte Rechnungen. Diese Stunden rechnen wir vorher offen durch, statt sie kleinzureden. Kundenadressen, Artikel und Preise übernehmen wir aus Ihren Listen, nachtippen müssen Sie nichts. <b>Bis alles steht, läuft Ihr bisheriger Weg unverändert weiter.</b></div>
+        <div class="oa">Für Sie sind es ein paar kurze Absprachen. Mehr Zeit braucht, wer bei Ihnen das Büro macht: die Zahlungseingänge gehören regelmässig erfasst — sonst mahnt das System bezahlte Rechnungen. Diese Stunden rechnen wir vorher offen durch, statt sie kleinzureden. Kundenadressen, Artikel und Preise übernehmen wir aus Ihren Listen, nachtippen müssen Sie nichts. <b>Bis alles steht, läuft Ihr bisheriger Weg unverändert weiter.</b></div>
       </div>
     </div>
-    <p class="ground">Angefangen wird immer bei dem, was am meisten weh tut — nicht bei dem, was am meisten kostet.<br>Die Software, auf die wir aufbauen, läuft bei über tausend Schweizer KMU — darunter Betriebe in Ihrer Grösse.</p>
+    <p class="ground">Angefangen wird immer bei dem, was am meisten weh tut — nicht bei dem, was am meisten kostet.</p>
   </div>
 </section>
 
@@ -657,23 +660,23 @@
   <div class="wrap">
     <div class="eyebrow">Und jetzt?</div>
     <span class="saison">Rechtzeitig zur Herbst- und Sturmsaison</span>
-    <h2>Nach dem nächsten Sturm sind Sie der Erste, der zurückruft.</h2>
+    <h2>Nach dem nächsten Sturm wissen Sie, wer angerufen hat.</h2>
     <p class="sub">Zwanzig Minuten am Telefon: Abläufe anschauen und durchrechnen, wie viel Bürozeit drinliegt. Passt es, kommen wir danach vorbei. <b>Die Auswertung behalten Sie in jedem Fall.</b></p>
     <div class="ctabtns">
-      <a href="tel:+41447985842" class="btn btn-gold">
+      <a href="tel:+41442445995" class="btn btn-gold">
         <svg class="ic" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2.1z"/></svg>
-        Jetzt anrufen — 044 798 58 42
+        Jetzt anrufen — 044 244 59 95
       </a>
-      <a href="https://wa.me/41447985842?text=Gr%C3%BCezi%20Amplifyr%2C%20ich%20habe%20die%20Vorschau%20gesehen%20%E2%80%94%20rufen%20Sie%20mich%20gern%20an." class="btn btn-primary">Per WhatsApp schreiben</a>
+      <a href="https://wa.me/41442445995?text=Gr%C3%BCezi%20Amplifyr%2C%20ich%20habe%20das%20Beispiel%20gesehen%20%E2%80%94%20rufen%20Sie%20mich%20gern%20an." class="btn btn-primary">Per WhatsApp schreiben</a>
     </div>
 
-    <div class="ctacontact"><b>Amplifyr GmbH</b> · 044 798 58 42 · info@amplifyr.ch</div>
+    <div class="ctacontact"><b>Amplifyr GmbH</b> · 044 244 59 95 · info@amplifyr.ch</div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <span class="pbadge">Vorschau von Amplifyr</span>
+    <span class="pbadge">Beispiel von Amplifyr</span>
     <p>Beispielhafte Darstellung, wie <b>REMA Redza Storen &amp; Rollladen</b> 2026 aufgestellt sein könnte — keine Veröffentlichung des Betriebs. Texte, Bilder und Marken stammen von seiner Website, Beispiele sind illustrativ. Erstellt im August 2026.<br>
     <span class="amp">Amplifyr</span> · Ihr digitaler Generalunternehmer für IT, Software, Automatisierung &amp; Auftritt · amplifyr.ch</p>
   </div>
