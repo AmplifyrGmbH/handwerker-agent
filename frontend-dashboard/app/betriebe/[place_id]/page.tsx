@@ -158,6 +158,14 @@ export default function BetriebDetailPage() {
         </div>
       </div>
 
+      {/* Firmenprofil */}
+      {betrieb.firmenprofil && (
+        <div className="bg-white rounded-lg border border-gray-200 p-5 mb-6">
+          <h2 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wide">Firmenprofil</h2>
+          <p className="text-sm text-gray-700 leading-relaxed">{betrieb.firmenprofil}</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Stammdaten */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
@@ -321,14 +329,6 @@ export default function BetriebDetailPage() {
           </div>
         )}
       </div>
-
-      {/* Firmenprofil */}
-      {betrieb.firmenprofil && (
-        <div className="bg-white rounded-lg border border-gray-200 p-5 mt-6">
-          <h2 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wide">Firmenprofil</h2>
-          <p className="text-sm text-gray-700 leading-relaxed">{betrieb.firmenprofil}</p>
-        </div>
-      )}
 
       {/* Anruf-Historie */}
       {anrufe.length > 0 && (

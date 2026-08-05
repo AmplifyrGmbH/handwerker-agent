@@ -64,7 +64,20 @@ export interface BetriebeListe {
   items: Betrieb[];
 }
 
-export const BRANCHEN = ["Maler", "Elektriker", "Schreiner", "Sanitär", "Dachdecker"];
+export const BRANCHEN = [
+  "Sanitär Heizung Lüftung",
+  "Elektriker",
+  "Maler",
+  "Gipser",
+  "Schreiner",
+  "Metallbau",
+  "Bodenleger",
+  "Plattenleger",
+  "Dachdecker",
+  "Gärtner",
+  "Solarinstallateur",
+  "Reinigung",
+];
 
 export const AGENTS = ["Timo", "David"] as const;
 export type Agent = typeof AGENTS[number];
