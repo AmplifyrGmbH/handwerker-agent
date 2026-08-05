@@ -124,46 +124,44 @@ function LeadCard({
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       {/* Hauptzeile */}
-      <div className="flex items-start gap-3 px-4 py-3">
+      <div className="flex items-center gap-3 px-4 py-3">
         {/* Expand */}
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="mt-1 text-gray-300 hover:text-gray-600 shrink-0"
+          className="text-gray-300 hover:text-gray-600 shrink-0"
         >
           <span className={`block transition-transform text-xs ${expanded ? "rotate-90" : ""}`}>▶</span>
         </button>
 
-        {/* Name + letzte Notiz */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <Link
-              href={`/betriebe/${betrieb.place_id}`}
-              className="font-medium text-gray-900 hover:text-blue-600 text-sm"
-            >
-              {betrieb.name_anzeige || betrieb.name}
-            </Link>
+        {/* Name + Telefon */}
+        <div className="shrink-0 w-44">
+          <Link
+            href={`/betriebe/${betrieb.place_id}`}
+            className="font-medium text-gray-900 hover:text-blue-600 text-sm leading-tight block"
+          >
+            {betrieb.name_anzeige || betrieb.name}
+          </Link>
+          <div className="flex items-center gap-2 mt-0.5">
             {betrieb.branche && <span className="text-xs text-gray-400">{betrieb.branche}</span>}
-            {betrieb.ort && <span className="text-xs text-gray-300">{betrieb.ort}</span>}
+            {betrieb.telefon ? (
+              <a href={`tel:${betrieb.telefon}`} className="text-xs text-blue-600 hover:underline font-mono">
+                {betrieb.telefon}
+              </a>
+            ) : (
+              <span className="text-xs text-gray-300">Keine Nummer</span>
+            )}
           </div>
-          {/* Letzte Notiz — immer sichtbar */}
+        </div>
+
+        {/* Letzte Notiz — immer sichtbar, füllt den Rest */}
+        <div className="flex-1 min-w-0">
           {letzteNotiz ? (
-            <p className="text-xs text-gray-500 mt-0.5 line-clamp-1" title={letzteNotiz}>
+            <p className="text-xs text-gray-500 line-clamp-1" title={letzteNotiz}>
               {letzteNotizAm && <span className="text-gray-300 mr-1">{letzteNotizAm}</span>}
               {letzteNotiz}
             </p>
           ) : (
-            <p className="text-xs text-gray-300 mt-0.5 italic">Keine Notizen</p>
-          )}
-        </div>
-
-        {/* Telefon */}
-        <div className="shrink-0 text-sm font-mono">
-          {betrieb.telefon ? (
-            <a href={`tel:${betrieb.telefon}`} className="text-blue-600 hover:underline text-xs">
-              {betrieb.telefon}
-            </a>
-          ) : (
-            <span className="text-gray-300 text-xs">—</span>
+            <p className="text-xs text-gray-300 italic">Keine Notizen</p>
           )}
         </div>
 
@@ -200,7 +198,7 @@ function LeadCard({
             >
               {generatingDemo ? "…" : "Demo erstellen"}
             </button>
-            {demoMsg && <span className="ml-1 text-gray-400">{demoMsg}</span>}
+            {demoMsg && <p className="text-gray-400 mt-0.5">{demoMsg}</p>}
           </div>
         )}
         {betrieb.landing_url && (
