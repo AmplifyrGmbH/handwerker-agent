@@ -74,7 +74,7 @@ export default function StatsPage() {
       <h1 className="text-2xl font-bold mb-8">Statistik</h1>
 
       {/* KPI-Karten */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
         <KpiCard label="Leads gesamt" value={stats.total} />
         <KpiCard
           label="Angerufen"
@@ -82,7 +82,6 @@ export default function StatsPage() {
           sub={`${angerufenPct}% des Totals`}
         />
         <KpiCard label="Demos generiert" value={stats.demos} />
-        <KpiCard label="Verkauft" value={stats.verkauft} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
