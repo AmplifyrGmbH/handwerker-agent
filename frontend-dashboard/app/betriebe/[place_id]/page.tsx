@@ -37,16 +37,15 @@ export default function BetriebDetailPage() {
   // Demo
   const [generatingDemo, setGeneratingDemo] = useState(false);
   const [demoMsg, setDemoMsg] = useState("");
-  const [sendingDemo, setSendingDemo] = useState(false);
-  const [demoEmail, setDemoEmail] = useState("");
-  const [sendMsg, setSendMsg] = useState("");
+  const [bearbeitenPrompt, setBearbeitenPrompt] = useState("");
+  const [bearbeiting, setBearbeiting] = useState(false);
+  const [bearbeitenMsg, setBearbeitenMsg] = useState("");
 
   useEffect(() => {
     if (!placeId) return;
     apiFetch<Betrieb>(`/api/v1/betriebe/${encodeURIComponent(placeId)}`)
       .then((b) => {
         setBetrieb(b);
-        setDemoEmail(b.email || "");
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -109,21 +108,21 @@ export default function BetriebDetailPage() {
     }
   };
 
-  const sendeDemo = async () => {
-    if (!betrieb) return;
-    setSendingDemo(true);
-    setSendMsg("");
+  const bearbeitDemo = async () => {
+    if (!betrieb || !bearbeitenPrompt.trim()) return;
+    setBearbeiting(true);
+    setBearbeitenMsg("");
     try {
-      await apiFetch(`/api/v1/betriebe/${encodeURIComponent(betrieb.place_id)}/demo/senden`, {
+      await apiFetch(`/api/v1/betriebe/${encodeURIComponent(betrieb.place_id)}/demo/bearbeiten`, {
         method: "POST",
-        body: JSON.stringify({ email: demoEmail || null }),
+        body: JSON.stringify({ prompt: bearbeitenPrompt }),
       });
-      setSendMsg(`Demo gesendet an ${demoEmail || betrieb.email}`);
-      reload();
+      setBearbeitenMsg("Demo aktualisiert — Seite neu laden um Änderungen zu sehen");
+      setBearbeitenPrompt("");
     } catch (e: unknown) {
-      setSendMsg((e as Error).message || "Fehler beim Senden");
+      setBearbeitenMsg((e as Error).message || "Fehler");
     } finally {
-      setSendingDemo(false);
+      setBearbeiting(false);
     }
   };
 
@@ -133,7 +132,6 @@ export default function BetriebDetailPage() {
   const leadColor = LEAD_STATUS_COLORS[betrieb.lead_status] || "bg-gray-100 text-gray-600";
   const pipelineColor = STATUS_COLORS[betrieb.status] || "bg-gray-100 text-gray-600";
   const anrufe = (betrieb.kontaktversuche || []).filter((k) => k.typ === "anruf");
-  const demomails = (betrieb.kontaktversuche || []).filter((k) => k.typ === "email_demo");
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-8">
@@ -271,33 +269,37 @@ export default function BetriebDetailPage() {
                 {betrieb.landing_url}
               </a>
             </div>
+
+            {/* Demo bearbeiten */}
             <div className="pt-3 border-t border-gray-100">
-              <label className="block text-xs text-gray-400 mb-1">Demo senden an</label>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={demoEmail}
-                  onChange={(e) => setDemoEmail(e.target.value)}
-                  placeholder="E-Mail-Adresse"
-                  className="flex-1 border border-gray-200 rounded px-3 py-2 text-sm"
+              <label className="block text-xs text-gray-400 mb-1">Demo mit KI bearbeiten</label>
+              <div className="flex gap-2 items-start">
+                <textarea
+                  value={bearbeitenPrompt}
+                  onChange={(e) => setBearbeitenPrompt(e.target.value)}
+                  rows={2}
+                  placeholder="z.B. «Füge einen Abschnitt über Garantieleistungen hinzu» oder «Ändere die Primärfarbe auf Dunkelgrün»"
+                  className="flex-1 border border-gray-200 rounded px-3 py-2 text-sm resize-none"
                 />
                 <button
-                  onClick={sendeDemo}
-                  disabled={sendingDemo || !demoEmail}
-                  className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap"
+                  onClick={bearbeitDemo}
+                  disabled={bearbeiting || !bearbeitenPrompt.trim()}
+                  className="bg-purple-600 text-white text-sm px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 whitespace-nowrap"
                 >
-                  {sendingDemo ? "Sendet..." : "Demo senden"}
+                  {bearbeiting ? "Bearbeitet..." : "Anwenden"}
                 </button>
               </div>
-              {sendMsg && <p className="text-sm mt-2 text-gray-600">{sendMsg}</p>}
+              {bearbeitenMsg && <p className="text-sm mt-2 text-gray-600">{bearbeitenMsg}</p>}
             </div>
+
             <button
               onClick={generiereDemo}
               disabled={generatingDemo}
               className="text-xs text-gray-400 hover:text-gray-600 underline"
             >
-              Demo neu generieren
+              Demo komplett neu generieren
             </button>
+            {demoMsg && <p className="text-sm text-gray-600">{demoMsg}</p>}
           </div>
         ) : (
           <div>
@@ -347,25 +349,6 @@ export default function BetriebDetailPage() {
                     Callback: {new Date(k.callback_datum).toLocaleString("de-CH")}
                   </p>
                 )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Versandte Demos */}
-      {demomails.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-5 mt-6">
-          <h2 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wide">
-            Demo-Versand ({demomails.length})
-          </h2>
-          <div className="flex flex-col gap-2">
-            {demomails.map((k) => (
-              <div key={k.id} className="flex items-center justify-between text-sm border border-gray-100 rounded px-3 py-2">
-                <span className="text-gray-700">{k.email_adresse}</span>
-                <span className="text-xs text-gray-400">
-                  {k.gesendet_am ? new Date(k.gesendet_am).toLocaleString("de-CH") : "—"}
-                </span>
               </div>
             ))}
           </div>

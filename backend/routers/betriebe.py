@@ -7,11 +7,13 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+import asyncio
+
 from config import settings
 from database import get_db, AsyncSessionLocal
 from models import Betrieb, Kontaktversuch, Job
 from pipeline import landing_generator
-from services import smtp_client
+from services import smtp_client, gemini_client, r2_client
 
 router = APIRouter()
 
@@ -42,6 +44,14 @@ class AnrufRequest(BaseModel):
 
 class DemoSendenRequest(BaseModel):
     email: Optional[str] = None  # überschreibt betrieb.email falls gesetzt
+
+
+class NotizRequest(BaseModel):
+    text: str
+
+
+class DemoBearbeitenRequest(BaseModel):
+    prompt: str
 
 
 # ── Serialisierung ────────────────────────────────────────────────────────────
@@ -276,3 +286,69 @@ async def demo_senden(
     await db.commit()
 
     return {"ok": True, "gesendet_an": to_email}
+
+
+# ── CRM: Notiz hinzufügen ─────────────────────────────────────────────────────
+
+@router.post("/{place_id}/notiz")
+async def notiz_hinzufuegen(
+    place_id: str,
+    req: NotizRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    b = await db.get(Betrieb, place_id)
+    if not b:
+        raise HTTPException(status_code=404, detail="Betrieb nicht gefunden")
+    if not req.text.strip():
+        raise HTTPException(status_code=400, detail="Notiztext darf nicht leer sein")
+
+    kv = Kontaktversuch(
+        place_id=place_id,
+        typ="notiz",
+        notizen=req.text.strip(),
+        gesendet_am=datetime.now(timezone.utc),
+    )
+    db.add(kv)
+    await db.commit()
+    return _kontaktversuch_to_dict(kv)
+
+
+# ── CRM: Demo per KI-Prompt bearbeiten ───────────────────────────────────────
+
+@router.post("/{place_id}/demo/bearbeiten")
+async def demo_bearbeiten(
+    place_id: str,
+    req: DemoBearbeitenRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    b = await db.get(Betrieb, place_id)
+    if not b:
+        raise HTTPException(status_code=404, detail="Betrieb nicht gefunden")
+    if not b.slug or not b.landing_url:
+        raise HTTPException(status_code=400, detail="Noch keine Demo generiert")
+    if not req.prompt.strip():
+        raise HTTPException(status_code=400, detail="Prompt darf nicht leer sein")
+
+    r2_key = f"handwerker/{b.slug}.html"
+    try:
+        html = await asyncio.get_event_loop().run_in_executor(
+            None, r2_client.get_html, r2_key
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Demo konnte nicht geladen werden: {e}")
+
+    try:
+        neues_html = await asyncio.get_event_loop().run_in_executor(
+            None, gemini_client.bearbeite_landing, html, req.prompt
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"KI-Bearbeitung fehlgeschlagen: {e}")
+
+    try:
+        await asyncio.get_event_loop().run_in_executor(
+            None, r2_client.upload_html, neues_html, r2_key
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Upload fehlgeschlagen: {e}")
+
+    return {"ok": True, "landing_url": b.landing_url}

@@ -157,6 +157,25 @@ def generate_einleitung(firmenprofil: str, firmenname: str, ort: str, branche: s
         return f"Wir haben etwas Besonderes für {firmenname} aus {ort} gebaut."
 
 
+def bearbeite_landing(html: str, prompt: str) -> str:
+    """Bearbeitet eine bestehende Landing Page per KI-Prompt und gibt das vollständige HTML zurück."""
+    model = genai.GenerativeModel(MODEL)
+    instruction = (
+        "Du bist ein Web-Entwickler. Hier ist eine Landing Page als HTML.\n"
+        "Bearbeite sie gemäss folgendem Auftrag. Gib NUR das vollständige HTML zurück, "
+        "ohne Markdown-Codeblöcke, Erklärungen oder sonstige Zusätze.\n\n"
+        f"Auftrag: {prompt}\n\n"
+        f"HTML:\n{html}"
+    )
+    response = model.generate_content(instruction)
+    result = response.text.strip()
+    # Markdown-Codeblöcke entfernen falls vorhanden
+    if result.startswith("```"):
+        result = re.sub(r"^```[a-z]*\n?", "", result)
+        result = re.sub(r"\n?```$", "", result)
+    return result
+
+
 def chat_response(message: str, history: list[dict], context: dict = {}) -> str:
     try:
         system_prompt = _build_system_prompt(

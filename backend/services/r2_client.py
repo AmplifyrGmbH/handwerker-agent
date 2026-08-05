@@ -31,3 +31,9 @@ def upload_html(html: str, key: str) -> str:
         key,
         "text/html; charset=utf-8",
     )
+
+
+def get_html(key: str) -> str:
+    client = _get_client()
+    response = client.get_object(Bucket=settings.R2_BUCKET_NAME, Key=key)
+    return response["Body"].read().decode("utf-8")
