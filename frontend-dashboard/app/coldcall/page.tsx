@@ -240,18 +240,22 @@ function LeadCard({
         </select>
 
         {/* Demo */}
-        {betrieb.status === "extrahiert" && !betrieb.landing_url && (
-          <div className="shrink-0 text-xs" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={generiereDemo}
-              disabled={generatingDemo}
-              className="text-purple-600 hover:underline disabled:opacity-40"
-            >
-              {generatingDemo ? "…" : "Demo erstellen"}
-            </button>
-            {demoMsg && <p className="text-gray-400 mt-0.5">{demoMsg}</p>}
-          </div>
-        )}
+        <div className="shrink-0 text-xs" onClick={(e) => e.stopPropagation()}>
+          {betrieb.landing_url ? (
+            <span className="text-green-600 font-medium">✓ Demo</span>
+          ) : betrieb.status === "extrahiert" ? (
+            <>
+              <button
+                onClick={generiereDemo}
+                disabled={generatingDemo}
+                className="text-purple-600 hover:underline disabled:opacity-40"
+              >
+                {generatingDemo ? "…" : "Demo erstellen"}
+              </button>
+              {demoMsg && <p className="text-gray-400 mt-0.5">{demoMsg}</p>}
+            </>
+          ) : null}
+        </div>
       </div>
 
       {/* Activity-Feed + Notiz-Eingabe */}
