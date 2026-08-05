@@ -106,7 +106,6 @@ export const LEAD_STATUS_LABELS: Record<string, string> = {
   callback: "Callback",
   demo_gewuenscht: "Demo gewünscht",
   kein_interesse: "Kein Interesse",
-  verkauft: "Verkauft",
 };
 
 export const LEAD_STATUS_COLORS: Record<string, string> = {
@@ -115,7 +114,6 @@ export const LEAD_STATUS_COLORS: Record<string, string> = {
   callback: "bg-yellow-100 text-yellow-700",
   demo_gewuenscht: "bg-blue-100 text-blue-800",
   kein_interesse: "bg-red-100 text-red-700",
-  verkauft: "bg-green-100 text-green-800",
 };
 
 export const ALL_LEAD_STATUSES = [
@@ -124,5 +122,4 @@ export const ALL_LEAD_STATUSES = [
   "callback",
   "demo_gewuenscht",
   "kein_interesse",
-  "verkauft",
 ] as const;

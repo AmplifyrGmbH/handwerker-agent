@@ -23,7 +23,6 @@ VALID_LEAD_STATUSES = {
     "callback",
     "demo_gewuenscht",
     "kein_interesse",
-    "verkauft",
 }
 
 
