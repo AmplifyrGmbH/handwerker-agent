@@ -27,6 +27,7 @@ export interface Betrieb {
   google_anzahl: number | null;
   branche: string | null;
   status: string;
+  lead_status: string;
   inhaber_name: string | null;
   farbe_primary: string | null;
   hat_logo: boolean | null;
@@ -34,8 +35,6 @@ export interface Betrieb {
   firmenprofil: string | null;
   slug: string | null;
   landing_url: string | null;
-  outreach_status: string | null;
-  email_status: string;
   optout: boolean;
   fehler_log: string | null;
   entdeckt_am: string | null;
@@ -47,7 +46,9 @@ export interface Betrieb {
 
 export interface Kontaktversuch {
   id: number;
-  typ: string;
+  typ: string; // "anruf" | "email_demo"
+  notizen: string | null;
+  callback_datum: string | null;
   email_adresse: string | null;
   email_subject: string | null;
   gesendet_am: string | null;
@@ -62,11 +63,11 @@ export interface BetriebeListe {
 
 export const BRANCHEN = ["Maler", "Elektriker", "Schreiner", "Sanitär", "Dachdecker"];
 
+// Pipeline-Status
 export const STATUS_LABELS: Record<string, string> = {
   entdeckt: "Entdeckt",
   extrahiert: "Extrahiert",
-  landing_generiert: "Landing bereit",
-  kontaktiert: "Kontaktiert",
+  landing_generiert: "Demo bereit",
   fehler: "Fehler",
   kein_website: "Kein Website",
 };
@@ -75,7 +76,34 @@ export const STATUS_COLORS: Record<string, string> = {
   entdeckt: "bg-blue-100 text-blue-800",
   extrahiert: "bg-yellow-100 text-yellow-800",
   landing_generiert: "bg-purple-100 text-purple-800",
-  kontaktiert: "bg-green-100 text-green-800",
   fehler: "bg-red-100 text-red-800",
   kein_website: "bg-gray-100 text-gray-600",
 };
+
+// CRM Lead-Status
+export const LEAD_STATUS_LABELS: Record<string, string> = {
+  nicht_angerufen: "Nicht angerufen",
+  nicht_erreicht: "Nicht erreicht",
+  callback: "Callback",
+  demo_gewuenscht: "Demo gewünscht",
+  kein_interesse: "Kein Interesse",
+  verkauft: "Verkauft",
+};
+
+export const LEAD_STATUS_COLORS: Record<string, string> = {
+  nicht_angerufen: "bg-gray-100 text-gray-600",
+  nicht_erreicht: "bg-orange-100 text-orange-700",
+  callback: "bg-yellow-100 text-yellow-700",
+  demo_gewuenscht: "bg-blue-100 text-blue-800",
+  kein_interesse: "bg-red-100 text-red-700",
+  verkauft: "bg-green-100 text-green-800",
+};
+
+export const ALL_LEAD_STATUSES = [
+  "nicht_angerufen",
+  "nicht_erreicht",
+  "callback",
+  "demo_gewuenscht",
+  "kein_interesse",
+  "verkauft",
+] as const;

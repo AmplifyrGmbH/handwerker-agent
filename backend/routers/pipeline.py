@@ -10,12 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import AsyncSessionLocal, get_db
 from models import Job
-from pipeline import discovery, extraktion, landing_generator, outreach
+from pipeline import discovery, extraktion, landing_generator
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Track active full-pipeline job to prevent concurrent runs
 _active_full_job_id: Optional[int] = None
 _active_tasks: dict[int, asyncio.Task] = {}
 
@@ -101,13 +100,6 @@ async def start_landing(req: LandingRequest, db: AsyncSession = Depends(get_db))
     return {"job_id": job.id, "message": "Landing-Generierung gestartet"}
 
 
-@router.post("/outreach/start")
-async def start_outreach(db: AsyncSession = Depends(get_db)):
-    job = await _create_job(db, "outreach")
-    _start_task(job.id, outreach.run(job.id))
-    return {"job_id": job.id, "message": "Outreach gestartet"}
-
-
 # ── Combined runs ─────────────────────────────────────────────────────────────
 
 @router.post("/discovery-extraktion/start")
@@ -120,18 +112,6 @@ async def start_discovery_extraktion(req: DiscoveryRequest, db: AsyncSession = D
 
     _start_task(job.id, _run())
     return {"job_id": job.id, "message": "Discovery + Extraktion gestartet"}
-
-
-@router.post("/extraktion-landing/start")
-async def start_extraktion_landing(req: ExtraktionRequest, db: AsyncSession = Depends(get_db)):
-    job = await _create_job(db, "extraktion+landing")
-
-    async def _run():
-        await extraktion.run(job.id, req.place_id, final_step=False)
-        await landing_generator.run(job.id, final_step=True)
-
-    _start_task(job.id, _run())
-    return {"job_id": job.id, "message": "Extraktion + Landing gestartet"}
 
 
 @router.post("/full/start")
@@ -147,14 +127,12 @@ async def start_full(req: FullRequest, db: AsyncSession = Depends(get_db)):
         global _active_full_job_id
         try:
             await discovery.run(job.id, req.branche, req.kanton, req.max_per_search, final_step=False)
-            await extraktion.run(job.id, final_step=False)
-            await landing_generator.run(job.id, final_step=False)
-            await outreach.run(job.id, final_step=True)
+            await extraktion.run(job.id, final_step=True)
         finally:
             _active_full_job_id = None
 
     _start_task(job.id, _run())
-    return {"job_id": job.id, "message": "Full-Pipeline gestartet"}
+    return {"job_id": job.id, "message": "Full-Pipeline gestartet (Discovery + Extraktion)"}
 
 
 # ── Job management ────────────────────────────────────────────────────────────
@@ -180,11 +158,9 @@ async def cancel_job(job_id: int, db: AsyncSession = Depends(get_db)):
     if not job:
         raise HTTPException(status_code=404, detail="Job nicht gefunden")
     job.status = "fehler"
-    job.fehler = (job.fehler or 0)
     job.log = (job.log or "") + "\n[Manuell abgebrochen]"
     job.abgeschlossen_am = datetime.now(timezone.utc)
     await db.commit()
-    # Cancel asyncio task if running
     task = _active_tasks.pop(job_id, None)
     if task:
         task.cancel()

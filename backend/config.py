@@ -15,9 +15,6 @@ class Settings(BaseSettings):
     R2_BUCKET_NAME: str = "website-agent"
     R2_PUBLIC_URL: str = ""
 
-    INSTANTLY_KEY: str = ""
-    INSTANTLY_CAMPAIGN_ID: str = ""
-
     LANDING_TEMPLATE: str = "1c"  # 1a | 1b | 1c
     LANDING_DOMAIN: str = "ihr-ki-agent.ch"
     CHAT_API_URL: str = "https://handwerker-api.amplifyr-digital.ch/api/v1/chat/message"
@@ -27,7 +24,12 @@ class Settings(BaseSettings):
     AMPLIFYR_FIRMA: str = "Amplifyr"
     AMPLIFYR_KONTAKT: str = "info@amplifyr.ch"
 
-    INSTANTLY_DRY_RUN: bool = False
+    # SMTP für Demo-Versand
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASS: str = ""
+    SMTP_FROM: str = ""
 
     class Config:
         env_file = (".env", "../.env")

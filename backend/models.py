@@ -39,12 +39,14 @@ class Betrieb(Base):
     landing_url = Column(String)
     landing_generiert_am = Column(TIMESTAMP(timezone=True))
 
-    outreach_status = Column(String)
-    email_status = Column(String, default="unbekannt")
     optout = Column(Boolean, default=False)
     letzter_kontakt_am = Column(TIMESTAMP(timezone=True))
 
+    # Pipeline-Status: entdeckt → extrahiert → landing_generiert
     status = Column(String, default="entdeckt")
+    # CRM Lead-Status: nicht_angerufen → nicht_erreicht / callback / demo_gewuenscht → kein_interesse / verkauft
+    lead_status = Column(String, default="nicht_angerufen")
+
     branche = Column(String)
     fehler_log = Column(Text)
     entdeckt_am = Column(TIMESTAMP(timezone=True), server_default=func.now())
@@ -55,6 +57,7 @@ class Betrieb(Base):
 
     __table_args__ = (
         Index("ix_betriebe_status", "status"),
+        Index("ix_betriebe_lead_status", "lead_status"),
         Index("ix_betriebe_website_domain", "website_domain"),
     )
 
@@ -64,7 +67,12 @@ class Kontaktversuch(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     place_id = Column(String, ForeignKey("betriebe.place_id", ondelete="CASCADE"))
+    # typ: "anruf" | "email_demo"
     typ = Column(String)
+    # Anruf-Felder
+    notizen = Column(Text)
+    callback_datum = Column(TIMESTAMP(timezone=True))
+    # E-Mail-Felder (Demo-Versand)
     email_adresse = Column(String)
     email_subject = Column(String)
     email_text = Column(Text)

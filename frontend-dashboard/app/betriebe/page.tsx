@@ -3,17 +3,15 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { apiFetch } from "@/lib/api";
-import { Betrieb, BetriebeListe, BRANCHEN, STATUS_LABELS, STATUS_COLORS } from "@/types";
+import { Betrieb, BetriebeListe, BRANCHEN, LEAD_STATUS_LABELS, LEAD_STATUS_COLORS, ALL_LEAD_STATUSES } from "@/types";
 
 const PAGE_SIZE = 50;
-
-const ALL_STATUSES = ["entdeckt", "extrahiert", "landing_generiert", "kontaktiert", "fehler", "kein_website"];
 
 export default function BetriebePage() {
   const [items, setItems] = useState<Betrieb[]>([]);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
-  const [filterStatus, setFilterStatus] = useState("");
+  const [filterLeadStatus, setFilterLeadStatus] = useState("");
   const [filterBranche, setFilterBranche] = useState("");
   const [filterKanton, setFilterKanton] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +20,7 @@ export default function BetriebePage() {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (filterStatus) params.set("status", filterStatus);
+      if (filterLeadStatus) params.set("lead_status", filterLeadStatus);
       if (filterBranche) params.set("branche", filterBranche);
       if (filterKanton) params.set("kanton", filterKanton);
       params.set("limit", String(PAGE_SIZE));
@@ -35,11 +33,11 @@ export default function BetriebePage() {
     } finally {
       setLoading(false);
     }
-  }, [filterStatus, filterBranche, filterKanton, offset]);
+  }, [filterLeadStatus, filterBranche, filterKanton, offset]);
 
   useEffect(() => {
     setOffset(0);
-  }, [filterStatus, filterBranche, filterKanton]);
+  }, [filterLeadStatus, filterBranche, filterKanton]);
 
   useEffect(() => {
     load();
@@ -50,18 +48,18 @@ export default function BetriebePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
-      <h1 className="text-2xl font-bold mb-6">Betriebe</h1>
+      <h1 className="text-2xl font-bold mb-6">Leads</h1>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-6">
         <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          value={filterLeadStatus}
+          onChange={(e) => setFilterLeadStatus(e.target.value)}
           className="border border-gray-200 rounded px-3 py-2 text-sm"
         >
-          <option value="">Alle Status</option>
-          {ALL_STATUSES.map((s) => (
-            <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>
+          <option value="">Alle Lead-Status</option>
+          {ALL_LEAD_STATUSES.map((s) => (
+            <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>
           ))}
         </select>
         <select
@@ -91,9 +89,9 @@ export default function BetriebePage() {
                 <th className="px-4 py-3">Firmenname</th>
                 <th className="px-4 py-3">Branche</th>
                 <th className="px-4 py-3">Ort</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">E-Mail</th>
-                <th className="px-4 py-3">Landing Page</th>
+                <th className="px-4 py-3">Telefon</th>
+                <th className="px-4 py-3">Lead-Status</th>
+                <th className="px-4 py-3">Demo</th>
               </tr>
             </thead>
             <tbody>
@@ -108,7 +106,7 @@ export default function BetriebePage() {
                 </tr>
               )}
               {items.map((b) => {
-                const color = STATUS_COLORS[b.status] || "bg-gray-100 text-gray-600";
+                const leadColor = LEAD_STATUS_COLORS[b.lead_status] || "bg-gray-100 text-gray-600";
                 return (
                   <tr key={b.place_id} className="border-b border-gray-50 hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm">
@@ -118,17 +116,13 @@ export default function BetriebePage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">{b.branche || "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{b.ort || "—"}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${color}`}>
-                        {STATUS_LABELS[b.status] || b.status}
-                      </span>
+                    <td className="px-4 py-3 text-sm text-gray-600 font-mono">
+                      {b.telefon || <span className="text-gray-300">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      {b.email ? (
-                        <span className="text-green-600">✓</span>
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
+                    <td className="px-4 py-3">
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${leadColor}`}>
+                        {LEAD_STATUS_LABELS[b.lead_status] || b.lead_status}
+                      </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
                       {b.landing_url ? (
@@ -136,10 +130,10 @@ export default function BetriebePage() {
                           href={b.landing_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline text-xs truncate max-w-xs block"
+                          className="text-blue-500 hover:underline text-xs"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {b.landing_url}
+                          Demo ansehen
                         </a>
                       ) : (
                         <span className="text-gray-300">—</span>

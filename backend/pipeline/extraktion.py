@@ -239,6 +239,7 @@ async def _process_betrieb_inner(db: AsyncSession, betrieb: Betrieb, job_id: int
             b.inhaber_name = inhaber_name
             b.firmenprofil = firmenprofil
             b.status = "extrahiert"
+            b.lead_status = "nicht_angerufen"
             b.extrahiert_am = datetime.now(timezone.utc)
             await db2.commit()
 
