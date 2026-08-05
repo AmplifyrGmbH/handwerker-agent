@@ -34,6 +34,7 @@ class BetriebPatch(BaseModel):
     optout: Optional[bool] = None
     status: Optional[str] = None
     lead_status: Optional[str] = None
+    agent: Optional[str] = None
 
 
 class AnrufRequest(BaseModel):
@@ -94,6 +95,9 @@ def _betrieb_to_dict(b: Betrieb, include_kontaktversuche: bool = False) -> dict:
         "firmenprofil": b.firmenprofil,
         "slug": b.slug,
         "landing_url": b.landing_url,
+        "agent": b.agent,
+        "letzte_notiz": b.letzte_notiz,
+        "letzte_notiz_am": b.letzte_notiz_am.isoformat() if b.letzte_notiz_am else None,
         "optout": b.optout,
         "fehler_log": b.fehler_log,
         "entdeckt_am": b.entdeckt_am.isoformat() if b.entdeckt_am else None,
@@ -112,6 +116,7 @@ def _betrieb_to_dict(b: Betrieb, include_kontaktversuche: bool = False) -> dict:
 async def list_betriebe(
     status: Optional[str] = None,
     lead_status: Optional[str] = None,
+    agent: Optional[str] = None,
     branche: Optional[str] = None,
     kanton: Optional[str] = None,
     limit: int = 50,
@@ -123,6 +128,8 @@ async def list_betriebe(
         query = query.where(Betrieb.status == status)
     if lead_status:
         query = query.where(Betrieb.lead_status == lead_status)
+    if agent:
+        query = query.where(Betrieb.agent == agent)
     if branche:
         query = query.where(Betrieb.branche == branche)
     if kanton:
@@ -171,6 +178,8 @@ async def patch_betrieb(place_id: str, patch: BetriebPatch, db: AsyncSession = D
         if patch.lead_status not in VALID_LEAD_STATUSES:
             raise HTTPException(status_code=400, detail=f"Ungültiger lead_status: {patch.lead_status}")
         b.lead_status = patch.lead_status
+    if patch.agent is not None:
+        b.agent = patch.agent or None
     await db.commit()
     return _betrieb_to_dict(b)
 
@@ -302,13 +311,16 @@ async def notiz_hinzufuegen(
     if not req.text.strip():
         raise HTTPException(status_code=400, detail="Notiztext darf nicht leer sein")
 
+    now = datetime.now(timezone.utc)
     kv = Kontaktversuch(
         place_id=place_id,
         typ="notiz",
         notizen=req.text.strip(),
-        gesendet_am=datetime.now(timezone.utc),
+        gesendet_am=now,
     )
     db.add(kv)
+    b.letzte_notiz = req.text.strip()
+    b.letzte_notiz_am = now
     await db.commit()
     return _kontaktversuch_to_dict(kv)
 

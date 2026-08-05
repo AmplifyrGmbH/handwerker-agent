@@ -46,6 +46,11 @@ class Betrieb(Base):
     status = Column(String, default="entdeckt")
     # CRM Lead-Status: nicht_angerufen → nicht_erreicht / callback / demo_gewuenscht → kein_interesse / verkauft
     lead_status = Column(String, default="nicht_angerufen")
+    # Zugewiesener Agent (Cold-Calling)
+    agent = Column(String)
+    # Letzte Notiz (denormalisiert für schnellen Listenzugriff)
+    letzte_notiz = Column(Text)
+    letzte_notiz_am = Column(TIMESTAMP(timezone=True))
 
     branche = Column(String)
     fehler_log = Column(Text)
@@ -58,6 +63,7 @@ class Betrieb(Base):
     __table_args__ = (
         Index("ix_betriebe_status", "status"),
         Index("ix_betriebe_lead_status", "lead_status"),
+        Index("ix_betriebe_agent", "agent"),
         Index("ix_betriebe_website_domain", "website_domain"),
     )
 

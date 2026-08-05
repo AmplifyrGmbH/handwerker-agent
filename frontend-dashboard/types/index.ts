@@ -35,6 +35,9 @@ export interface Betrieb {
   firmenprofil: string | null;
   slug: string | null;
   landing_url: string | null;
+  agent: string | null;
+  letzte_notiz: string | null;
+  letzte_notiz_am: string | null;
   optout: boolean;
   fehler_log: string | null;
   entdeckt_am: string | null;
@@ -62,6 +65,9 @@ export interface BetriebeListe {
 }
 
 export const BRANCHEN = ["Maler", "Elektriker", "Schreiner", "Sanitär", "Dachdecker"];
+
+export const AGENTS = ["Timo", "David"] as const;
+export type Agent = typeof AGENTS[number];
 
 // Pipeline-Status
 export const STATUS_LABELS: Record<string, string> = {

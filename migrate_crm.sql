@@ -16,3 +16,9 @@ CREATE INDEX IF NOT EXISTS ix_betriebe_lead_status ON betriebe (lead_status);
 -- Neue Spalten in kontaktversuche
 ALTER TABLE kontaktversuche ADD COLUMN IF NOT EXISTS notizen TEXT;
 ALTER TABLE kontaktversuche ADD COLUMN IF NOT EXISTS callback_datum TIMESTAMPTZ;
+
+-- Agent + letzte Notiz (denormalisiert)
+ALTER TABLE betriebe ADD COLUMN IF NOT EXISTS agent VARCHAR;
+ALTER TABLE betriebe ADD COLUMN IF NOT EXISTS letzte_notiz TEXT;
+ALTER TABLE betriebe ADD COLUMN IF NOT EXISTS letzte_notiz_am TIMESTAMPTZ;
+CREATE INDEX IF NOT EXISTS ix_betriebe_agent ON betriebe (agent);

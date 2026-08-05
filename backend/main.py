@@ -4,8 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import create_tables
-from routers import betriebe, chat
-from routers import pipeline
+from routers import betriebe, chat, pipeline, stats
 
 logging.basicConfig(level=logging.INFO)
 
@@ -26,6 +25,7 @@ app.add_middleware(
 app.include_router(pipeline.router, prefix="/api/v1/pipeline")
 app.include_router(betriebe.router, prefix="/api/v1/betriebe")
 app.include_router(chat.router, prefix="/api/v1/chat")
+app.include_router(stats.router, prefix="/api/v1/stats")
 
 
 @app.on_event("startup")

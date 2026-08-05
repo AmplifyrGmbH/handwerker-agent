@@ -16,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/betriebe" className="text-sm text-gray-600 hover:text-gray-900">Betriebe</Link>
           <Link href="/coldcall" className="text-sm text-gray-600 hover:text-gray-900">Cold Calling</Link>
           <Link href="/demos" className="text-sm text-gray-600 hover:text-gray-900">Demos</Link>
+          <Link href="/stats" className="text-sm text-gray-600 hover:text-gray-900">Statistik</Link>
         </nav>
         <main>{children}</main>
       </body>
