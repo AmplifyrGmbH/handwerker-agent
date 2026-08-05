@@ -248,9 +248,6 @@ function LeadCard({
             {demoMsg && <p className="text-gray-400 mt-0.5">{demoMsg}</p>}
           </div>
         )}
-        {betrieb.landing_url && (
-          <span className="shrink-0 text-xs text-green-600 font-medium">✓ Demo</span>
-        )}
       </div>
 
       {/* Activity-Feed + Notiz-Eingabe */}
