@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { apiFetch } from "@/lib/api";
 import {
@@ -31,6 +31,43 @@ function filterLabel(f: QuickFilter): string {
   return f.value;
 }
 
+// Activity-Feed-Eintrag
+type Activity = {
+  ts: Date;
+  type: "system" | "notiz" | "anruf" | "demo" | "email";
+  label: string;
+  detail?: string;
+};
+
+function buildActivities(b: Betrieb, kvs: Kontaktversuch[]): Activity[] {
+  const list: Activity[] = [];
+  if (b.entdeckt_am)
+    list.push({ ts: new Date(b.entdeckt_am), type: "system", label: "Lead erstellt" });
+  if (b.extrahiert_am)
+    list.push({ ts: new Date(b.extrahiert_am), type: "system", label: "Extrahiert" });
+  if (b.landing_generiert_am)
+    list.push({ ts: new Date(b.landing_generiert_am), type: "demo", label: "Demo generiert" });
+  for (const k of kvs) {
+    if (!k.gesendet_am) continue;
+    const ts = new Date(k.gesendet_am);
+    if (k.typ === "notiz")
+      list.push({ ts, type: "notiz", label: "Notiz", detail: k.notizen || "" });
+    else if (k.typ === "anruf")
+      list.push({ ts, type: "anruf", label: "Anruf", detail: k.notizen || "" });
+    else if (k.typ === "email_demo")
+      list.push({ ts, type: "email", label: "Demo gesendet", detail: k.email_adresse || "" });
+  }
+  return list.sort((a, b) => a.ts.getTime() - b.ts.getTime());
+}
+
+const ACTIVITY_DOT: Record<string, string> = {
+  system: "bg-gray-300",
+  notiz: "bg-blue-400",
+  anruf: "bg-orange-400",
+  demo: "bg-purple-400",
+  email: "bg-green-400",
+};
+
 function LeadCard({
   betrieb,
   onUpdate,
@@ -41,26 +78,34 @@ function LeadCard({
   const [expanded, setExpanded] = useState(false);
   const [leadStatus, setLeadStatus] = useState(betrieb.lead_status);
   const [agent, setAgent] = useState(betrieb.agent || "");
-  const [notizen, setNotizen] = useState<Kontaktversuch[]>([]);
+  const [kvs, setKvs] = useState<Kontaktversuch[]>([]);
   const [notizText, setNotizText] = useState("");
   const [savingNotiz, setSavingNotiz] = useState(false);
-  const [loadingNotizen, setLoadingNotizen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [generatingDemo, setGeneratingDemo] = useState(false);
   const [demoMsg, setDemoMsg] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const loadNotizen = useCallback(async () => {
-    setLoadingNotizen(true);
+  const loadDetail = useCallback(async () => {
+    setLoading(true);
     try {
       const b = await apiFetch<Betrieb>(`/api/v1/betriebe/${encodeURIComponent(betrieb.place_id)}`);
-      const list = (b.kontaktversuche || []).filter((k) => k.typ === "notiz" || k.typ === "anruf");
-      setNotizen(list);
+      setKvs(b.kontaktversuche || []);
+      setLoaded(true);
     } catch { /* ignore */ }
-    finally { setLoadingNotizen(false); }
+    finally { setLoading(false); }
   }, [betrieb.place_id]);
 
   useEffect(() => {
-    if (expanded && notizen.length === 0) loadNotizen();
-  }, [expanded, notizen.length, loadNotizen]);
+    if (expanded && !loaded) loadDetail();
+  }, [expanded, loaded, loadDetail]);
+
+  // Aufklappen + Textarea fokussieren
+  const openAndFocus = () => {
+    setExpanded(true);
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  };
 
   const patch = async (data: object) => {
     try {
@@ -75,14 +120,12 @@ function LeadCard({
 
   const changeStatus = async (newStatus: string) => {
     setLeadStatus(newStatus);
-    const updated = await patch({ lead_status: newStatus });
-    if (!updated) setLeadStatus(betrieb.lead_status);
+    if (!await patch({ lead_status: newStatus })) setLeadStatus(betrieb.lead_status);
   };
 
   const changeAgent = async (newAgent: string) => {
     setAgent(newAgent);
-    const updated = await patch({ agent: newAgent || null });
-    if (!updated) setAgent(betrieb.agent || "");
+    if (!await patch({ agent: newAgent || null })) setAgent(betrieb.agent || "");
   };
 
   const addNotiz = async () => {
@@ -93,8 +136,7 @@ function LeadCard({
         `/api/v1/betriebe/${encodeURIComponent(betrieb.place_id)}/notiz`,
         { method: "POST", body: JSON.stringify({ text: notizText }) }
       );
-      setNotizen((prev) => [...prev, neu]);
-      // Update letzte_notiz lokal
+      setKvs((prev) => [...prev, neu]);
       onUpdate({ ...betrieb, letzte_notiz: notizText, letzte_notiz_am: neu.gesendet_am });
       setNotizText("");
     } catch { /* ignore */ }
@@ -106,8 +148,7 @@ function LeadCard({
     setDemoMsg("");
     try {
       await apiFetch(`/api/v1/betriebe/${encodeURIComponent(betrieb.place_id)}/demo/generieren`, {
-        method: "POST",
-        body: JSON.stringify({}),
+        method: "POST", body: JSON.stringify({}),
       });
       setDemoMsg("Wird generiert…");
     } catch (e: unknown) {
@@ -120,6 +161,7 @@ function LeadCard({
   const letzteNotizAm = betrieb.letzte_notiz_am
     ? new Date(betrieb.letzte_notiz_am).toLocaleDateString("de-CH")
     : null;
+  const activities = loaded ? buildActivities(betrieb, kvs) : [];
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -153,7 +195,7 @@ function LeadCard({
           </div>
         </div>
 
-        {/* Letzte Notiz — immer sichtbar, füllt den Rest */}
+        {/* Letzte Notiz — klickbar wenn leer */}
         <div className="flex-1 min-w-0">
           {letzteNotiz ? (
             <p className="text-xs text-gray-500 line-clamp-1" title={letzteNotiz}>
@@ -161,7 +203,12 @@ function LeadCard({
               {letzteNotiz}
             </p>
           ) : (
-            <p className="text-xs text-gray-300 italic">Keine Notizen</p>
+            <button
+              onClick={openAndFocus}
+              className="text-xs text-gray-300 italic hover:text-gray-400 hover:underline"
+            >
+              Keine Notizen
+            </button>
           )}
         </div>
 
@@ -206,25 +253,44 @@ function LeadCard({
         )}
       </div>
 
-      {/* Notizen (expandierbar) */}
+      {/* Activity-Feed + Notiz-Eingabe */}
       {expanded && (
-        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
-          {loadingNotizen && <p className="text-xs text-gray-400 mb-2">Lädt…</p>}
-          {!loadingNotizen && notizen.length === 0 && (
-            <p className="text-xs text-gray-400 italic mb-2">Noch keine Notizen.</p>
+        <div className="border-t border-gray-100 bg-gray-50 px-5 py-4">
+          {loading && <p className="text-xs text-gray-400 mb-3">Lädt…</p>}
+
+          {/* Timeline */}
+          {activities.length > 0 && (
+            <div className="mb-4 flex flex-col gap-0">
+              {activities.map((a, i) => (
+                <div key={i} className="flex gap-3 items-start">
+                  {/* Linie + Punkt */}
+                  <div className="flex flex-col items-center shrink-0 w-3 pt-1.5">
+                    <div className={`w-2 h-2 rounded-full shrink-0 ${ACTIVITY_DOT[a.type]}`} />
+                    {i < activities.length - 1 && (
+                      <div className="w-px flex-1 bg-gray-200 mt-1 mb-0" style={{ minHeight: "16px" }} />
+                    )}
+                  </div>
+                  {/* Inhalt */}
+                  <div className="pb-3 min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs text-gray-400 whitespace-nowrap">
+                        {a.ts.toLocaleString("de-CH")}
+                      </span>
+                      <span className="text-xs font-medium text-gray-600">{a.label}</span>
+                    </div>
+                    {a.detail && (
+                      <p className="text-sm text-gray-700 mt-0.5">{a.detail}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
-          <div className="flex flex-col gap-1 mb-3">
-            {notizen.map((k) => (
-              <div key={k.id} className="flex gap-3 text-sm">
-                <span className="text-xs text-gray-400 whitespace-nowrap w-32 shrink-0 mt-0.5">
-                  {k.gesendet_am ? new Date(k.gesendet_am).toLocaleString("de-CH") : "—"}
-                </span>
-                <p className="text-gray-700">{k.notizen}</p>
-              </div>
-            ))}
-          </div>
+
+          {/* Notiz-Eingabe */}
           <div className="flex gap-2 items-start">
             <textarea
+              ref={textareaRef}
               value={notizText}
               onChange={(e) => setNotizText(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) addNotiz(); }}
