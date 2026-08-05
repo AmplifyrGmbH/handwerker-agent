@@ -71,11 +71,14 @@ const ACTIVITY_DOT: Record<string, string> = {
 function LeadCard({
   betrieb,
   onUpdate,
+  isExpanded,
+  onToggle,
 }: {
   betrieb: Betrieb;
   onUpdate: (b: Betrieb) => void;
+  isExpanded: boolean;
+  onToggle: () => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
   const [leadStatus, setLeadStatus] = useState(betrieb.lead_status);
   const [agent, setAgent] = useState(betrieb.agent || "");
   const [kvs, setKvs] = useState<Kontaktversuch[]>([]);
@@ -98,12 +101,13 @@ function LeadCard({
   }, [betrieb.place_id]);
 
   useEffect(() => {
-    if (expanded && !loaded) loadDetail();
-  }, [expanded, loaded, loadDetail]);
+    if (isExpanded && !loaded) loadDetail();
+  }, [isExpanded, loaded, loadDetail]);
 
   // Aufklappen + Textarea fokussieren
-  const openAndFocus = () => {
-    setExpanded(true);
+  const openAndFocus = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isExpanded) onToggle();
     setTimeout(() => textareaRef.current?.focus(), 50);
   };
 
@@ -165,20 +169,19 @@ function LeadCard({
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-      {/* Hauptzeile */}
-      <div className="flex items-center gap-3 px-4 py-3">
-        {/* Expand */}
-        <button
-          onClick={() => setExpanded((e) => !e)}
-          className="text-gray-300 hover:text-gray-600 shrink-0"
-        >
-          <span className={`block transition-transform text-xs ${expanded ? "rotate-90" : ""}`}>▶</span>
-        </button>
+      {/* Hauptzeile — klickbar zum Aufklappen */}
+      <div
+        className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
+        onClick={onToggle}
+      >
+        {/* Expand-Indikator */}
+        <span className={`text-gray-300 shrink-0 block transition-transform text-xs ${isExpanded ? "rotate-90" : ""}`}>▶</span>
 
         {/* Name + Telefon */}
         <div className="shrink-0 w-64">
           <Link
             href={`/betriebe/${betrieb.place_id}`}
+            onClick={(e) => e.stopPropagation()}
             className="font-medium text-gray-900 hover:text-blue-600 text-sm leading-tight block"
           >
             {betrieb.name_anzeige || betrieb.name}
@@ -186,7 +189,7 @@ function LeadCard({
           <div className="flex items-center gap-2 mt-0.5">
             {betrieb.branche && <span className="text-xs text-gray-400">{betrieb.branche}</span>}
             {betrieb.telefon ? (
-              <a href={`tel:${betrieb.telefon}`} className="text-xs text-blue-600 hover:underline font-mono">
+              <a href={`tel:${betrieb.telefon}`} onClick={(e) => e.stopPropagation()} className="text-xs text-blue-600 hover:underline font-mono">
                 {betrieb.telefon}
               </a>
             ) : (
@@ -210,12 +213,13 @@ function LeadCard({
               Keine Notizen
             </button>
           )}
+
         </div>
 
         {/* Agent */}
         <select
           value={agent}
-          onChange={(e) => changeAgent(e.target.value)}
+          onChange={(e) => { e.stopPropagation(); changeAgent(e.target.value); }}
           onClick={(e) => e.stopPropagation()}
           className="text-xs border border-gray-200 rounded px-2 py-1 text-gray-600 shrink-0"
         >
@@ -226,7 +230,7 @@ function LeadCard({
         {/* Status */}
         <select
           value={leadStatus}
-          onChange={(e) => changeStatus(e.target.value)}
+          onChange={(e) => { e.stopPropagation(); changeStatus(e.target.value); }}
           onClick={(e) => e.stopPropagation()}
           className={`text-xs font-medium px-2 py-1 rounded-full border-0 cursor-pointer focus:ring-2 focus:ring-blue-300 shrink-0 ${statusColor}`}
         >
@@ -237,7 +241,7 @@ function LeadCard({
 
         {/* Demo */}
         {betrieb.status === "extrahiert" && !betrieb.landing_url && (
-          <div className="shrink-0 text-xs">
+          <div className="shrink-0 text-xs" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={generiereDemo}
               disabled={generatingDemo}
@@ -251,7 +255,7 @@ function LeadCard({
       </div>
 
       {/* Activity-Feed + Notiz-Eingabe */}
-      {expanded && (
+      {isExpanded && (
         <div className="border-t border-gray-100 bg-gray-50 px-5 py-4">
           {loading && <p className="text-xs text-gray-400 mb-3">Lädt…</p>}
 
@@ -315,6 +319,7 @@ export default function ColdCallPage() {
   const [activeFilter, setActiveFilter] = useState<QuickFilter>({ type: "alle" });
   const [search, setSearch] = useState("");
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   // Quick-Filter-Optionen
   const quickFilters: QuickFilter[] = [
@@ -415,7 +420,13 @@ export default function ColdCallPage() {
       )}
       <div className="flex flex-col gap-2">
         {filtered.map((b) => (
-          <LeadCard key={b.place_id} betrieb={b} onUpdate={updateItem} />
+          <LeadCard
+            key={b.place_id}
+            betrieb={b}
+            onUpdate={updateItem}
+            isExpanded={expandedId === b.place_id}
+            onToggle={() => setExpandedId((prev) => prev === b.place_id ? null : b.place_id)}
+          />
         ))}
       </div>
 
