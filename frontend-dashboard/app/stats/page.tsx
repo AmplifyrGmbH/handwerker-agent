@@ -57,8 +57,8 @@ export default function StatsPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="max-w-5xl mx-auto px-6 py-8 text-gray-400">Lädt…</div>;
-  if (!stats) return <div className="max-w-5xl mx-auto px-6 py-8 text-red-500">Fehler beim Laden</div>;
+  if (loading) return <div className="max-w-7xl mx-auto px-6 py-8 text-gray-400">Lädt…</div>;
+  if (!stats) return <div className="max-w-7xl mx-auto px-6 py-8 text-red-500">Fehler beim Laden</div>;
 
   const angerufen = stats.total - (stats.nach_status["nicht_angerufen"] || 0);
   const angerufenPct = stats.total > 0 ? Math.round((angerufen / stats.total) * 100) : 0;
@@ -70,7 +70,7 @@ export default function StatsPage() {
   const maxDay = Math.max(...days.map((d) => stats.aktivitaet_14d[d] || 0), 1);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-8">Statistik</h1>
 
       {/* KPI-Karten */}

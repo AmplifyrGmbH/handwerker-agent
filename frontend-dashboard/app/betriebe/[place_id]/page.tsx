@@ -126,15 +126,15 @@ export default function BetriebDetailPage() {
     }
   };
 
-  if (loading) return <div className="max-w-3xl mx-auto px-6 py-8 text-gray-400">Lädt...</div>;
-  if (!betrieb) return <div className="max-w-3xl mx-auto px-6 py-8 text-red-500">Betrieb nicht gefunden.</div>;
+  if (loading) return <div className="max-w-7xl mx-auto px-6 py-8 text-gray-400">Lädt...</div>;
+  if (!betrieb) return <div className="max-w-7xl mx-auto px-6 py-8 text-red-500">Betrieb nicht gefunden.</div>;
 
   const leadColor = LEAD_STATUS_COLORS[betrieb.lead_status] || "bg-gray-100 text-gray-600";
   const pipelineColor = STATUS_COLORS[betrieb.status] || "bg-gray-100 text-gray-600";
   const anrufe = (betrieb.kontaktversuche || []).filter((k) => k.typ === "anruf");
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <button onClick={() => router.back()} className="text-sm text-blue-600 hover:underline mb-6 block">
         ← Zurück
       </button>

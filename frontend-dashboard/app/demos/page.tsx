@@ -57,7 +57,7 @@ export default function DemosPage() {
   const page = Math.floor(offset / PAGE_SIZE) + 1;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Demos</h1>
         <span className="text-sm text-gray-400">{total} Demos</span>

@@ -88,7 +88,7 @@ export default function PipelinePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-8">Pipeline</h1>
 
       {/* Start */}
@@ -116,7 +116,7 @@ export default function PipelinePage() {
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Max. Ergebnisse</label>
+            <label className="block text-xs text-gray-500 mb-1">Anzahl pro Ort</label>
             <input
               type="number"
               value={maxPerSearch}
