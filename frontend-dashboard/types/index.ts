@@ -79,7 +79,7 @@ export const BRANCHEN = [
   "Reinigung",
 ];
 
-export const AGENTS = ["Timo", "David"] as const;
+export const AGENTS = ["Timo", "David", "Sinan"] as const;
 export type Agent = typeof AGENTS[number];
 
 // Pipeline-Status

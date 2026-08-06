@@ -48,7 +48,7 @@ function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
 
 export default function PipelinePage() {
   const [branche, setBranche] = useState("Maler");
-  const [kanton, setKanton] = useState("");
+  const [orte, setOrte] = useState("");
   const [maxPerSearch, setMaxPerSearch] = useState<string>("");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -72,7 +72,7 @@ export default function PipelinePage() {
     setLoading(true);
     setError("");
     try {
-      const body = { branche, kanton, max_per_search: maxPerSearch === "" ? 0 : Number(maxPerSearch) };
+      const body = { branche, orte, max_per_search: maxPerSearch === "" ? 0 : Number(maxPerSearch) };
       const res = await apiFetch<{ job_id: number }>("/api/v1/pipeline/full/start", {
         method: "POST",
         body: JSON.stringify(body),
@@ -106,13 +106,13 @@ export default function PipelinePage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Kanton (leer = alle)</label>
+            <label className="block text-xs text-gray-500 mb-1">Ort(e) — kommagetrennt (leer = alle)</label>
             <input
               type="text"
-              value={kanton}
-              onChange={(e) => setKanton(e.target.value)}
-              placeholder="z.B. Zürich"
-              className="border border-gray-200 rounded px-3 py-2 text-sm w-36"
+              value={orte}
+              onChange={(e) => setOrte(e.target.value)}
+              placeholder="z.B. Zürich, Bern, Luzern"
+              className="border border-gray-200 rounded px-3 py-2 text-sm w-64"
             />
           </div>
           <div>

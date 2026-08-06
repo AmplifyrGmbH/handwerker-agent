@@ -16,9 +16,10 @@ DEUTSCHSCHWEIZER_KANTONE = [
 _executor = ThreadPoolExecutor(max_workers=1)
 
 
-def get_search_queries(branche: str, kanton_filter: str = "") -> list[str]:
-    if kanton_filter:
-        return [f"{branche} {kanton_filter} Schweiz"]
+def get_search_queries(branche: str, orte_filter: str = "") -> list[str]:
+    if orte_filter:
+        orte = [o.strip() for o in orte_filter.split(",") if o.strip()]
+        return [f"{branche} {ort} Schweiz" for ort in orte]
     return [f"{branche} {kanton} Schweiz" for kanton in DEUTSCHSCHWEIZER_KANTONE]
 
 

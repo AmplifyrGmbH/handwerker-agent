@@ -23,7 +23,7 @@ _active_tasks: dict[int, asyncio.Task] = {}
 
 class DiscoveryRequest(BaseModel):
     branche: str
-    kanton: str = ""
+    orte: str = ""
     max_per_search: int = 100
 
 
@@ -37,7 +37,7 @@ class LandingRequest(BaseModel):
 
 class FullRequest(BaseModel):
     branche: str
-    kanton: str = ""
+    orte: str = ""
     max_per_search: int = 100
 
 
@@ -82,7 +82,7 @@ def _start_task(job_id: int, coro) -> asyncio.Task:
 @router.post("/discovery/start")
 async def start_discovery(req: DiscoveryRequest, db: AsyncSession = Depends(get_db)):
     job = await _create_job(db, "discovery")
-    _start_task(job.id, discovery.run(job.id, req.branche, req.kanton, req.max_per_search))
+    _start_task(job.id, discovery.run(job.id, req.branche, req.orte, req.max_per_search))
     return {"job_id": job.id, "message": "Discovery gestartet"}
 
 
@@ -107,7 +107,7 @@ async def start_discovery_extraktion(req: DiscoveryRequest, db: AsyncSession = D
     job = await _create_job(db, "discovery+extraktion")
 
     async def _run():
-        await discovery.run(job.id, req.branche, req.kanton, req.max_per_search, final_step=False)
+        await discovery.run(job.id, req.branche, req.orte, req.max_per_search, final_step=False)
         await extraktion.run(job.id, final_step=True)
 
     _start_task(job.id, _run())
@@ -126,7 +126,7 @@ async def start_full(req: FullRequest, db: AsyncSession = Depends(get_db)):
     async def _run():
         global _active_full_job_id
         try:
-            await discovery.run(job.id, req.branche, req.kanton, req.max_per_search, final_step=False)
+            await discovery.run(job.id, req.branche, req.orte, req.max_per_search, final_step=False)
             await extraktion.run(job.id, final_step=True)
         finally:
             _active_full_job_id = None

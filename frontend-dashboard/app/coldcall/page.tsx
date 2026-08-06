@@ -20,17 +20,6 @@ function normTel(s: string): string {
   return digits;
 }
 
-type QuickFilter =
-  | { type: "alle" }
-  | { type: "lead_status"; value: string }
-  | { type: "agent"; value: string };
-
-function filterLabel(f: QuickFilter): string {
-  if (f.type === "alle") return "Alle";
-  if (f.type === "lead_status") return LEAD_STATUS_LABELS[f.value] || f.value;
-  return f.value;
-}
-
 // Activity-Feed-Eintrag
 type Activity = {
   ts: Date;
@@ -331,51 +320,27 @@ function LeadCard({
 export default function ColdCallPage() {
   const [items, setItems] = useState<Betrieb[]>([]);
   const [loading, setLoading] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<QuickFilter>({ type: "alle" });
+  const [filterAgent, setFilterAgent] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [search, setSearch] = useState("");
-  const [counts, setCounts] = useState<Record<string, number>>({});
   const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  // Quick-Filter-Optionen
-  const quickFilters: QuickFilter[] = [
-    { type: "alle" },
-    { type: "lead_status", value: "nicht_angerufen" },
-    ...AGENTS.map((a): QuickFilter => ({ type: "agent", value: a })),
-  ];
-
-  const loadCounts = useCallback(async () => {
-    const results = await Promise.allSettled([
-      apiFetch<BetriebeListe>("/api/v1/betriebe?limit=1").then((d) => ({ key: "alle", count: d.total })),
-      apiFetch<BetriebeListe>("/api/v1/betriebe?lead_status=nicht_angerufen&limit=1").then((d) => ({ key: "nicht_angerufen", count: d.total })),
-      ...AGENTS.map((a) =>
-        apiFetch<BetriebeListe>(`/api/v1/betriebe?agent=${a}&limit=1`).then((d) => ({ key: a, count: d.total }))
-      ),
-    ]);
-    const c: Record<string, number> = {};
-    for (const r of results) {
-      if (r.status === "fulfilled") c[r.value.key] = r.value.count;
-    }
-    setCounts(c);
-  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({ limit: String(LOAD_LIMIT) });
-      if (activeFilter.type === "lead_status") params.set("lead_status", activeFilter.value);
-      if (activeFilter.type === "agent") params.set("agent", activeFilter.value);
+      if (filterAgent) params.set("agent", filterAgent);
+      if (filterStatus) params.set("lead_status", filterStatus);
       const data = await apiFetch<BetriebeListe>(`/api/v1/betriebe?${params}`);
       setItems(data.items);
     } catch { /* ignore */ }
     finally { setLoading(false); }
-  }, [activeFilter]);
+  }, [filterAgent, filterStatus]);
 
-  useEffect(() => { loadCounts(); }, [loadCounts]);
   useEffect(() => { load(); }, [load]);
 
   const updateItem = (updated: Betrieb) => {
     setItems((prev) => prev.map((b) => (b.place_id === updated.place_id ? updated : b)));
-    loadCounts();
   };
 
   // Telefon-Suche client-seitig
@@ -389,29 +354,26 @@ export default function ColdCallPage() {
     <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-5">Cold Calling</h1>
 
-      {/* Quick-Filter */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {quickFilters.map((f, i) => {
-          const key = f.type === "alle" ? "alle" : f.type === "lead_status" ? f.value : f.value;
-          const isActive =
-            f.type === activeFilter.type &&
-            (f.type === "alle" || (f as { value: string }).value === (activeFilter as { value: string }).value);
-          const count = counts[key];
-          return (
-            <button
-              key={i}
-              onClick={() => setActiveFilter(f)}
-              className={`text-sm px-3 py-1.5 rounded-full border transition-all ${
-                isActive
-                  ? "bg-gray-800 text-white border-gray-800 font-medium"
-                  : "border-gray-200 text-gray-600 hover:border-gray-400"
-              }`}
-            >
-              {filterLabel(f)}
-              {count != null && <span className="ml-1.5 opacity-60 text-xs">{count}</span>}
-            </button>
-          );
-        })}
+      {/* Filter-Dropdowns */}
+      <div className="flex flex-wrap gap-3 mb-4">
+        <select
+          value={filterAgent}
+          onChange={(e) => setFilterAgent(e.target.value)}
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
+          <option value="">Alle Agenten</option>
+          {AGENTS.map((a) => <option key={a} value={a}>{a}</option>)}
+        </select>
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
+          <option value="">Alle Status</option>
+          {ALL_LEAD_STATUSES.map((s) => (
+            <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>
+          ))}
+        </select>
       </div>
 
       {/* Telefon-Suche */}

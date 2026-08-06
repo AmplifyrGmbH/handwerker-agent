@@ -38,11 +38,11 @@ def _extract_domain(url: str) -> Optional[str]:
     return None
 
 
-async def run(job_id: int, branche: str, kanton: str, max_per_search: int, final_step: bool = True):
+async def run(job_id: int, branche: str, orte: str, max_per_search: int, final_step: bool = True):
     async with AsyncSessionLocal() as db:
-        await _append_log(db, job_id, f"Discovery gestartet: {branche}, Kanton={kanton or 'alle'}, max={max_per_search}")
+        await _append_log(db, job_id, f"Discovery gestartet: {branche}, Ort={orte or 'alle'}, max={max_per_search}")
 
-        queries = apify_client.get_search_queries(branche, kanton)
+        queries = apify_client.get_search_queries(branche, orte)
         await _append_log(db, job_id, f"{len(queries)} Suchanfragen werden ausgeführt...")
 
         try:
