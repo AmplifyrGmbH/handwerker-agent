@@ -42,11 +42,11 @@ async def run(job_id: int, branche: str, orte: str, max_per_search: int, final_s
     async with AsyncSessionLocal() as db:
         await _append_log(db, job_id, f"Discovery gestartet: {branche}, Ort={orte or 'alle'}, max={max_per_search}")
 
-        queries = apify_client.get_search_queries(branche, orte)
+        queries, location_queries = apify_client.get_search_queries(branche, orte)
         await _append_log(db, job_id, f"{len(queries)} Suchanfragen werden ausgeführt...")
 
         try:
-            items = await apify_client.run_scraper(queries, max_per_search)
+            items = await apify_client.run_scraper(queries, max_per_search, location_queries)
         except Exception as e:
             await _append_log(db, job_id, f"Apify-Fehler: {e}")
             await _update_job(db, job_id, status="fehler", abgeschlossen_am=datetime.now(timezone.utc))
