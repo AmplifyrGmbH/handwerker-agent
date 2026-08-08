@@ -155,7 +155,8 @@ async def list_betriebe(
     count_query = select(func.count()).select_from(query.subquery())
     total = (await db.execute(count_query)).scalar()
 
-    query = query.offset(offset).limit(limit).order_by(Betrieb.entdeckt_am.desc())
+    order_col = Betrieb.landing_generiert_am if status == "landing_generiert" else Betrieb.entdeckt_am
+    query = query.offset(offset).limit(limit).order_by(order_col.desc())
     result = await db.execute(query)
     betriebe = result.scalars().all()
 
