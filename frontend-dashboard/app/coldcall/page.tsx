@@ -367,19 +367,30 @@ function ColdCallPage() {
     setItems((prev) => prev.map((b) => (b.place_id === updated.place_id ? updated : b)));
   };
 
-  // Telefon-Suche client-seitig
+  // Suchbegriff-Suche client-seitig (Branche, Ort, Name, Telefon)
   const filtered = useMemo(() => {
     if (!search.trim()) return items;
-    const q = normTel(search);
-    return items.filter((b) => b.telefon && normTel(b.telefon).includes(q));
+    const terms = search.trim().toLowerCase().split(/\s+/);
+    return items.filter((b) => {
+      const haystack = [b.branche, b.ort, b.name_anzeige, b.name, b.telefon]
+        .filter(Boolean).join(" ").toLowerCase();
+      return terms.every((t) => haystack.includes(t));
+    });
   }, [items, search]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-5">Cold Calling</h1>
 
-      {/* Filter-Dropdowns */}
-      <div className="flex flex-wrap gap-3 mb-4">
+      {/* Filter-Zeile */}
+      <div className="flex flex-wrap gap-3 mb-5">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setParam("q", e.target.value)}
+          placeholder="Suchbegriff (Branche, Ort, Name…)"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        />
         <select
           value={filterAgent}
           onChange={(e) => setParam("agent", e.target.value)}
@@ -418,20 +429,6 @@ function ColdCallPage() {
             </option>
           ))}
         </select>
-      </div>
-
-      {/* Telefon-Suche */}
-      <div className="mb-5">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setParam("q", e.target.value)}
-          placeholder="Telefonnummer suchen…"
-          className="border border-gray-200 rounded-lg px-4 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-300"
-        />
-        {search && (
-          <span className="ml-3 text-sm text-gray-400">{filtered.length} Treffer</span>
-        )}
       </div>
 
       {/* Lead-Karten */}
