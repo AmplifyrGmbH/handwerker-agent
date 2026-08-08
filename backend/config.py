@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     AMPLIFYR_FIRMA: str = "Amplifyr"
     AMPLIFYR_KONTAKT: str = "info@amplifyr.ch"
     AMPLIFYR_TELEFON: str = ""
+    AMPLIFYR_TELEFON_ANZEIGE: str = ""
     WEB3FORMS_KEY: str = ""
 
     class Config:
