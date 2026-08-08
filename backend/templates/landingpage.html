@@ -335,9 +335,11 @@
   <div class="wrap top-in">
     <div class="brand">
       <span class="fuerzeile">Demo für</span>
-      
+      {% if logo_url %}
+        <img class="kundenlogo" src="{{ logo_url }}" alt="{{ firmenname }}">
+      {% else %}
         <span style="font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:1.125rem;color:#1A2744">{{ firmenname }}</span>
-      
+      {% endif %}
     </div>
     <span class="datum">{{ monat_jahr }}</span>
     <nav class="topnav">
