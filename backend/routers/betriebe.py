@@ -92,6 +92,7 @@ def _betrieb_to_dict(b: Betrieb, include_kontaktversuche: bool = False) -> dict:
         "farbe_primary": b.farbe_primary,
         "hat_logo": b.hat_logo,
         "logo_url": b.logo_url,
+        "hero_url": b.hero_url,
         "firmenprofil": b.firmenprofil,
         "slug": b.slug,
         "landing_url": b.landing_url,
