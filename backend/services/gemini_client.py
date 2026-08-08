@@ -217,3 +217,25 @@ def chat_response(message: str, history: list[dict], context: dict = {}) -> str:
     except Exception as e:
         logger.error("chat_response failed: %s", e)
         return "Es tut mir leid, ich konnte Ihre Anfrage nicht verarbeiten. Bitte versuchen Sie es erneut."
+
+
+def select_best_hero_image(images: list[bytes]) -> int:
+    """Wählt den Index des besten Hero-Bildes (Team/Personen bevorzugt) aus einer Liste von Bild-Bytes."""
+    try:
+        parts = []
+        for i, img_bytes in enumerate(images):
+            parts.append({"mime_type": "image/jpeg", "data": img_bytes})
+            parts.append(f"Bild {i+1}")
+        parts.append(
+            "Wähle das beste Foto als Hero-Bild für eine Handwerker-Firmen-Landingpage. "
+            "Bevorzuge: echte Personen/Team-Fotos, professionelle Aufnahmen, Menschen bei der Arbeit. "
+            "Vermeide: Logos, Icons, Produktfotos ohne Personen, Stock-Bilder, Banner. "
+            "Antworte NUR mit der Zahl des besten Bildes (1, 2 oder 3)."
+        )
+        model = genai.GenerativeModel(MODEL)
+        response = model.generate_content(parts)
+        num = int(re.search(r"\d", response.text).group()) - 1
+        return max(0, min(num, len(images) - 1))
+    except Exception as e:
+        logger.error("select_best_hero_image failed: %s", e)
+        return 0

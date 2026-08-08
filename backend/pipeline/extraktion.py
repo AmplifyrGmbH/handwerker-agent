@@ -115,6 +115,46 @@ def _find_unterseiten(soup: BeautifulSoup, base_url: str) -> list[str]:
     return found
 
 
+
+IMAGE_TEAM_KEYWORDS = re.compile(
+    r"team|mitarbeiter|über|ueber|about|chef|inhaber|portrait|person|leute|crew|staff|founders|geschäft",
+    re.IGNORECASE,
+)
+IMAGE_EXTS = {"jpg", "jpeg", "png", "webp"}
+
+
+def _find_hero_images(soups_with_urls: list[tuple], base_url: str) -> list[str]:
+    """Gibt bis zu 8 absolute Bild-URLs zurück, Team/Personen-Bilder bevorzugt."""
+    scored: list[tuple[int, str]] = []
+    seen: set[str] = set()
+
+    for soup, page_url in soups_with_urls:
+        for img in soup.find_all("img"):
+            src = img.get("src", "").strip()
+            if not src or src.startswith("data:"):
+                continue
+            abs_url = urljoin(page_url or base_url, src)
+            if abs_url in seen:
+                continue
+            # Nur echte Foto-Formate
+            ext = abs_url.rsplit(".", 1)[-1].lower().split("?")[0]
+            if ext not in IMAGE_EXTS:
+                continue
+            # Kein Logo, kein Icon, kein Mini-Bild
+            combined = abs_url + " " + img.get("alt", "") + " " + " ".join(img.get("class", []))
+            if re.search(r"logo|icon|favicon|sprite|banner|background|bg[-_]", combined, re.IGNORECASE):
+                continue
+            score = 10 if IMAGE_TEAM_KEYWORDS.search(combined) else 0
+            # Unterseiten-Bilder leicht bevorzugen
+            if page_url and page_url != base_url:
+                score += 3
+            seen.add(abs_url)
+            scored.append((score, abs_url))
+
+    scored.sort(key=lambda x: -x[0])
+    return [url for _, url in scored[:8]]
+
+
 def _clean_text(soup: BeautifulSoup) -> str:
     for tag in soup(["script", "style", "svg", "noscript", "nav", "header", "footer"]):
         tag.decompose()
@@ -133,6 +173,37 @@ def _extract_email(html: str) -> Optional[str]:
             return m
     return None
 
+
+
+
+async def _pick_hero_image(client: httpx.AsyncClient, candidates: list[str]) -> Optional[str]:
+    """Lädt die Top-3-Kandidaten herunter und lässt Gemini das beste Team/Personen-Bild wählen."""
+    if len(candidates) == 1:
+        return candidates[0]
+
+    # Nur Top 3 herunterladen (Kosten/Geschwindigkeit)
+    images = []
+    urls_loaded = []
+    for url in candidates[:3]:
+        try:
+            r = await client.get(url, timeout=8)
+            if r.status_code == 200 and len(r.content) > 5000:
+                images.append(r.content)
+                urls_loaded.append(url)
+        except Exception:
+            pass
+
+    if not images:
+        return candidates[0]
+    if len(images) == 1:
+        return urls_loaded[0]
+
+    # Gemini wählt das beste (Team/Personen-Bild bevorzugt)
+    try:
+        idx = gemini_client.select_best_hero_image(images)
+        return urls_loaded[idx] if 0 <= idx < len(urls_loaded) else urls_loaded[0]
+    except Exception:
+        return urls_loaded[0]
 
 async def _process_betrieb(betrieb: Betrieb, job_id: int):
     async with AsyncSessionLocal() as db:
@@ -181,11 +252,22 @@ async def _process_betrieb_inner(db: AsyncSession, betrieb: Betrieb, job_id: int
             except Exception:
                 pass
 
+        # Bilder für Hero sammeln (Hauptseite + Unterseiten)
+        soups_with_urls = [(soup_main, base_url)]
+        for u_url in unterseiten_urls:
+            try:
+                u_resp2 = await client.get(u_url)
+                soups_with_urls.append((BeautifulSoup(u_resp2.text, "html.parser"), u_url))
+            except Exception:
+                pass
+        hero_candidates = _find_hero_images(soups_with_urls, base_url)
+
         # Logo finden
         logo_result = _find_logo_url(soup_main, base_url)
         logo_url_r2 = None
         hat_logo = False
         farbe_primary = None
+        hero_url_r2 = None
 
         if logo_result:
             logo_abs_url, logo_mime = logo_result
@@ -203,6 +285,22 @@ async def _process_betrieb_inner(db: AsyncSession, betrieb: Betrieb, job_id: int
 
         # Primärfarbe — nur CSS (kostenlos, kein Gemini)
         farbe_primary = _extract_color_from_css(all_html)
+
+        # Hero-Bild: bestes Kandidatenbild via Gemini wählen
+        if hero_candidates:
+            try:
+                selected_url = await _pick_hero_image(client, hero_candidates)
+                if selected_url:
+                    img_resp = await client.get(selected_url)
+                    img_bytes = img_resp.content
+                    ext = selected_url.rsplit(".", 1)[-1].lower().split("?")[0]
+                    if ext not in IMAGE_EXTS:
+                        ext = "jpg"
+                    key = f"handwerker/{place_id}/hero.{ext}"
+                    mime = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png", "webp": "image/webp"}.get(ext, "image/jpeg")
+                    hero_url_r2 = r2_client.upload_bytes(img_bytes, key, mime)
+            except Exception as e:
+                logger.warning("Hero-Bild Fehler für %s: %s", place_id, e)
 
         # E-Mail
         email = _extract_email(all_html)
@@ -223,6 +321,7 @@ async def _process_betrieb_inner(db: AsyncSession, betrieb: Betrieb, job_id: int
             b.email = email
             b.hat_logo = hat_logo
             b.logo_url = logo_url_r2
+            b.hero_url = hero_url_r2
             b.farbe_primary = farbe_primary
             b.inhaber_name = inhaber_name
             b.mitarbeiter = mitarbeiter

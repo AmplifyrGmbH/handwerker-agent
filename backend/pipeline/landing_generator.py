@@ -183,7 +183,7 @@ async def run(job_id: int, place_id: Optional[str] = None, final_step: bool = Tr
                     "kontakt": settings.AMPLIFYR_KONTAKT,
                     # landing_2 extras
                     "monat_jahr": _monat_jahr(),
-                    "hero_url": "",
+                    "hero_url": b.hero_url or "",
                     "website_domain": b.website_domain or "",
                     "amplifyr_telefon": settings.AMPLIFYR_TELEFON,
                 })

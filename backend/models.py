@@ -33,6 +33,7 @@ class Betrieb(Base):
     farbe_primary = Column(String)
     hat_logo = Column(Boolean)
     logo_url = Column(String)
+    hero_url = Column(String)
     firmenprofil = Column(Text)
     extrahiert_am = Column(TIMESTAMP(timezone=True))
 
