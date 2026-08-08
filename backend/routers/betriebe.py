@@ -1,7 +1,7 @@
 from datetime import date, datetime, timezone
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from sqlalchemy import select, func, cast, Date, distinct
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -267,6 +267,46 @@ async def demo_generieren(
     background_tasks.add_task(_run_demo_job, place_id)
     return {"ok": True, "message": "Demo-Generierung gestartet"}
 
+
+
+# ── Medien-Upload (Logo / Hero) ───────────────────────────────────────────────
+
+ALLOWED_MIME = {"image/png", "image/jpeg", "image/webp", "image/gif", "image/svg+xml"}
+EXT_MAP = {"image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/gif": "gif", "image/svg+xml": "svg"}
+
+@router.post("/{place_id}/upload")
+async def upload_media(
+    place_id: str,
+    typ: str = Form(...),  # "logo" | "hero"
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+):
+    if typ not in ("logo", "hero"):
+        raise HTTPException(status_code=400, detail="typ muss 'logo' oder 'hero' sein")
+    b = await db.get(Betrieb, place_id)
+    if not b:
+        raise HTTPException(status_code=404, detail="Betrieb nicht gefunden")
+
+    content_type = file.content_type or "image/jpeg"
+    if content_type not in ALLOWED_MIME:
+        raise HTTPException(status_code=400, detail=f"Dateityp nicht erlaubt: {content_type}")
+
+    data = await file.read()
+    ext = EXT_MAP.get(content_type, "jpg")
+    key = f"handwerker/{place_id}/{typ}.{ext}"
+
+    url = await asyncio.get_event_loop().run_in_executor(
+        None, r2_client.upload_bytes, data, key, content_type
+    )
+
+    if typ == "logo":
+        b.logo_url = url
+        b.hat_logo = True
+    else:
+        b.hero_url = url
+    await db.commit()
+
+    return _betrieb_to_dict(b)
 
 
 # ── CRM: Notiz hinzufügen ─────────────────────────────────────────────────────
