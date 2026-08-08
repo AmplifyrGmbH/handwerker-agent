@@ -304,11 +304,15 @@
      der Linie der beiden anderen Beschriftungen aus.
      `align-items:baseline` hilft hier nicht: ein <img> hat als Grundlinie seine
      Unterkante, das wäre 7-8 px zu tief.
-     Der Versatz hängt an der Logohöhe (0.182 × Höhe) — wer die Höhe ändert,
+     Der volle Tinten-Versatz (0.182 × Höhe) hob die Wortmarke am Auge zu weit:
+     sie trägt unten mehr Masse als oben, die rechnerische Grundlinie liegt
+     darum über der optischen Mitte. Seit dem 06.08.2026 wird nur noch zu rund
+     zwei Dritteln korrigiert (0.13 × Höhe) — nach Augenmass, nicht nach Messung.
+     Der Versatz hängt an der Logohöhe — wer die Höhe ändert,
      rechnet ihn neu, beide Stellen zusammen.
      Das REMA-Logo bleibt box-mittig: es ist eine mehrzeilige Wort-Bild-Marke,
      bei der eine Schrift-Grundlinie nichts bedeutet. */
-  .topnav img{height:34px;width:auto;display:block;transform:translateY(-6.2px)}
+  .topnav img{height:34px;width:auto;display:block;transform:translateY(-4.4px)}
   /* Achtung: .kundenlogo hier bleibt wirkungslos — .brand .kundenlogo oben hat
      zwei Klassen und gewinnt. Das Kundenlogo steht deshalb bis 400 px auf 34 px,
      und unser Logo folgt ihm auf denselben Wert. Wer das aendern will, aendert
@@ -319,7 +323,7 @@
   /* Muss NACH .topnav img stehen: gleiche Spezifitaet, also entscheidet die
      Reihenfolge. Haelt unser Logo auf derselben Hoehe wie .brand .kundenlogo,
      das unter 400 px auf 24 px geht. */
-  @media(max-width:400px){.topnav img{height:24px;transform:translateY(-4.4px)}}
+  @media(max-width:400px){.topnav img{height:24px;transform:translateY(-3.1px)}}
   @media(max-width:420px){.datum{display:none}}
   .hero h1{font-size:clamp(2.125rem,5.6vw,4rem);color:#fff}
   .hero h1 .u{color:var(--gold)}
@@ -334,7 +338,24 @@
   .hcr i{display:block;font-style:normal;font-weight:600;font-size:.875rem;color:#cfd9ea;line-height:1.3}
   .hcr svg{width:18px;height:18px;stroke:var(--gold);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
   .hcr img{width:52px;height:52px;border-radius:50%;object-fit:cover;flex:none;margin:-4px 4px -4px -12px;border:2px solid var(--gold)}
-  @media(max-width:880px){.herocred{justify-content:center}}
+  /* Auf dem Handy gehoeren die drei Koepfe UNTER das Foto: oben zieht der Blick
+     sonst am Bild vorbei, und die Kette Titel-Text-Koepfe-Foto liest sich als
+     Bruch. Der Trick ist display:contents auf dem Textblock — damit werden
+     Titel, Lead und Koepfe zu Geschwistern des Fotos und per order sortierbar,
+     ohne dass sich am Aufbau fuer den Desktop etwas aendert.
+     justify-content half hier nie: .herocred ist eine SPALTE, dort steuert es
+     die senkrechte Achse. Waagrecht zentriert align-items — deshalb klebten
+     die Chips links und ihre Bilder ragten mit -12px ueber die Kante hinaus. */
+  @media(max-width:880px){
+    .hero-in{display:flex;flex-direction:column}
+    .hero-in>div:first-child{display:contents}
+    .hero-in h1{order:0}
+    .hero-in .lead{order:1}
+    .hero-in>div:last-child{order:2}
+    .credlead{order:3;margin-top:28px}
+    /* Der breiteste Chip stiess sonst an beide Kanten — die 14 px halten ihn frei. */
+    .herocred{order:4;align-items:center;padding-inline:14px}
+  }
   @media(max-width:400px){.hcr{font-size:.75rem;padding:8px 12px}}
   .herophoto{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 32px 74px -28px rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.16);aspect-ratio:4/4.6}
   .herophoto img{width:100%;height:100%;object-fit:cover}
@@ -383,6 +404,10 @@
      hoehe), doppelte Abstaende wirken dort als Loch. */
   .greifen{background:var(--card);padding-top:48px}
   .greifen .sec-head{margin-bottom:16px}
+  /* Bis zum 06.08.2026 begann der Abschnitt direkt mit .phases, dessen
+     margin-top den Abstand mitbrachte. Seit der Intro-Kopf davorsteht, braucht
+     die Sektion ihr eigenes Polster — sonst klebt «DIE WERKZEUGE» an der Kante. */
+  .blocks .phases{margin-top:8px}
   .greifen .phfoot{margin-top:8px}
   /* Das Ergebnisbild statt der Zahnrad-Animation (03.08.2026). Zwei Gruende:
      Zahnraeder sagen «eine Maschine laeuft von selbst» — das behaupten wir
@@ -399,8 +424,14 @@
   /* Muss zum schmalen Schnitt passen, sonst wird das Bild gestaucht —
      dieselbe 640-px-Grenze wie das <source media> im Markup. */
   @media(max-width:640px){.ergebnis{aspect-ratio:830/752}}
+  /* Kein 64ch-Deckel mehr: die Zeile soll unter dem Bild in EINER Zeile stehen.
+     Begrenzt wird sie jetzt von der Bildbreite darueber (min(1020px,76vw)) —
+     darunter bricht sie normal um, was auf schmalen Schirmen auch so sein muss. */
   .bildfuss{text-align:center;margin:14px auto 0;font-size:.9375rem;line-height:1.55;
-    color:var(--muted);max-width:64ch}
+    color:var(--muted);max-width:min(1020px,76vw);text-wrap:pretty}
+  .nur-finger{display:none}
+  @media(max-width:640px){.bildfuss{max-width:100%;padding:0 16px}
+    .nur-maus{display:none}.nur-finger{display:inline}}
 
   /* ===== LESELEISTE =====
      Ein Strich am rechten Rand, ein Punkt je Abschnitt: wo im Ablauf der Seite
@@ -486,13 +517,17 @@
   .pico{display:block;width:100%;max-width:132px;height:auto;margin-bottom:12px}
   .tcards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:4px}
   @media(max-width:860px){.tcards{grid-template-columns:1fr;max-width:520px;margin-inline:auto}}
-  .tcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 20px;box-shadow:0 14px 38px -30px rgba(26,39,68,.5);text-align:center}
+  /* Die Karten sind im Raster gleich hoch, die Texte aber unterschiedlich lang —
+     die Trennlinie vor der Abschlussliste sass darum bei jedem Kopf woanders.
+     Mit margin-top:auto sinkt die Liste ans Kartenende, dann fluchten die Linien. */
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 20px;box-shadow:0 14px 38px -30px rgba(26,39,68,.5);text-align:center;display:flex;flex-direction:column}
   .tcard img{width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 14px;border:3px solid #fff;box-shadow:0 8px 22px -10px rgba(26,39,68,.55)}
   .tcard>b{display:block;font-family:'Fraunces',Georgia,serif;font-size:1.125rem;color:var(--navy);font-weight:600}
   .tcard .rl{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-d);background:var(--soft);border-radius:999px;padding:4px 12px;margin:8px 0 12px}
   .tcard p{font-size:.875rem;color:var(--ink2);line-height:1.5;text-align:left}
   .tcard p b{color:var(--navy)}
-  .tcard>ul{list-style:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);text-align:left}
+  .tcard>ul{list-style:none;margin-top:auto;padding-top:12px;border-top:1px solid var(--line);text-align:left}
+  .tcard p{margin-bottom:12px}
   .tcard>ul li{font-size:.875rem;color:var(--muted);font-weight:600;padding-left:15px;position:relative;margin-bottom:4px}
   .tcard>ul li::before{content:"›";position:absolute;left:0;color:var(--gold);font-weight:800}
   .why .plist{margin-top:24px}
@@ -539,7 +574,11 @@
      fehlende Grenze eine Stelle nach unten, an «ueber uns».
      Das Helle war die Farbe des Schmerzes; das gilt jetzt nur noch fuer den
      Arbeitstag. Weiter unten ist der Wechsel Rhythmus, keine Aussage. */
-  #leistungen{padding-top:0;background:var(--soft);border-top:1px solid var(--line)}
+  /* Der Abschnitt begann bis zum 06.08.2026 randlos mit der Werkzeugwand, darum
+     padding-top:0 (zweimal gesetzt, hier und oben bei #leistungen). Seit der
+     Intro-Kopf davorsteht, braucht er Luft — und weil beide Regeln per ID
+     greifen, muss der Wert HIER stehen: eine .blocks-Klassenregel verliert. */
+  #leistungen{padding-top:96px;background:var(--soft);border-top:1px solid var(--line)}
   .why{background:var(--soft);border-bottom:1px solid var(--line)}
   .qas{background:var(--card)}
   /* Einwände als Chips */
@@ -579,6 +618,11 @@
   .ctafuss a{color:#fff;text-decoration:underline;text-underline-offset:3px}
   .ctafuss small{display:block;max-width:68ch;margin:12px auto 0;font-size:.75rem;color:rgba(176,196,222,.62);line-height:1.5}
   .ctabtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  /* .btn-primary traegt #1A2744 — dieselbe Farbe wie dieser Abschnitt. Der
+     Zweitbutton war dadurch eine unsichtbare Flaeche und las sich als blosser
+     Text. Hier bekommt er stattdessen eine helle Kante. */
+  .cta .btn-primary{background:transparent;border:1px solid rgba(255,255,255,.5);box-shadow:none}
+  .cta .btn-primary:hover{background:rgba(255,255,255,.12);border-color:#fff}
   .callback{max-width:440px;margin:26px auto 0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:20px}
   .callback .ch{font-weight:700;font-size:1rem;margin-bottom:12px;color:#e4ebf5}
   .cbrow{display:flex;gap:8px;flex-wrap:wrap}
@@ -675,6 +719,12 @@
   /* Startwert, bis die Werkzeugwand ihre echte Hoehe meldet (siehe Skript unten) */
   .werkzeug-iframe{width:100%;max-width:1900px;aspect-ratio:1600/865;border:none;display:block;border-radius:18px}
   @media(max-width:640px){.werkzeug-iframe{aspect-ratio:390/1104}}
+  /* Die Handwerker-Szene teilt Rahmen und Verhalten mit der Werkzeugwand, hat
+     aber ein eigenes Seitenverhaeltnis: das Bild ist 1408x768. Auf dem Handy
+     kommt unter dem Bild die Klappliste dazu — bis die echte Hoehe gemeldet ist,
+     zeigt der Startwert Bild plus vier zugeklappte Zeilen. */
+  .szene-iframe{aspect-ratio:1408/768}
+  @media(max-width:640px){.szene-iframe{aspect-ratio:390/500}}
   /* Breite in px, nicht in ch: ch rechnet mit der Schrift dieses Kastens (16 px),
      nicht mit der des Titels darin — der Titel brach dadurch auf zwei Zeilen. */
   /* Die Titelplatte ist genau so breit wie die scharfe Wand darunter — derselbe
@@ -731,13 +781,13 @@
 <section class="hero">
   <div class="wrap hero-in">
     <div>
-      <h1>Wie ein Kundenauftrag <span class="u">bei Ihnen laufen könnte.</span></h1>
-      <p class="lead">Drei Sachen müssen laufen: die Aufträge, die Technik, der Auftritt. Wir nehmen alle drei — <b>wie ein Generalunternehmer, nur digital.</b></p>
-      <div class="credlead">Wer das gebaut hat</div>
+      <h1>Wie ein Kundenauftrag <span class="u">bei Ihnen effizient laufen könnte.</span></h1>
+      <p class="lead">Reibungslose Aufträge von der Anfrage bis zur Rechnung. Vier Bereiche entscheiden darüber: <b>Handwerker-Software, IT, Website und KI.</b> Was bei Ihnen funktioniert, bleibt — was fehlt, ergänzen wir. <b>Ihr Handwerk bleibt analog, Ihre Abläufe werden einfacher.</b></p>
+      <div class="credlead">Wer hinter dieser Demo steht</div>
       <div class="herocred">
-        <a class="hcr" href="#ueberuns"><img src="assets/timo.jpg" alt="Timo Steinfort" onerror="this.remove()"><span><b>Timo Steinfort</b><i>Kennt die Bewirtschaftungen · MSc Real Estate</i></span></a>
-        <a class="hcr" href="#ueberuns"><img src="assets/david.jpg" alt="David Staub" onerror="this.remove()"><span><b>David Staub</b><i>Gelernter Handwerker · MSc Data Science</i></span></a>
-        <a class="hcr" href="#ueberuns"><img src="assets/sinan.jpg" alt="Sinan Sen" onerror="this.remove()"><span><b>Sinan Sen</b><i>Systemtechniker EFZ · 10 Jahre IT</i></span></a>
+        <a class="hcr" href="#ueberuns"><img src="assets/timo.jpg" alt="Timo Steinfort" onerror="this.remove()"><span><b>Timo Steinfort</b><i>Fachmann Bewirtschaftung · MSc Real Estate</i></span></a>
+        <a class="hcr" href="#ueberuns"><img src="assets/david.jpg" alt="David Staub" onerror="this.remove()"><span><b>David Staub</b><i>Elektroinstallateur EFZ · MSc Data Science</i></span></a>
+        <a class="hcr" href="#ueberuns"><img src="assets/sinan.jpg" alt="Sinan Sen" onerror="this.remove()"><span><b>Sinan Sen</b><i>IT-Spezialist · Systemtechniker EFZ</i></span></a>
       </div>
     </div>
     <div>
@@ -764,39 +814,47 @@
             <span style="position:absolute;left:50%;top:24px;bottom:0;width:1px;margin-left:-.5px;background:#d3dcea"></span>
             <span style="position:absolute;left:50%;top:24px;width:9px;height:9px;margin:-4px 0 0 -4.5px;border-radius:50%;background:#fff;border:1.5px solid #B0C4DE"></span>
           </span>
-          <span style="font-size:1rem;line-height:1.55;color:#3c4658;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Aufmass.</b> Zwei Fassadenmarkisen beim Kunden. Danach haben die Masse Sie — und sonst niemand.</span>
+          <span style="font-size:1rem;line-height:1.55;color:#3c4658;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Aufmass und Beratung.</b> Zwei Lamellenstoren beim Kunden ausmessen, dazu beraten: Motor, Steuerung, Termin. Danach haben nur Sie und Ihr Monteur die Masse — sonst niemand.</span>
         </div>
 
         <div class="reveal" style="transition-duration:.45s;transition-delay:0.08s;display:grid;grid-template-columns:78px 24px 1fr;column-gap:16px;align-items:start">
-          <span style="font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;text-align:right;color:#6f7890;letter-spacing:.01em;padding:12px 0">11:30</span>
+          <span style="font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;text-align:right;color:#6f7890;letter-spacing:.01em;padding:12px 0">09:30</span>
           <span style="position:relative;align-self:stretch">
             <span style="position:absolute;left:50%;top:0;bottom:0;width:1px;margin-left:-.5px;background:#d3dcea"></span>
             <span style="position:absolute;left:50%;top:24px;width:9px;height:9px;margin:-4px 0 0 -4.5px;border-radius:50%;background:#fff;border:1.5px solid #B0C4DE"></span>
           </span>
-          <span style="font-size:1rem;line-height:1.55;color:#3c4658;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Rückfrage.</b> Ein Store klemmt — welches Modell hängt dort? Das steht auf dem Typenschild an der Anlage, in keiner Liste bei Ihnen.</span>
+          <span style="font-size:1rem;line-height:1.55;color:#3c4658;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Reklamation.</b> Die Store von letzter Woche passt nicht — zwei Zentimeter zu breit. Wer hat gemessen, wer bestellt? Der Zettel ist irgendwo. Zurück zum Hersteller, neuer Termin, Kunde muss warten. Ein halber Vormittag.</span>
         </div>
 
         <div class="reveal" style="transition-duration:.45s;transition-delay:0.16s;display:grid;grid-template-columns:78px 24px 1fr;column-gap:16px;align-items:start">
-          <span style="font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;text-align:right;color:#6f7890;letter-spacing:.01em;padding:12px 0">14:00</span>
+          <span style="font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:600;font-size:.9375rem;line-height:1.5;text-align:right;color:#6f7890;letter-spacing:.01em;padding:12px 0">den ganzen<br>Tag</span>
+          <span style="position:relative;align-self:stretch">
+            <span style="position:absolute;left:50%;top:0;bottom:0;width:0;margin-left:-.5px;border-left:1px dashed #c3cee0"></span>
+          </span>
+          <span style="font-size:1rem;line-height:1.55;color:#3c4658;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Das Telefon.</b> Ständig klingelt es: Kunden, Lieferanten, das eigene Büro mit Rückfragen. Das kostet Nerven und Zeit — und beim Kunden macht es keinen guten Eindruck.</span>
+        </div>
+
+        <div class="reveal" style="transition-duration:.45s;transition-delay:0.24s;display:grid;grid-template-columns:78px 24px 1fr;column-gap:16px;align-items:start">
+          <span style="font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;text-align:right;color:#6f7890;letter-spacing:.01em;padding:12px 0">13:30</span>
           <span style="position:relative;align-self:stretch">
             <span style="position:absolute;left:50%;top:0;bottom:0;width:1px;margin-left:-.5px;background:#d3dcea"></span>
             <span style="position:absolute;left:50%;top:24px;width:9px;height:9px;margin:-4px 0 0 -4.5px;border-radius:50%;background:#fff;border:1.5px solid #B0C4DE"></span>
           </span>
-          <span style="font-size:1rem;line-height:1.55;color:#3c4658;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Stillstand.</b> Sie sind auf der Montage. Die Offerte von heute Morgen kann niemand schreiben — die Masse haben Sie.</span>
+          <span style="font-size:1rem;line-height:1.55;color:#3c4658;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Der Grossauftrag.</b> Alle Storen eines Mehrfamilienhauses kontrollieren: Was ist zu reparieren, was muss neu bestellt werden? Notiert auf Papier — der Rest bleibt im Kopf.</span>
         </div>
 
-        <div class="reveal" style="transition-duration:.45s;transition-delay:0.24s;display:grid;grid-template-columns:78px 24px 1fr;column-gap:16px;align-items:start">
-          <span style="font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;text-align:right;color:#1A2744;letter-spacing:.01em;padding:12px 0">19:40</span>
+        <div class="reveal" style="transition-duration:.45s;transition-delay:0.32s;display:grid;grid-template-columns:78px 24px 1fr;column-gap:16px;align-items:start">
+          <span style="font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;text-align:right;color:#1A2744;letter-spacing:.01em;padding:12px 0">ab 17:00</span>
           <span style="position:relative;align-self:stretch">
             <span style="position:absolute;left:50%;top:0;height:24px;width:1px;margin-left:-.5px;background:#d3dcea"></span>
             <span style="position:absolute;left:50%;top:24px;width:11px;height:11px;margin:-5px 0 0 -5.5px;border-radius:50%;background:#1A2744;border:1.5px solid #1A2744"></span>
           </span>
-          <span style="font-size:1rem;line-height:1.55;color:#16203a;font-weight:600;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Jetzt erst Ihr Teil.</b> Offerte gegenlesen, Bestellungen freigeben, Rapporte nachtragen.</span>
+          <span style="font-size:1rem;line-height:1.55;color:#16203a;font-weight:600;letter-spacing:-.005em;text-wrap:pretty;padding:12px 0"><b style="color:#1A2744;font-weight:700">Feierabend für alle. Nur nicht für Sie.</b> Wenn Ihr Team nach Hause fährt, fängt Ihre Büroarbeit an: Offerten, Rapporte, Rechnungen, Belege. Alles muss stimmen — aus dem Kopf, zwischen Müdigkeit und dem Plan für morgen.</span>
         </div>
       </div>
 
       <p style="font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(1.125rem,1.9vw,1.3125rem);line-height:1.4;color:#1A2744;margin:32px 0 0;max-width:48ch">Wir wissen nicht, ob es genau so läuft. Aber ungefähr, oder?</p>
-      <p style="margin:24px 0 0;padding-top:16px;border-top:1px solid #d3dcea;font-size:.75rem;line-height:1.5;color:#6f7890;letter-spacing:.01em;text-wrap:pretty;max-width:76ch">Quelle: Website REMA Redza — Markisen und Rollladen, mehrere Hersteller, Reparatur und Service, Beratung vor Ort.</p>
+      <p style="margin:24px 0 0;padding-top:16px;border-top:1px solid #d3dcea;font-size:.75rem;line-height:1.5;color:#6f7890;letter-spacing:.01em;text-wrap:pretty;max-width:76ch">Quelle: Website REMA Redza — Lamellenstoren, Fensterläden, Rollladen und Fassadenmarkisen; Hersteller u. a. Griesser, Rufalex, MHZ, Somfy; Verkauf, Einbau und Service.</p>
   </div>
 </section>
 
@@ -804,9 +862,13 @@
   <div class="wrap">
     <div id="zs-root">
 
-      <div class="sec-head" style="margin-bottom:0">
+      <div class="sec-head c" style="margin-bottom:0">
         <div class="eyebrow">Ein Auftrag, von Anfang bis Ende</div>
-        <h2 style="font-size:1.625rem">Wie ein Auftrag optimal durchläuft.</h2>
+        <!-- Zitat und Erklaerung standen als ein Satz in einer Zeile und lasen
+             sich als Brei. Der Anruf ist der Aufhaenger, die Erklaerung gehoert
+             eine Stufe leiser darunter. -->
+        <h2 style="font-size:1.625rem">«Der Storen fährt nicht mehr hoch.»</h2>
+        <p style="margin-top:6px;font-size:1rem;color:var(--muted)">Von der Meldung bis zur Rechnung.</p>
       </div>
 
       <div style="position:relative;display:flex;flex-direction:column">
@@ -816,8 +878,8 @@
           <span class="zs-num" style="animation-delay:.05s">1</span>
           <div class="zs-side zs-l">
             <h3>Die Anfrage</h3>
-            <p>Kommt über die Website herein: Name, Objekt, Foto vom Typenschild, Dringlichkeit — strukturiert, nicht als Rückrufbitte.</p>
-            <div class="zs-chips"><span><b>Website</b><i>nimmt auf</i></span></div>
+            <p><b>Wir bringen einem Assistenten auf Ihrer Website bei, was Sie sonst am Telefon erklären</b> — welche Marken Sie reparieren, ob sich eine Reparatur noch lohnt oder ein Ersatz sinnvoller ist, ob sich eine Handkurbel nachrüsten lässt, wie schnell Sie da sind. Ein grosser Teil der Anfragen erledigt sich damit von selbst. Und was hereinkommt, ist vollständig: Objekt, Fotos, was nicht geht.</p>
+            <div class="zs-chips"><span><b>Website</b><i>nimmt auf</i></span><span><b>KI</b><i>klärt die ersten Fragen</i></span></div>
           </div>
           <span class="zs-tick" style="margin-right:50%"></span>
         </div>
@@ -827,17 +889,17 @@
           <span class="zs-tick" style="margin-left:50%"></span>
           <div class="zs-side zs-r">
             <h3>Die Offerte</h3>
-            <p>Entsteht aus den erfassten Massen. Der Kunde bestätigt sie — die Freigabe ist datiert und dokumentiert.</p>
-            <div class="zs-chips"><span><b>Software</b><i>erstellt &amp; holt Freigabe</i></span></div>
+            <p><b>Das Aufmass vom Termin liegt schon drin</b> — niemand sucht einen Zettel. Was Sie immer wieder offerieren, ist als Vorlage hinterlegt: <b>Sie wählen aus, statt jedes Mal neu zu tippen</b>, die Preise rechnet das System dazu. Sie lesen durch und geben frei; der Kunde sagt per Link mit einem Klick zu. <b>Aus der Zusage wird sofort der Auftrag — niemand erfasst etwas ein zweites Mal.</b></p>
+            <div class="zs-chips"><span><b>Software</b><i>erstellt &amp; holt Freigabe</i></span><span><b>KI</b><i>formuliert den Text</i></span></div>
           </div>
         </div>
 
         <div class="zs-row" style="animation-delay:.25s">
           <span class="zs-num" style="animation-delay:.25s">3</span>
           <div class="zs-side zs-l">
-            <h3>Die Baustelle</h3>
-            <p>Zeit, Material und Fotos am Handy. Der Kunde quittiert den Rapport vor Ort.</p>
-            <div class="zs-chips"><span><b>Software</b><i>erfasst &amp; quittiert</i></span><span><b>Gerät · IT</b><i>Handy vor Ort</i></span></div>
+            <h3>Die Einsatzplanung</h3>
+            <p>Wer fährt wann wohin, mit welchem Fahrzeug und welchem Material. Das Team sieht seinen Tag in der App — statt langer Absprachen jeden Morgen.</p>
+            <div class="zs-chips"><span><b>Software</b><i>plant &amp; meldet</i></span><span><b>IT &amp; Geräte</b><i>Plan am Handy</i></span></div>
           </div>
           <span class="zs-tick" style="margin-right:50%"></span>
         </div>
@@ -846,24 +908,40 @@
           <span class="zs-num" style="animation-delay:.35s">4</span>
           <span class="zs-tick" style="margin-left:50%"></span>
           <div class="zs-side zs-r">
-            <h3>Die Rechnung</h3>
-            <p>Entsteht aus dem quittierten Rapport, mit QR-Code — und geht raus, ohne dass jemand sie abtippt.</p>
-            <div class="zs-chips"><span><b>Software</b><i>stellt aus</i></span></div>
+            <h3>Die Baustelle</h3>
+            <p>Zeit, Material und Fotos am Handy. Den Rapport diktiert der Monteur, statt ihn zu tippen — der Kunde unterschreibt ihn gleich vor Ort. <b>Fehlt Material, bestellt er es aus der App. Und Rückfragen laufen im Chat am Auftrag — statt dass mitten in der Montage das Telefon klingelt.</b></p>
+            <div class="zs-chips"><span><b>Software</b><i>erfasst &amp; lässt unterschreiben</i></span><span><b>KI</b><i>schreibt mit</i></span><span><b>IT &amp; Geräte</b><i>Handy vor Ort</i></span></div>
           </div>
         </div>
 
         <div class="zs-row" style="animation-delay:.45s">
           <span class="zs-num" style="animation-delay:.45s">5</span>
           <div class="zs-side zs-l">
-            <h3>Jahre danach</h3>
-            <p>Am Objekt hinterlegt: Typ, Motor, Einbaujahr, letzter Service — auch für die Bewirtschaftung abrufbar.</p>
-            <div class="zs-chips"><span><b>Software</b><i>hält am Objekt</i></span><span><b>Ablage · IT</b><i>bewahrt auf</i></span></div>
+            <h3>Die Rechnung</h3>
+            <p>Offerte und Rapport ergeben zusammen die Rechnung — mit QR-Code, und niemand tippt sie ab. <b>Belege und Spesen gehen laufend an die Treuhand</b> — kein Ordner am Jahresende, keine Sortierarbeit. <b>Was Ihre Treuhand nicht mehr aufarbeiten muss, steht auch nicht mehr auf ihrer Rechnung.</b></p>
+            <div class="zs-chips"><span><b>Software</b><i>stellt aus &amp; übergibt</i></span></div>
           </div>
           <span class="zs-tick" style="margin-right:50%"></span>
         </div>
+
+        <div class="zs-row" style="animation-delay:.55s">
+          <span class="zs-num" style="animation-delay:.55s">6</span>
+          <span class="zs-tick" style="margin-left:50%"></span>
+          <div class="zs-side zs-r">
+            <h3>Jahre danach</h3>
+            <p>Ruft jemand wegen derselben Anlage an, finden Sie alles wieder: <b>frühere Rapporte, Fotos, was damals verbaut wurde.</b> Am Auftrag gespeichert — nicht in einem Ordner im Estrich.</p>
+            <div class="zs-chips"><span><b>Software</b><i>hält am Objekt</i></span><span><b>IT &amp; Geräte</b><i>bewahrt auf</i></span></div>
+          </div>
+        </div>
       </div>
 
-      <div class="zs-it"><span><em><b>IT, Geräte &amp; Telefon</b> — trägt alle fünf Schritte</em></span></div>
+      <div class="zs-it"><span><em><b>IT &amp; Geräte</b> — tragen alle sechs Schritte</em></span></div>
+
+      <!-- Scharnier: Bis hierher ging es um EINEN Auftrag, ab hier um den
+           Betrieb. Ohne diesen Absatz liest sich der Sprung als Themawechsel —
+           der Titel verspricht einen Auftrag, geliefert wird eine ganze
+           Arbeitsumgebung. Der Satz macht aus dem Bruch eine Folgerung. -->
+      <p style="margin:40px auto 0;max-width:62ch;text-align:center;font-size:1.0625rem;line-height:1.6;color:#3c4658;text-wrap:pretty">Neben jedem Schritt stand, was ihn trägt: <b style="color:#1A2744">Software, Website, KI, IT &amp; Geräte</b>. Mehr sind es nicht — <b style="color:#1A2744">diese vier decken wir für Sie ab.</b><br><span style="display:inline-block;margin-top:10px">So läuft jeder Auftrag bei Ihnen durch — ob Reparatur, Neumontage oder Service.</span></p>
 
     </div>
   </div>
@@ -871,12 +949,20 @@
 
 <section class="blocks" id="leistungen">
   <div class="wrap">
+    <!-- Der Begriff wird hier erklaert, BEVOR die Platte ihn behauptet. Bis zum
+         06.08.2026 stand die Erklaerung erst im naechsten Abschnitt — wer die
+         Wand sah, hatte den Begriff da schon zweimal ungeklaert gelesen. -->
+    <div class="sec-head c reveal">
+      <div class="eyebrow">Die Werkzeuge</div>
+      <h2>Ein Partner für alles.</h2>
+      <p><b>Vom Bau wissen Sie: Mit einem Generalunternehmer spart der Bauherr Zeit, Nerven und endlose Absprachen.</b> Von uns bekommen Sie dasselbe fürs Digitale — vier Fachbereiche, aber nur eine Nummer und ein Ansprechpartner. Wir halten Ihnen den Rücken frei fürs Kerngeschäft. Ihr Handwerk machen wir nicht.</p>
+    </div>
     <div class="phases reveal">
       <div class="werkzeug-wrap">
         <div class="phlead">
           <b>Wir sind Ihr digitaler Generalunternehmer.</b>
         </div>
-        <iframe src="Werkzeugwand.html" class="werkzeug-iframe" title="Werkzeug wählen: drei Bereiche und der Support, der bei allen dreien greift" loading="lazy" scrolling="no"></iframe>
+        <iframe src="Werkzeugwand.html" class="werkzeug-iframe wand-iframe" title="Werkzeug wählen: vier Bereiche — Software, IT, Website und KI-Automatisierung" loading="lazy" scrolling="no"></iframe>
       </div>
     </div>
   </div>
@@ -884,61 +970,64 @@
 
 <section class="greifen" id="zusammenspiel">
   <div class="wrap">
+    <!-- Frage vor dem Bild, Antwort danach: so belegt die Szene die Aussage,
+         statt sie nur zu bebildern. Der Betrachter sieht erst den zufriedenen
+         Handwerker und die winkende Kundschaft — und liest dann, was das heisst. -->
     <div class="sec-head c reveal">
-      <div class="eyebrow">Und wie greift das zusammen?</div>
-      <h2>Sie haben das Werkzeug in der Hand. Zusammengestellt haben wir es.</h2>
-      <p>Ein Generalunternehmer macht Ihr Handwerk nicht. Er stellt zusammen, was Sie dafür brauchen, und haftet dafür, dass es zusammenpasst. Drei Bereiche sind unsere — gearbeitet wird damit von Ihnen und Ihrem Team. Und am Ende sieht es nicht ein Berater, sondern Ihr Kunde.</p>
+      <h2 style="font-size:clamp(1.375rem,2.4vw,1.75rem)">Und was bringt Ihnen das?</h2>
     </div>
+    <!-- Bis zum 06.08.2026 stand hier ein statisches <picture> mit einem eigenen,
+         engeren Handy-Schnitt. Ersetzt durch dieselbe Szene als Baustein: die vier
+         Werkzeuge im Werkzeugkasten sind jetzt anwählbar, und das Handy-Problem
+         loest die Klappliste unter dem Bild statt eines zweiten Bildausschnitts. -->
+    <!-- reveal MUSS aussen sitzen: die Klasse animiert per transform, und
+         .werkzeug-wrap braucht seines fuer translateX(-50%) — auf demselben
+         Element gewinnt eines von beiden und der Block rutscht aus der Mitte. -->
     <div class="reveal">
-      <picture>
-        <!-- Auf dem Handy ein engerer Schnitt: in der breiten Fassung ist das Bild
-             dort nur 191 px hoch, und die vier Werkzeuge — der Grund, warum das
-             Bild hier steht — sind nicht mehr zu erkennen. Der Schnitt behält den
-             Handwerker mit beiden Händen und die Kundschaft. -->
-        <source media="(max-width:640px)" srcset="assets/handwerker-zufrieden-schmal.webp" type="image/webp">
-        <source media="(max-width:640px)" srcset="assets/handwerker-zufrieden-schmal.jpg" type="image/jpeg">
-        <source srcset="assets/handwerker-zufrieden.webp" type="image/webp">
-        <img class="ergebnis" src="assets/handwerker-zufrieden.jpg" width="1408" height="768" loading="lazy"
-             alt="Gezeichnet: ein Handwerker verlässt ein fertiges Objekt — in der einen Hand die Kabeltrommel, in der anderen der Werkzeugkasten mit Zollstock, Wasserwaage und Rohrzange. Im Hintergrund winkt die zufriedene Kundschaft.">
-      </picture>
-      <p class="bildfuss">Dieselben vier wie an der Wand: Zollstock, Wasserwaage und Kabeltrommel für die drei Bereiche — und die Zange, die alles zusammenhält.</p>
+      <div class="werkzeug-wrap">
+        <div class="phlead">
+          <b>Der digitale Handwerker.</b>
+          <span>Das sind Sie — mit allen vier im Kasten.</span>
+        </div>
+        <iframe src="assets/Handwerker-Szene.html" class="werkzeug-iframe szene-iframe" title="Der digitale Handwerker: vier Werkzeuge im Kasten — Software, IT, Website und KI-Automatisierung" loading="lazy" scrolling="no"></iframe>
+      </div>
     </div>
-    <p class="phfoot reveal">Die Systeme richten sich nach Ihrem Ablauf, nicht umgekehrt. Mit Ihrer Treuhand reden wir, damit Sie es nicht müssen. Und <b>klemmt es zwischen zwei Systemen, ist das unsere Aufgabe, nicht Ihre.</b></p>
+    <!-- Zwei Fassungen: auf dem Handy faehrt niemand mit der Maus, dort wird
+         getippt. Umgeschaltet ueber dieselbe 640-px-Grenze wie im Baustein. -->
+    <p class="bildfuss reveal">Dieselben vier wie an der Wand — hier im Kasten, den Sie mitnehmen. <span class="nur-maus">Fahren Sie über ein Werkzeug.</span><span class="nur-finger">Tippen Sie ein Werkzeug an.</span></p>
+    <p class="phfoot reveal" style="max-width:62ch;margin-top:28px;font-size:1.0625rem;line-height:1.6">Die Arbeit mit modernster Technik führt zu <b>zufriedenen Kunden und Mitarbeitenden</b> — alles läuft rund, niemand redet aneinander vorbei, mehr Zeit für Familie und Hobbys. Und zu einer Firma, bei der am Ende <b>mehr übrig bleibt</b>.</p>
   </div>
 </section>
 
 <section class="why" id="ueberuns">
   <div class="wrap">
     <div class="sec-head c reveal">
-      <div class="eyebrow">Und wer sind Sie überhaupt? · über uns, nicht über Sie</div>
-      <h2>Ein Elektriker, ein Systemtechniker und einer aus der Immobilien-Bewirtschaftung.</h2>
+      <div class="eyebrow">Und wer sind wir?</div>
+      <h2>Drei Leute, die Ihr Handwerk verstehen.</h2>
     </div>
     <details class="expander" open>
       <summary>Team kennenlernen <span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></summary>
-      <p>Sich selbst kennen Sie am besten — hier stehen darum die, die Ihnen diese Demo gebaut haben. Wir decken alle drei Bereiche ab — Technik, Aufträge, Auftritt —, statt nur ein Stück davon: drei Gewerke, ein Ansprechpartner. Das ist gemeint mit Generalunternehmer. Mit welchem wir anfangen, entscheiden Sie; umgebaut wird nichts, was funktioniert.</p>
-      <div class="scopechips">
-        <span>IT, Geräte &amp; Daten</span><span>Handwerker-Software</span><span>Website &amp; Auffindbarkeit</span>
-      </div>
+      <p>Zu dritt decken wir alle vier Bereiche ab — statt dass Sie für jeden jemand anderen suchen.</p>
       <div class="tcards">
         <div class="tcard">
           <img src="assets/timo.jpg" alt="Timo Steinfort">
           <b>Timo Steinfort</b>
           <span class="rl">Markt &amp; Strategie</span>
-          <p>Zehn Jahre Versicherung, Finanzen und <b>Immobilien-Bewirtschaftung</b>. Er weiss aus erster Hand, warum eine Bewirtschaftung einen Auftrag vergibt — und warum sie den Handwerker wechselt. Er hat selbst Handwerker beauftragt.</p>
-          <ul><li>BSc Betriebsökonomie</li><li>Double MSc Real Estate &amp; Finance</li><li>MIT-Zertifikat: KI &amp; Transformation</li></ul>
+          <p>Zehn Jahre <b>Immobilien-Bewirtschaftung</b>, Finanzen und Versicherung. Er weiss, welche Handwerker Aufträge bekommen — und welche nicht. Er hat selbst viele Handwerker beauftragt.</p>
+          <ul><li>BSc Betriebsökonomie</li><li>Double MSc in Real Estate &amp; Finance</li><li>M.I.T. — KI &amp; Transformation</li></ul>
         </div>
         <div class="tcard">
           <img src="assets/david.jpg" alt="David Staub">
           <b>David Staub</b>
           <span class="rl">Prozesse &amp; Abläufe</span>
-          <p>Hat als <b>Elektroinstallateur</b> angefangen und später Data Science studiert. Er stand selbst im Verteilerkasten und hat Rapportzettel geschrieben — er weiss, wo es im Alltag klemmt.</p>
+          <p>Gelernter <b>Elektroinstallateur EFZ</b>, später Data Science studiert. Er versteht Arbeitsplanung im Detail und weiss genau, was im Handwerker-Alltag wichtig ist.</p>
           <ul><li>Elektroinstallateur EFZ</li><li>Offizier der Schweizer Armee</li><li>MSc Data Science</li></ul>
         </div>
         <div class="tcard">
           <img src="assets/sinan.jpg" alt="Sinan Sen">
           <b>Sinan Sen</b>
           <span class="rl">Systeme &amp; Technik</span>
-          <p>Gelernter <b>Systemtechniker</b>, seit über zehn Jahren die IT von Schweizer Betrieben. Er sorgt dafür, dass die Technik läuft — und ist der, den Sie anrufen, wenn sie es nicht tut.</p>
+          <p>Betreut seit über zehn Jahren <b>die IT von Schweizer Betrieben</b>. Er sorgt dafür, dass die Technik läuft — und er ist derjenige, den Sie anrufen, wenn sie es nicht tut.</p>
           <ul><li>Systemtechniker EFZ</li><li>10+ Jahre System Engineering</li><li>Microsoft- &amp; Cloud-Experte</li></ul>
         </div>
       </div>
@@ -959,38 +1048,37 @@
         <div class="objchips" role="tablist" aria-label="Häufige Einwände">
           <button type="button" class="ochip" role="tab" id="oc8" aria-controls="ob8" aria-selected="true">«Zu teuer für meinen kleinen Betrieb»</button>
           <button type="button" class="ochip" role="tab" id="oc9" aria-controls="ob9" aria-selected="false">«Zu kompliziert für mich und mein Team»</button>
-          <button type="button" class="ochip" role="tab" id="oc1" aria-controls="ob1" aria-selected="false">«Hab schon Software»</button>
+          <button type="button" class="ochip" role="tab" id="oc1" aria-controls="ob1" aria-selected="false">«Hab schon Software und IT-ler»</button>
           <button type="button" class="ochip" role="tab" id="oc2" aria-controls="ob2" aria-selected="false">«Bin sowieso ausgebucht»</button>
           <button type="button" class="ochip" role="tab" id="oc7" aria-controls="ob7" aria-selected="false">«Was geht automatisch raus?»</button>
           <button type="button" class="ochip" role="tab" id="oc6" aria-controls="ob6" aria-selected="false">«Wie viel Arbeit für mich?»</button>
         </div>
         <div class="obody" id="ob1" role="tabpanel" aria-labelledby="oc1">
           <div class="oq">«Ich habe schon Software und einen IT-ler.»</div>
-          <div class="oa"><b>Wir sind kein weiterer Anbieter, sondern der, der die vorhandenen zusammenhält.</b> Ihr IT-ler bleibt Ihr IT-ler, eine gute Software bleibt im Einsatz — <b>wir bauen an, was fehlt</b>. Klemmt es zwischen zwei Systemen, ist das unsere Aufgabe. Und <b>wir begleiten, bis es läuft.</b></div>
+          <div class="oa"><b>Wir drängen niemanden raus.</b> Was gut läuft, läuft weiter — <b>wir bauen an, was fehlt</b>, und fügen zusammen, was heute nebeneinander steht. <b>Wollen Sie alles aus einer Hand, sicher und auf dem neuesten Stand? Dann übernehmen wir das.</b> Und wollen Sie die IT irgendwann ganz aus einer Hand — weil Ihr IT-ler aufhört oder das Hin und Her Sie nervt —, übernehmen wir sie ohne Bruch. Sie entscheiden wann, nicht wir.</div>
         </div>
         <div class="obody" id="ob2" role="tabpanel" aria-labelledby="oc2">
           <div class="oq">«Ich bin sowieso ausgebucht.»</div>
-          <div class="oa">Dann geht es nicht um mehr Aufträge, sondern um <b>Zeit, Marge und weniger Stress</b> — und um einen Betrieb, der nicht stillsteht, wenn Sie zwei Wochen weg sind.</div>
+          <div class="oa">Dann geht es nicht um mehr Aufträge, sondern um <b>Zeit, Marge und weniger Stress</b> — und um einen Betrieb, der nicht stillsteht, wenn Sie in den Ferien oder krank sind.</div>
         </div>
         <div class="obody on" id="ob8" role="tabpanel" aria-labelledby="oc8">
           <div class="oq">«Das ist zu teuer für meinen kleinen Betrieb.»</div>
-          <div class="oa">Dann fangen wir nicht mit allem an: <b>Sie starten mit einem Bereich — und zahlen auch nur den.</b> Was es kostet, stellen wir neben die Bürostunden, die es Ihnen zurückgibt — rechnet sich das nicht, sagen wir es Ihnen, statt einen Vertrag zu machen.</div>
+          <div class="oa"><b>Rechnen Sie kurz mit:</b> Wie viele Stunden sitzen Sie pro Woche abends im Büro? Mal Ihrem Stundenlohn, mal 46 Wochen. <b>Diese Zahl zahlen Sie heute schon</b> — jedes Jahr wieder. Und rechnen Sie es gleich noch anders: <b>zwei Stunden pro Abend sind sechs Wochen im Jahr.</b> Dagegen stellen wir, was es kostet. Sie starten mit einem Bereich und zahlen auch nur den. <b>Am Ende bleibt Ihnen mehr Geld — und die Abende gehören wieder Ihnen. Dafür stehen wir gerade.</b></div>
         </div>
         <div class="obody" id="ob9" role="tabpanel" aria-labelledby="oc9">
           <div class="oq">«Das ist zu kompliziert für mich und mein Team.»</div>
-          <div class="oa"><b>Ohne Ihr Team läuft es nicht — das ist uns klar.</b> Nur lernen Sie nichts, was Sie nicht ohnehin täglich tun: fotografieren, sprechen, freigeben; bei Regen, mit Handschuhen und auf dem Gerüst wird nichts getippt. <b>Ein System kommt dazu, nicht fünf</b>, und wir sitzen dabei, bis es sitzt — was nach vier Wochen niemand nutzt, lassen wir weg.</div>
+          <div class="oa"><b>Das müssen Sie sich nicht selber beibringen — dafür sind wir da.</b> Wir richten es ein, zeigen es Ihrem Team vor Ort und <b>bleiben dran, bis es läuft — nicht bis die Rechnung bezahlt ist.</b> Klemmt es später: anrufen, kein Ticket, keine Warteschlange. Zu lernen gibt es ohnehin wenig: fotografieren, sprechen, freigeben; bei Regen und mit Handschuhen wird nichts getippt. <b>Ihre Leute erfassen nur, was zum Auftrag gehört — kein Standort, keine Kontrolle.</b> Wer das Gefühl hat, überwacht zu werden, macht nicht mit. Und wer bei Ihnen das Büro macht, spart am meisten Zeit und lernt am wenigsten Neues. <b>Es ist einfacher, als Sie denken.</b></div>
         </div>
         <div class="obody" id="ob7" role="tabpanel" aria-labelledby="oc7">
           <div class="oq">«Was geht künftig automatisch an meine Kunden raus?»</div>
-          <div class="oa"><b>Nichts, was nicht vorher jemand von Ihnen gesehen hat.</b> Offerten, Rechnungen, Erinnerungen und Mahnungen werden vorbereitet — rausgehen tut nur, was jemand bei Ihnen freigibt.</div>
+          <div class="oa"><b>Nichts, was Sie nicht selber freigeben</b> — Offerten, Rechnungen, Erinnerungen, Mahnungen: alles wird vorbereitet, raus geht nur, was jemand bei Ihnen bestätigt. Selbständig antwortet einzig der KI-Assistent auf der Website, und der sagt, was dort ohnehin steht: was Sie machen, wie es weitergeht, wann Sie erreichbar sind. <b>Preise nennt er keine und Termine bestätigt er nicht</b> — dafür nimmt er alles auf, was er fragen kann, und gibt es Ihnen weiter.</div>
         </div>
         <div class="obody" id="ob6" role="tabpanel" aria-labelledby="oc6">
           <div class="oq">«Wie viel Arbeit ist das für mich?»</div>
-          <div class="oa">Für Sie sind es ein paar kurze Absprachen. Mehr Zeit braucht, wer bei Ihnen das Büro macht: die Zahlungseingänge gehören regelmässig erfasst — sonst mahnt das System bezahlte Rechnungen. Kundenadressen, Artikel und Preise übernehmen wir aus Ihren Listen, nachtippen müssen Sie nichts. <b>Bis alles steht, läuft Ihr bisheriger Weg unverändert weiter</b> — und steigen Sie aus, bekommen Sie alles exportiert.</div>
+          <div class="oa"><b>Am Anfang ein paar Absprachen und etwas Übung — danach sparen Sie jede Woche Bürozeit, und auch draussen läuft es runder.</b> Adressen, Artikel und Preise übernehmen wir aus Ihren Listen, nachtippen müssen Sie nichts. Was bleibt: Zahlungseingänge regelmässig erfassen — sonst legt Ihnen das System eine Mahnung für eine längst bezahlte Rechnung vor. <b>Bis alles läuft, arbeiten Sie weiter wie bisher.</b></div>
         </div>
       </div>
     </details>
-    <p class="ground">Angefangen wird immer bei dem, was am meisten weh tut — nicht bei dem, was am meisten kostet.</p>
   </div>
 </section>
 
@@ -998,19 +1086,18 @@
 <section class="cta" id="cta">
   <div class="wrap">
     <div class="eyebrow">Und jetzt?</div>
-    <span class="saison">Rechtzeitig zur Herbst- und Sturmsaison</span>
-    <h2>Nach dem nächsten Sturm wissen Sie, wer angerufen hat.</h2>
-    <p class="sub">Zwanzig Minuten am Telefon: Abläufe anschauen und durchrechnen, wie viel Bürozeit drinliegt. Passt es, kommen wir danach vorbei. <b>Die Auswertung behalten Sie in jedem Fall.</b></p>
+    <span class="saison">Eine Stunde · unverbindlich</span>
+    <h2>Ein Gespräch. Danach erkennen Sie, was für Sie drinliegt.</h2>
+    <p class="sub">Am Telefon oder bei Ihnen vor Ort. Wir gehen Ihre Abläufe durch — von der Offerte bis zur Buchhaltung — und zeigen Ihnen, wie viel Büroaufwand wegfällt.</p>
     <div class="ctabtns">
       <a href="tel:+41442445995" class="btn btn-gold">
         <svg class="ic" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2.1z"/></svg>
         Jetzt anrufen — 044 244 59 95
       </a>
-      <a href="https://wa.me/41442445995?text=Gr%C3%BCezi%20Amplifyr%2C%20ich%20habe%20die%20Demo%20gesehen%20%E2%80%94%20rufen%20Sie%20mich%20gern%20an." class="btn btn-primary">Per WhatsApp schreiben</a>
+      <a href="mailto:info@amplifyr.ch?subject=Demo%20gesehen%20%E2%80%94%20R%C3%BCckruf&amp;body=Gr%C3%BCezi%20Amplifyr%2C%20ich%20habe%20die%20Demo%20gesehen%20%E2%80%94%20rufen%20Sie%20mich%20gern%20an." class="btn btn-primary">Per E-Mail schreiben</a>
     </div>
 
-    <p class="ctafuss">Lieber schreiben? <a href="mailto:info@amplifyr.ch">info@amplifyr.ch</a><br>
-    <small>Beispielhafte Darstellung, wie REMA Redza Storen &amp; Rollladen 2026 aufgestellt sein könnte.
+    <p class="ctafuss"><small>Beispielhafte Darstellung, wie REMA Redza Storen &amp; Rollladen 2026 aufgestellt sein könnte.
     Logo, Foto und Zitat stammen von der eigenen Website. Erstellt im August 2026 von Amplifyr.</small></p>
   </div>
 </section>
@@ -1019,7 +1106,7 @@
   /* Einblenden beim Scrollen */
   (function(){
     if(!('IntersectionObserver' in window)){document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in')});return;}
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0,rootMargin:"0px 0px -60px 0px"});
     document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
   })();
 
@@ -1091,23 +1178,30 @@
     if(!('IntersectionObserver' in window)){ el.classList.add('zs-anim'); return; }
     var io=new IntersectionObserver(function(es){
       es.forEach(function(e){ if(e.isIntersecting){ el.classList.add('zs-anim'); io.disconnect(); } });
-    },{threshold:.25});
+    },{threshold:0,rootMargin:"0px 0px -120px 0px"});
     io.observe(el);
   })();
 
-  /* Werkzeugkasten: er meldet seine Hoehe — auf schmalen Schirmen folgen wir ihr,
-     sonst gilt weiter das Seitenverhaeltnis des Bildes. */
+  /* Werkzeugwand und Handwerker-Szene melden beide ihre Hoehe. Seit dem
+     06.08.2026 tragen zwei iframes die Klasse .werkzeug-iframe — der Selektor
+     muss darum die zweite Klasse nehmen, sonst bekaeme die Wand die Hoehe der
+     Szene aufgedrueckt (querySelector liefert immer das erste Element). */
   (function(){
-    var letzte = 0;
+    var bausteine = {
+      'werkzeugwand-resize': '.wand-iframe',
+      'handwerker-resize':   '.szene-iframe'
+    };
+    var letzte = {};
     window.addEventListener('message', function(e){
       if(!e.data) return;
-      if(e.data.type!=='werkzeugwand-resize') return;
-      var f=document.querySelector('.werkzeug-iframe');
-      if(!f || !e.data.height) return;
+      var sel = bausteine[e.data.type];
+      if(!sel || !e.data.height) return;
+      var f=document.querySelector(sel);
+      if(!f) return;
       // Die gemeldete Hoehe gilt auf jeder Breite — exakt, sonst bleibt beim
       // Auf- und Zuklappen ein paar Pixel Inhalt unter der Kante.
-      if(e.data.height === letzte) return;
-      letzte = e.data.height;
+      if(e.data.height === letzte[e.data.type]) return;
+      letzte[e.data.type] = e.data.height;
       f.style.aspectRatio='auto';
       f.style.height=e.data.height+'px';
     });
