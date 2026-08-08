@@ -339,6 +339,7 @@ function ColdCallPage() {
   const filterStatus = searchParams.get("status") ?? "";
   const filterBranche = searchParams.get("branche") ?? "";
   const filterEntdecktAb = searchParams.get("entdeckt_ab") ?? "";
+  const filterSuchbegriff = searchParams.get("sb") ?? "";
   const search = searchParams.get("q") ?? "";
 
   const setParam = (key: string, value: string) => {
@@ -367,16 +368,35 @@ function ColdCallPage() {
     setItems((prev) => prev.map((b) => (b.place_id === updated.place_id ? updated : b)));
   };
 
-  // Suchbegriff-Suche client-seitig (Branche, Ort, Name, Telefon)
+  // Distinct Suchbegriff-Optionen (Branche + Ort) aus geladenen Daten
+  const suchbegriffOptionen = useMemo(() => {
+    const seen = new Set<string>();
+    const opts: { label: string; value: string }[] = [];
+    for (const b of items) {
+      if (b.branche && b.ort) {
+        const key = `${b.branche}|${b.ort}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          opts.push({ label: `${b.branche} – ${b.ort}`, value: key });
+        }
+      }
+    }
+    return opts.sort((a, b) => a.label.localeCompare(b.label));
+  }, [items]);
+
+  // Client-seitige Filter
   const filtered = useMemo(() => {
-    if (!search.trim()) return items;
-    const terms = search.trim().toLowerCase().split(/\s+/);
-    return items.filter((b) => {
-      const haystack = [b.branche, b.ort, b.name_anzeige, b.name, b.telefon]
-        .filter(Boolean).join(" ").toLowerCase();
-      return terms.every((t) => haystack.includes(t));
-    });
-  }, [items, search]);
+    let result = items;
+    if (search.trim()) {
+      const q = normTel(search);
+      result = result.filter((b) => b.telefon && normTel(b.telefon).includes(q));
+    }
+    if (filterSuchbegriff) {
+      const [branche, ort] = filterSuchbegriff.split("|");
+      result = result.filter((b) => b.branche === branche && b.ort === ort);
+    }
+    return result;
+  }, [items, search, filterSuchbegriff]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
@@ -388,9 +408,19 @@ function ColdCallPage() {
           type="text"
           value={search}
           onChange={(e) => setParam("q", e.target.value)}
-          placeholder="Suchbegriff (Branche, Ort, Name…)"
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          placeholder="Telefonnummer suchen…"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-52 focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
+        <select
+          value={filterSuchbegriff}
+          onChange={(e) => setParam("sb", e.target.value)}
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
+          <option value="">Alle Suchbegriffe</option>
+          {suchbegriffOptionen.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
         <select
           value={filterAgent}
           onChange={(e) => setParam("agent", e.target.value)}
