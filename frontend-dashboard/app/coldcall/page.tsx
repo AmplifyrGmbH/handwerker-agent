@@ -246,7 +246,7 @@ function LeadCard({
         {/* Demo */}
         <div className="shrink-0 w-28 text-xs text-right" onClick={(e) => e.stopPropagation()}>
           {betrieb.landing_url ? (
-            <span className="text-green-600 font-medium">✓ Demo</span>
+            <a href={betrieb.landing_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">Demo ↗</a>
           ) : betrieb.status === "extrahiert" ? (
             <>
               <button
