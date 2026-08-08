@@ -92,7 +92,7 @@ def _render_template(context: dict) -> str:
     import os
     template_dir = os.path.join(os.path.dirname(__file__), "..", "templates")
     env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
-    template_name = f"landing_{settings.LANDING_TEMPLATE}.html"
+    template_name = f"{settings.LANDING_TEMPLATE}.html"
     template = env.get_template(template_name)
     return template.render(**context)
 
