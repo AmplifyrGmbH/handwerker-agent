@@ -80,6 +80,14 @@ def _typischer_auftrag(branche: str) -> str:
     return "typischen Kundenauftrag"
 
 
+_MONATE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]
+
+
+def _monat_jahr() -> str:
+    now = datetime.now()
+    return f"{_MONATE[now.month - 1]} {now.year}"
+
+
 def _render_template(context: dict) -> str:
     import os
     template_dir = os.path.join(os.path.dirname(__file__), "..", "templates")
@@ -161,7 +169,7 @@ async def run(job_id: int, place_id: Optional[str] = None, final_step: bool = Tr
                 html = _render_template({
                     "firmenname": firmenname,
                     "einleitung": einleitung,
-                    "farbe_primary": b.farbe_primary or "#1a56db",
+                    "farbe_primary": b.farbe_primary or "#1A2744",
                     "logo_url": b.logo_url or "",
                     "slug": slug,
                     "chat_api_url": settings.CHAT_API_URL,
@@ -173,6 +181,11 @@ async def run(job_id: int, place_id: Optional[str] = None, final_step: bool = Tr
                     "dein_name": settings.AMPLIFYR_NAME,
                     "deine_firma": settings.AMPLIFYR_FIRMA,
                     "kontakt": settings.AMPLIFYR_KONTAKT,
+                    # landing_2 extras
+                    "monat_jahr": _monat_jahr(),
+                    "hero_url": "",
+                    "website_domain": b.website_domain or "",
+                    "amplifyr_telefon": settings.AMPLIFYR_TELEFON,
                 })
 
                 # Nach R2 hochladen

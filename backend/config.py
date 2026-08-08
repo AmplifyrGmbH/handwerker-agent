@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     AMPLIFYR_NAME: str = "David Staub"
     AMPLIFYR_FIRMA: str = "Amplifyr"
     AMPLIFYR_KONTAKT: str = "info@amplifyr.ch"
+    AMPLIFYR_TELEFON: str = ""
 
     # SMTP für Demo-Versand
     SMTP_HOST: str = "smtp.gmail.com"
