@@ -13,7 +13,7 @@ from config import settings
 from database import get_db, AsyncSessionLocal
 from models import Betrieb, Kontaktversuch, Job
 from pipeline import landing_generator
-from services import smtp_client, gemini_client, r2_client
+from services import gemini_client, r2_client
 
 router = APIRouter()
 
@@ -267,50 +267,6 @@ async def demo_generieren(
     background_tasks.add_task(_run_demo_job, place_id)
     return {"ok": True, "message": "Demo-Generierung gestartet"}
 
-
-# ── CRM: Demo senden ──────────────────────────────────────────────────────────
-
-@router.post("/{place_id}/demo/senden")
-async def demo_senden(
-    place_id: str,
-    req: DemoSendenRequest,
-    db: AsyncSession = Depends(get_db),
-):
-    b = await db.get(Betrieb, place_id)
-    if not b:
-        raise HTTPException(status_code=404, detail="Betrieb nicht gefunden")
-    if not b.landing_url:
-        raise HTTPException(status_code=400, detail="Noch keine Demo generiert")
-
-    to_email = req.email or b.email
-    if not to_email:
-        raise HTTPException(status_code=400, detail="Keine E-Mail-Adresse angegeben")
-
-    firmenname = b.name_anzeige or b.name
-    success = smtp_client.send_demo_email(
-        to_email=to_email,
-        firmenname=firmenname,
-        landing_url=b.landing_url,
-        inhaber_name=b.inhaber_name or "",
-        berater_name=settings.AMPLIFYR_NAME,
-    )
-
-    if not success:
-        raise HTTPException(status_code=500, detail="E-Mail-Versand fehlgeschlagen (SMTP-Fehler)")
-
-    subject = f"Ihre persönliche KI-Demo – {firmenname}"
-    kv = Kontaktversuch(
-        place_id=place_id,
-        typ="email_demo",
-        email_adresse=to_email,
-        email_subject=subject,
-        gesendet_am=datetime.now(timezone.utc),
-    )
-    db.add(kv)
-    b.letzter_kontakt_am = datetime.now(timezone.utc)
-    await db.commit()
-
-    return {"ok": True, "gesendet_an": to_email}
 
 
 # ── CRM: Notiz hinzufügen ─────────────────────────────────────────────────────
