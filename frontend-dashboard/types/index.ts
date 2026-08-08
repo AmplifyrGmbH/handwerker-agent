@@ -33,6 +33,7 @@ export interface Betrieb {
   farbe_primary: string | null;
   hat_logo: boolean | null;
   logo_url: string | null;
+  hero_url: string | null;
   firmenprofil: string | null;
   slug: string | null;
   landing_url: string | null;

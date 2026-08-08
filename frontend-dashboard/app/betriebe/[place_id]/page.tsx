@@ -166,6 +166,27 @@ export default function BetriebDetailPage() {
         </div>
       )}
 
+      {/* Medien */}
+      {(betrieb.logo_url || betrieb.hero_url) && (
+        <div className="bg-white rounded-lg border border-gray-200 p-5 mb-6">
+          <h2 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wide">Medien</h2>
+          <div className="flex gap-6 items-start flex-wrap">
+            {betrieb.logo_url && (
+              <div>
+                <p className="text-xs text-gray-400 mb-2">Logo</p>
+                <img src={betrieb.logo_url} alt="Logo" className="h-20 w-auto max-w-[200px] object-contain rounded border border-gray-100 p-2 bg-gray-50" />
+              </div>
+            )}
+            {betrieb.hero_url && (
+              <div>
+                <p className="text-xs text-gray-400 mb-2">Hero-Bild</p>
+                <img src={betrieb.hero_url} alt="Hero" className="h-40 w-auto max-w-xs object-cover rounded border border-gray-100" />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Stammdaten */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
@@ -289,6 +310,26 @@ export default function BetriebDetailPage() {
 
         {betrieb.landing_url ? (
           <div className="space-y-4">
+            {/* Demo-Vorschau */}
+            <a
+              href={betrieb.landing_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block relative group overflow-hidden rounded-lg border border-gray-200"
+            >
+              {betrieb.hero_url ? (
+                <img src={betrieb.hero_url} alt="Demo Vorschau" className="w-full h-48 object-cover" />
+              ) : (
+                <div className="w-full h-24 bg-gradient-to-br from-slate-100 to-purple-50 flex items-center justify-center">
+                  <span className="text-purple-600 font-medium text-sm">Demo öffnen →</span>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                <span className="opacity-0 group-hover:opacity-100 bg-white text-gray-800 text-sm font-semibold px-4 py-2 rounded-full shadow-lg transition-all">
+                  Demo öffnen ↗
+                </span>
+              </div>
+            </a>
             <div>
               <label className="block text-xs text-gray-400 mb-1">Demo-URL</label>
               <a
