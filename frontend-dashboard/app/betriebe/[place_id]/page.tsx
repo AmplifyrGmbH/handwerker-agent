@@ -49,7 +49,13 @@ export default function BetriebDetailPage() {
       const res = await fetch(`${base}/api/v1/betriebe/${encodeURIComponent(placeId)}/upload`, {
         method: "POST", body: form,
       });
-      if (res.ok) setBetrieb(await res.json());
+      if (res.ok) {
+        setBetrieb(await res.json());
+        // Demo automatisch neu generieren
+        await apiFetch(`/api/v1/betriebe/${encodeURIComponent(placeId)}/demo/generieren`, {
+          method: "POST", body: JSON.stringify({}),
+        }).catch(() => {});
+      }
     } catch { /* ignore */ }
     finally {
       if (typ === "logo") setUploadingLogo(false);

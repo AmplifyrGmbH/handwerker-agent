@@ -15,6 +15,7 @@ function DemoCard({ b, onUpdate }: { b: Betrieb; onUpdate: (updated: Betrieb) =>
   const [bearbeitenMsg, setBearbeitenMsg] = useState("");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingHero, setUploadingHero] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState("");
 
   const leadColor = LEAD_STATUS_COLORS[b.lead_status] || "bg-gray-100 text-gray-600";
 
@@ -36,6 +37,7 @@ function DemoCard({ b, onUpdate }: { b: Betrieb; onUpdate: (updated: Betrieb) =>
   const uploadMedia = async (typ: "logo" | "hero", file: File) => {
     if (typ === "logo") setUploadingLogo(true);
     else setUploadingHero(true);
+    setUploadMsg("");
     try {
       const form = new FormData();
       form.append("typ", typ);
@@ -43,8 +45,16 @@ function DemoCard({ b, onUpdate }: { b: Betrieb; onUpdate: (updated: Betrieb) =>
       const res = await fetch(`${BASE}/api/v1/betriebe/${encodeURIComponent(b.place_id)}/upload`, {
         method: "POST", body: form,
       });
-      if (res.ok) onUpdate(await res.json());
-    } catch { /* ignore */ }
+      if (res.ok) {
+        onUpdate(await res.json());
+        // Demo automatisch neu generieren damit das neue Bild live geht
+        setUploadMsg("Bild gespeichert — Demo wird neu generiert…");
+        await apiFetch(`/api/v1/betriebe/${encodeURIComponent(b.place_id)}/demo/generieren`, {
+          method: "POST", body: JSON.stringify({}),
+        });
+        setUploadMsg("Demo neu generiert ✓");
+      }
+    } catch { setUploadMsg("Fehler beim Upload"); }
     finally {
       if (typ === "logo") setUploadingLogo(false);
       else setUploadingHero(false);
@@ -97,7 +107,7 @@ function DemoCard({ b, onUpdate }: { b: Betrieb; onUpdate: (updated: Betrieb) =>
 
       {/* Fotos-Panel */}
       {open === "fotos" && (
-        <div className="border-t border-gray-100 bg-gray-50 px-5 py-4 flex gap-6 flex-wrap">
+        <div className="border-t border-gray-100 bg-gray-50 px-5 py-4 flex flex-col gap-4">
           <div>
             <p className="text-xs text-gray-400 mb-2">Logo</p>
             {b.logo_url && <img src={b.logo_url} alt="Logo" className="h-14 w-auto max-w-[160px] object-contain rounded border border-gray-100 bg-white p-1 mb-2" />}
@@ -114,6 +124,7 @@ function DemoCard({ b, onUpdate }: { b: Betrieb; onUpdate: (updated: Betrieb) =>
               <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadMedia("hero", f); e.target.value = ""; }} />
             </label>
           </div>
+          {uploadMsg && <p className="text-xs text-gray-500">{uploadMsg}</p>}
         </div>
       )}
 
