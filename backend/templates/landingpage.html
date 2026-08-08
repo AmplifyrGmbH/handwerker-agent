@@ -388,14 +388,18 @@
       </div>
     </div>
     <div>
-      
+      {% if hero_url %}
+      <div class="herophoto">
+        <img src="{{ hero_url }}" alt="{{ firmenname }}">
+        <div class="hptag">{{ firmenname }}<small>{{ gewerk }}{% if region %} · {{ region }}{% endif %}</small></div>
+      </div>
+      {% else %}
       <div class="herocard">
-        
         <div class="herocard-name">{{ firmenname }}</div>
         <div class="herocard-tag">{{ gewerk }}{% if region %} · {{ region }}{% endif %}</div>
         <div class="herocard-text">Demo.</div>
       </div>
-      
+      {% endif %}
     </div>
   </div>
 </section>
