@@ -185,7 +185,8 @@ async def run(job_id: int, place_id: Optional[str] = None, final_step: bool = Tr
                     "monat_jahr": _monat_jahr(),
                     "hero_url": b.hero_url or "",
                     "website_domain": b.website_domain or "",
-                    "amplifyr_telefon": settings.AMPLIFYR_TELEFON,\n                    "amplifyr_telefon_anzeige": settings.AMPLIFYR_TELEFON_ANZEIGE,
+                    "amplifyr_telefon": settings.AMPLIFYR_TELEFON,
+                    "amplifyr_telefon_anzeige": settings.AMPLIFYR_TELEFON_ANZEIGE,
                     "web3forms_key": settings.WEB3FORMS_KEY,
                 })
 
