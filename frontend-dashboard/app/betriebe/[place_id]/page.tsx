@@ -190,42 +190,25 @@ export default function BetriebDetailPage() {
       )}
 
       {/* Medien */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5 mb-6">
-        <h2 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wide">Medien</h2>
-        <div className="flex gap-8 items-start flex-wrap">
-          {/* Logo */}
-          <div>
-            <p className="text-xs text-gray-400 mb-2">Logo</p>
-            {betrieb.logo_url ? (
-              <img src={betrieb.logo_url} alt="Logo" className="h-20 w-auto max-w-[200px] object-contain rounded border border-gray-100 p-2 bg-gray-50 mb-2" />
-            ) : (
-              <div className="h-20 w-32 rounded border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center mb-2">
-                <span className="text-xs text-gray-300">Kein Logo</span>
+      {(betrieb.logo_url || betrieb.hero_url) && (
+        <div className="bg-white rounded-lg border border-gray-200 p-5 mb-6">
+          <h2 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wide">Medien</h2>
+          <div className="flex gap-6 items-start flex-wrap">
+            {betrieb.logo_url && (
+              <div>
+                <p className="text-xs text-gray-400 mb-2">Logo</p>
+                <img src={betrieb.logo_url} alt="Logo" className="h-20 w-auto max-w-[200px] object-contain rounded border border-gray-100 p-2 bg-gray-50" />
               </div>
             )}
-            <label className={`cursor-pointer text-xs px-3 py-1.5 rounded border border-gray-200 text-gray-600 hover:border-gray-400 transition-colors ${uploadingLogo ? "opacity-40 pointer-events-none" : ""}`}>
-              {uploadingLogo ? "Lädt…" : "Logo hochladen"}
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadMedia("logo", f); e.target.value = ""; }} />
-            </label>
-          </div>
-
-          {/* Hero */}
-          <div>
-            <p className="text-xs text-gray-400 mb-2">Hero-Bild</p>
-            {betrieb.hero_url ? (
-              <img src={betrieb.hero_url} alt="Hero" className="h-40 w-auto max-w-xs object-cover rounded border border-gray-100 mb-2" />
-            ) : (
-              <div className="h-40 w-64 rounded border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center mb-2">
-                <span className="text-xs text-gray-300">Kein Hero-Bild</span>
+            {betrieb.hero_url && (
+              <div>
+                <p className="text-xs text-gray-400 mb-2">Hero-Bild</p>
+                <img src={betrieb.hero_url} alt="Hero" className="h-40 w-auto max-w-xs object-cover rounded border border-gray-100" />
               </div>
             )}
-            <label className={`cursor-pointer text-xs px-3 py-1.5 rounded border border-gray-200 text-gray-600 hover:border-gray-400 transition-colors ${uploadingHero ? "opacity-40 pointer-events-none" : ""}`}>
-              {uploadingHero ? "Lädt…" : "Hero-Bild hochladen"}
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadMedia("hero", f); e.target.value = ""; }} />
-            </label>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Stammdaten */}
@@ -380,6 +363,21 @@ export default function BetriebDetailPage() {
               >
                 {betrieb.landing_url}
               </a>
+            </div>
+
+            {/* Fotos ersetzen */}
+            <div className="pt-3 border-t border-gray-100">
+              <p className="text-xs text-gray-400 mb-2">Fotos ersetzen</p>
+              <div className="flex gap-3 flex-wrap">
+                <label className={`cursor-pointer text-xs px-3 py-1.5 rounded border border-gray-200 text-gray-600 hover:border-gray-400 transition-colors ${uploadingLogo ? "opacity-40 pointer-events-none" : ""}`}>
+                  {uploadingLogo ? "Lädt…" : "Logo ersetzen"}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadMedia("logo", f); e.target.value = ""; }} />
+                </label>
+                <label className={`cursor-pointer text-xs px-3 py-1.5 rounded border border-gray-200 text-gray-600 hover:border-gray-400 transition-colors ${uploadingHero ? "opacity-40 pointer-events-none" : ""}`}>
+                  {uploadingHero ? "Lädt…" : "Hero-Bild ersetzen"}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadMedia("hero", f); e.target.value = ""; }} />
+                </label>
+              </div>
             </div>
 
             {/* Demo bearbeiten */}
