@@ -88,6 +88,7 @@ def _betrieb_to_dict(b: Betrieb, include_kontaktversuche: bool = False) -> dict:
         "status": b.status,
         "lead_status": b.lead_status,
         "inhaber_name": b.inhaber_name,
+        "mitarbeiter": b.mitarbeiter,
         "farbe_primary": b.farbe_primary,
         "hat_logo": b.hat_logo,
         "logo_url": b.logo_url,

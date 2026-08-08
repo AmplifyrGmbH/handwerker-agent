@@ -210,6 +210,9 @@ async def _process_betrieb_inner(db: AsyncSession, betrieb: Betrieb, job_id: int
         # Inhaber
         inhaber_name = gemini_client.extract_inhaber(all_text)
 
+        # Mitarbeiter
+        mitarbeiter = gemini_client.extract_mitarbeiter(all_text)
+
         # Firmenprofil
         firmenprofil = gemini_client.generate_firmenprofil(all_text, betrieb.branche or "Handwerk")
 
@@ -222,6 +225,7 @@ async def _process_betrieb_inner(db: AsyncSession, betrieb: Betrieb, job_id: int
             b.logo_url = logo_url_r2
             b.farbe_primary = farbe_primary
             b.inhaber_name = inhaber_name
+            b.mitarbeiter = mitarbeiter
             b.firmenprofil = firmenprofil
             b.status = "extrahiert"
             b.lead_status = "nicht_angerufen"

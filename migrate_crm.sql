@@ -22,3 +22,6 @@ ALTER TABLE betriebe ADD COLUMN IF NOT EXISTS agent VARCHAR;
 ALTER TABLE betriebe ADD COLUMN IF NOT EXISTS letzte_notiz TEXT;
 ALTER TABLE betriebe ADD COLUMN IF NOT EXISTS letzte_notiz_am TIMESTAMPTZ;
 CREATE INDEX IF NOT EXISTS ix_betriebe_agent ON betriebe (agent);
+
+-- Mitarbeiter-Feld
+ALTER TABLE betriebe ADD COLUMN IF NOT EXISTS mitarbeiter INTEGER;

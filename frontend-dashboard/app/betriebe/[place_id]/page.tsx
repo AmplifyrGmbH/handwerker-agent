@@ -175,11 +175,34 @@ export default function BetriebDetailPage() {
             <Field label="Kanton" value={betrieb.kanton} />
             <Field label="Telefon" value={betrieb.telefon} />
             <Field label="E-Mail" value={betrieb.email} />
-            <Field label="Website" value={betrieb.website_url} />
+            {betrieb.website_url && (
+              <div className="py-2 border-b border-gray-50">
+                <dt className="text-xs text-gray-400 mb-0.5">Website</dt>
+                <dd><a href={betrieb.website_url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline break-all">{betrieb.website_url}</a></dd>
+              </div>
+            )}
             <Field label="Google Bewertung" value={betrieb.google_rating != null ? `${betrieb.google_rating} (${betrieb.google_anzahl} Bewertungen)` : null} />
-            <Field label="Inhaber" value={betrieb.inhaber_name} />
             <Field label="Entdeckt am" value={betrieb.entdeckt_am ? new Date(betrieb.entdeckt_am).toLocaleString("de-CH") : null} />
           </dl>
+        </div>
+
+        {/* Extrahierte Daten */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h2 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wide">Extrahierte Daten</h2>
+          <dl>
+            <Field label="Inhaber" value={betrieb.inhaber_name} />
+            <Field label="Mitarbeiter" value={betrieb.mitarbeiter} />
+            <Field label="Primärfarbe" value={betrieb.farbe_primary} />
+            <Field label="Logo" value={betrieb.hat_logo === true ? "Ja" : betrieb.hat_logo === false ? "Nein" : null} />
+            <Field label="Extrahiert am" value={betrieb.extrahiert_am ? new Date(betrieb.extrahiert_am).toLocaleString("de-CH") : null} />
+            <Field label="Demo generiert am" value={betrieb.landing_generiert_am ? new Date(betrieb.landing_generiert_am).toLocaleString("de-CH") : null} />
+          </dl>
+          {betrieb.farbe_primary && (
+            <div className="mt-3 flex items-center gap-2">
+              <div className="w-6 h-6 rounded border border-gray-200" style={{ backgroundColor: betrieb.farbe_primary }} />
+              <span className="text-xs text-gray-400">{betrieb.farbe_primary}</span>
+            </div>
+          )}
         </div>
 
         {/* Lead-Status */}

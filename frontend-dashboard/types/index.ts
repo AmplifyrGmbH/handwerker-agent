@@ -29,6 +29,7 @@ export interface Betrieb {
   status: string;
   lead_status: string;
   inhaber_name: string | null;
+  mitarbeiter: number | null;
   farbe_primary: string | null;
   hat_logo: boolean | null;
   logo_url: string | null;

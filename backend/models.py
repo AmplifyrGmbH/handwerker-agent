@@ -29,6 +29,7 @@ class Betrieb(Base):
 
     name_anzeige = Column(String)
     inhaber_name = Column(String)
+    mitarbeiter = Column(Integer)
     farbe_primary = Column(String)
     hat_logo = Column(Boolean)
     logo_url = Column(String)

@@ -121,6 +121,28 @@ def extract_inhaber(text: str) -> Optional[str]:
         return None
 
 
+def extract_mitarbeiter(text: str) -> Optional[int]:
+    try:
+        model = genai.GenerativeModel(MODEL)
+        prompt = (
+            "Wie viele Mitarbeiter hat dieses Unternehmen? "
+            "Suche nach Angaben wie 'X Mitarbeiter', 'Team von X', 'X Angestellte', 'X Personen' etc. "
+            "Antworte nur mit einer Zahl (z.B. 12). "
+            "Antworte mit 'null' wenn keine konkrete Zahl erkennbar ist.\n\n"
+            f"Text:\n{text[:8000]}"
+        )
+        response = model.generate_content(prompt)
+        result = response.text.strip()
+        if result.lower() in ("null", "none", ""):
+            return None
+        import re
+        match = re.search(r"\d+", result)
+        return int(match.group()) if match else None
+    except Exception as e:
+        logger.error("extract_mitarbeiter failed: %s", e)
+        return None
+
+
 def generate_firmenprofil(text: str, branche: str) -> str:
     try:
         model = genai.GenerativeModel(MODEL)
