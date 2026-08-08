@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     R2_BUCKET_NAME: str = "website-agent"
     R2_PUBLIC_URL: str = ""
 
-    LANDING_TEMPLATE: str = "1c"  # 1a | 1b | 1c | 2
+    LANDING_TEMPLATE: str = "landingpage"  # 1a | 1b | 1c | 2
     LANDING_DOMAIN: str = "ihr-ki-agent.ch"
     CHAT_API_URL: str = "https://handwerker-api.amplifyr-digital.ch/api/v1/chat/message"
 
