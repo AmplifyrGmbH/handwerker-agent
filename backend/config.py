@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     AMPLIFYR_FIRMA: str = "Amplifyr"
     AMPLIFYR_KONTAKT: str = "info@amplifyr.ch"
     AMPLIFYR_TELEFON: str = ""
+    WEB3FORMS_KEY: str = ""
 
     class Config:
         env_file = (".env", "../.env")

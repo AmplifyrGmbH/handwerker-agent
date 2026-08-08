@@ -186,6 +186,7 @@ async def run(job_id: int, place_id: Optional[str] = None, final_step: bool = Tr
                     "hero_url": b.hero_url or "",
                     "website_domain": b.website_domain or "",
                     "amplifyr_telefon": settings.AMPLIFYR_TELEFON,
+                    "web3forms_key": settings.WEB3FORMS_KEY,
                 })
 
                 # Nach R2 hochladen
