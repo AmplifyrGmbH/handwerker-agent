@@ -74,16 +74,6 @@ function DemoCard({ b, onUpdate }: { b: Betrieb; onUpdate: (updated: Betrieb) =>
           )}
         </div>
 
-        <span className={`text-xs font-medium px-2 py-1 rounded-full shrink-0 ${leadColor}`}>
-          {LEAD_STATUS_LABELS[b.lead_status] || b.lead_status}
-        </span>
-
-        {b.landing_url && (
-          <a href={b.landing_url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline shrink-0">
-            Demo öffnen ↗
-          </a>
-        )}
-
         <button
           onClick={() => { setOpen(open === "fotos" ? null : "fotos"); }}
           className={`text-xs px-3 py-1.5 rounded border transition-all shrink-0 ${open === "fotos" ? "bg-gray-800 text-white border-gray-800" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}
@@ -97,6 +87,12 @@ function DemoCard({ b, onUpdate }: { b: Betrieb; onUpdate: (updated: Betrieb) =>
         >
           KI bearbeiten
         </button>
+
+        {b.landing_url && (
+          <a href={b.landing_url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline shrink-0 font-medium">
+            Demo öffnen ↗
+          </a>
+        )}
       </div>
 
       {/* Fotos-Panel */}
