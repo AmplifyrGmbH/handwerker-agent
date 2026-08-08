@@ -98,8 +98,8 @@
   @media(max-width:900px){.jrail{display:none}}
 
   /* ── HERO ── */
-  .hero{padding:0;position:relative;overflow:hidden;color:#fff;background:radial-gradient(780px 440px at 84% 10%,rgba(74,163,221,.34),transparent 62%),linear-gradient(158deg,#14405f,#07202f)}
-  .hero-in{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:72px 0 72px}
+  .hero{padding:0;position:relative;overflow:hidden;color:#fff;background:radial-gradient(780px 440px at 84% 10%,rgba(74,163,221,.34),transparent 62%),linear-gradient(158deg,#14405f,#07202f);min-height:calc(100vh - 84px);display:flex;flex-direction:column;justify-content:center}
+  .hero-in{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:48px 0}
   @media(max-width:880px){.hero-in{grid-template-columns:1fr;gap:24px;padding:48px 0 40px;text-align:center}}
   .hero .eyebrow{color:#B0C4DE}
   .hero h1{font-size:clamp(2.125rem,5.6vw,4rem);color:#fff}
