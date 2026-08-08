@@ -293,7 +293,11 @@
 
   /* ── FLOATING AMPLIFYR BERATER ── */
   .fchat{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
-  .fchat-fab{width:56px;height:56px;border-radius:50%;background:#1A2744;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px -8px rgba(26,39,68,.55);transition:.2s;flex:none}
+  @keyframes cwPulse{
+    0%,100%{box-shadow:0 4px 20px rgba(26,39,68,.45),0 0 0 0 rgba(26,39,68,.35)}
+    60%{box-shadow:0 4px 20px rgba(26,39,68,.45),0 0 0 10px rgba(26,39,68,0)}
+  }
+    .fchat-fab{width:56px;height:56px;border-radius:50%;background:#1A2744;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;animation:cwPulse 2.4s ease-in-out infinite;box-shadow:0 8px 24px -8px rgba(26,39,68,.55);transition:.2s;flex:none}
   .fchat-fab:hover{background:#0f1d36;transform:scale(1.06)}
   .fchat-fab svg{width:24px;height:24px;stroke:#fff;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .fchat-fab .fc-x{display:none}
@@ -1549,8 +1553,8 @@ document.addEventListener(&#x27;DOMContentLoaded&#x27;, async function() {
 
   <button class="fchat-fab" id="fchatBtn" aria-label="Kontakt aufnehmen" aria-expanded="false">
     <div class="fchat-badge"></div>
-    <svg class="fc-chat" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <svg class="fc-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    <img class="fc-chat" src="data:image/png;base64,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" alt="" aria-hidden="true" style="width:28px;height:28px;object-fit:contain;display:block;">
+    <svg class="fc-x" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px;stroke:#fff;stroke-width:2.5;fill:none;display:none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
 </div>
 
