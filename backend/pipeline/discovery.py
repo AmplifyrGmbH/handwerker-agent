@@ -73,7 +73,7 @@ async def run(job_id: int, branche: str, orte: str, max_per_search: int, final_s
             if item.get("permanentlyClosed"):
                 skipped += 1
                 continue
-            if item.get("countryCode", "").upper() not in ("CH", ""):
+            if (item.get("countryCode") or "").upper() not in ("CH", ""):
                 skipped += 1
                 continue
 
