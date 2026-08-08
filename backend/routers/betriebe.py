@@ -3,7 +3,7 @@ from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel
-from sqlalchemy import select, func
+from sqlalchemy import select, func, cast, Date, distinct
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -107,6 +107,19 @@ def _betrieb_to_dict(b: Betrieb, include_kontaktversuche: bool = False) -> dict:
     if include_kontaktversuche and b.kontaktversuche is not None:
         d["kontaktversuche"] = [_kontaktversuch_to_dict(k) for k in b.kontaktversuche]
     return d
+
+
+# ── Entdeckt-Daten ────────────────────────────────────────────────────────────
+
+@router.get("/entdeckt-daten")
+async def entdeckt_daten(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(distinct(cast(Betrieb.entdeckt_am, Date)))
+        .where(Betrieb.entdeckt_am.isnot(None))
+        .order_by(cast(Betrieb.entdeckt_am, Date).desc())
+    )
+    dates = [str(d) for d in result.scalars().all()]
+    return dates
 
 
 # ── List / Detail ─────────────────────────────────────────────────────────────

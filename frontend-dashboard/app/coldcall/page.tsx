@@ -325,6 +325,11 @@ function ColdCallPage() {
   const [items, setItems] = useState<Betrieb[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [entdecktDaten, setEntdecktDaten] = useState<string[]>([]);
+
+  useEffect(() => {
+    apiFetch<string[]>("/api/v1/betriebe/entdeckt-daten").then(setEntdecktDaten).catch(() => {});
+  }, []);
 
   // Filter aus URL lesen
   const filterAgent = searchParams.get("agent") ?? "";
@@ -398,13 +403,18 @@ function ColdCallPage() {
           <option value="">Alle Branchen</option>
           {BRANCHEN.map((b) => <option key={b} value={b}>{b}</option>)}
         </select>
-        <input
-          type="date"
+        <select
           value={filterEntdecktAb}
           onChange={(e) => setParam("entdeckt_ab", e.target.value)}
-          title="Entdeckt ab"
           className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-        />
+        >
+          <option value="">Alle Daten</option>
+          {entdecktDaten.map((d) => (
+            <option key={d} value={d}>
+              {new Date(d + "T00:00:00").toLocaleDateString("de-CH")}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Telefon-Suche */}
