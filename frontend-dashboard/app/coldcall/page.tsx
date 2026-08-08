@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { apiFetch } from "@/lib/api";
 import {
   Betrieb, BetriebeListe, Kontaktversuch,
   LEAD_STATUS_LABELS, LEAD_STATUS_COLORS, ALL_LEAD_STATUSES,
-  AGENTS,
+  AGENTS, BRANCHEN,
 } from "@/types";
 
 const LOAD_LIMIT = 500;
@@ -317,13 +318,26 @@ function LeadCard({
   );
 }
 
-export default function ColdCallPage() {
+function ColdCallPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [items, setItems] = useState<Betrieb[]>([]);
   const [loading, setLoading] = useState(false);
-  const [filterAgent, setFilterAgent] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [search, setSearch] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  // Filter aus URL lesen
+  const filterAgent = searchParams.get("agent") ?? "";
+  const filterStatus = searchParams.get("status") ?? "";
+  const filterBranche = searchParams.get("branche") ?? "";
+  const filterEntdecktAb = searchParams.get("entdeckt_ab") ?? "";
+  const search = searchParams.get("q") ?? "";
+
+  const setParam = (key: string, value: string) => {
+    const p = new URLSearchParams(searchParams.toString());
+    if (value) p.set(key, value); else p.delete(key);
+    router.replace(`/coldcall?${p.toString()}`, { scroll: false });
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -331,11 +345,13 @@ export default function ColdCallPage() {
       const params = new URLSearchParams({ limit: String(LOAD_LIMIT) });
       if (filterAgent) params.set("agent", filterAgent);
       if (filterStatus) params.set("lead_status", filterStatus);
+      if (filterBranche) params.set("branche", filterBranche);
+      if (filterEntdecktAb) params.set("entdeckt_ab", filterEntdecktAb);
       const data = await apiFetch<BetriebeListe>(`/api/v1/betriebe?${params}`);
       setItems(data.items);
     } catch { /* ignore */ }
     finally { setLoading(false); }
-  }, [filterAgent, filterStatus]);
+  }, [filterAgent, filterStatus, filterBranche, filterEntdecktAb]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -358,7 +374,7 @@ export default function ColdCallPage() {
       <div className="flex flex-wrap gap-3 mb-4">
         <select
           value={filterAgent}
-          onChange={(e) => setFilterAgent(e.target.value)}
+          onChange={(e) => setParam("agent", e.target.value)}
           className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
         >
           <option value="">Alle Agenten</option>
@@ -366,7 +382,7 @@ export default function ColdCallPage() {
         </select>
         <select
           value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          onChange={(e) => setParam("status", e.target.value)}
           className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
         >
           <option value="">Alle Status</option>
@@ -374,6 +390,21 @@ export default function ColdCallPage() {
             <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>
           ))}
         </select>
+        <select
+          value={filterBranche}
+          onChange={(e) => setParam("branche", e.target.value)}
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
+          <option value="">Alle Branchen</option>
+          {BRANCHEN.map((b) => <option key={b} value={b}>{b}</option>)}
+        </select>
+        <input
+          type="date"
+          value={filterEntdecktAb}
+          onChange={(e) => setParam("entdeckt_ab", e.target.value)}
+          title="Entdeckt ab"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        />
       </div>
 
       {/* Telefon-Suche */}
@@ -381,7 +412,7 @@ export default function ColdCallPage() {
         <input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setParam("q", e.target.value)}
           placeholder="Telefonnummer suchen…"
           className="border border-gray-200 rounded-lg px-4 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
@@ -412,4 +443,9 @@ export default function ColdCallPage() {
       </p>
     </div>
   );
+}
+
+import { Suspense } from "react";
+export default function ColdCallPageWrapper() {
+  return <Suspense><ColdCallPage /></Suspense>;
 }

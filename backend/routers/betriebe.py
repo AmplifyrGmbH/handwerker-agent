@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
@@ -118,6 +118,7 @@ async def list_betriebe(
     agent: Optional[str] = None,
     branche: Optional[str] = None,
     kanton: Optional[str] = None,
+    entdeckt_ab: Optional[date] = None,
     limit: int = 50,
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
@@ -133,6 +134,8 @@ async def list_betriebe(
         query = query.where(Betrieb.branche == branche)
     if kanton:
         query = query.where(Betrieb.kanton == kanton)
+    if entdeckt_ab:
+        query = query.where(Betrieb.entdeckt_am >= datetime.combine(entdeckt_ab, datetime.min.time()))
 
     count_query = select(func.count()).select_from(query.subquery())
     total = (await db.execute(count_query)).scalar()
