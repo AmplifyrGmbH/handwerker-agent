@@ -161,7 +161,7 @@ function LeadCard({
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       {/* Hauptzeile — klickbar zum Aufklappen */}
       <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
+        className="flex items-center gap-4 px-4 py-3 cursor-pointer select-none"
         onClick={onToggle}
       >
         {/* Expand-Indikator */}
@@ -225,7 +225,7 @@ function LeadCard({
           value={agent}
           onChange={(e) => { e.stopPropagation(); changeAgent(e.target.value); }}
           onClick={(e) => e.stopPropagation()}
-          className="text-xs border border-gray-200 rounded px-2 py-1 text-gray-600 shrink-0"
+          className="text-xs border border-gray-200 rounded px-2 py-1 text-gray-600 shrink-0 w-36"
         >
           <option value="">— Kein Agent</option>
           {AGENTS.map((a) => <option key={a} value={a}>{a}</option>)}
@@ -236,7 +236,7 @@ function LeadCard({
           value={leadStatus}
           onChange={(e) => { e.stopPropagation(); changeStatus(e.target.value); }}
           onClick={(e) => e.stopPropagation()}
-          className={`text-xs font-medium px-2 py-1 rounded-full border-0 cursor-pointer focus:ring-2 focus:ring-blue-300 shrink-0 ${statusColor}`}
+          className={`text-xs font-medium px-2 py-1 rounded-full border-0 cursor-pointer focus:ring-2 focus:ring-blue-300 shrink-0 w-36 ${statusColor}`}
         >
           {ALL_LEAD_STATUSES.map((s) => (
             <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>
@@ -244,7 +244,7 @@ function LeadCard({
         </select>
 
         {/* Demo */}
-        <div className="shrink-0 text-xs" onClick={(e) => e.stopPropagation()}>
+        <div className="shrink-0 w-28 text-xs text-right" onClick={(e) => e.stopPropagation()}>
           {betrieb.landing_url ? (
             <span className="text-green-600 font-medium">✓ Demo</span>
           ) : betrieb.status === "extrahiert" ? (
